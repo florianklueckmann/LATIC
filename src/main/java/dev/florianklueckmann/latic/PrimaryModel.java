@@ -1,30 +1,28 @@
-package dev.florianklueckmann;
+package dev.florianklueckmann.latic;
+
+import edu.stanford.nlp.io.IOUtils;
+import edu.stanford.nlp.simple.Document;
+import edu.stanford.nlp.simple.Sentence;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.CheckBox;
+import org.apache.log4j.BasicConfigurator;
 
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Scanner;
 
-import javafx.fxml.FXML;
+public class PrimaryModel {
 
-import edu.stanford.nlp.io.IOUtils;
-import org.apache.log4j.BasicConfigurator;
+    public PrimaryModel() {
 
-import edu.stanford.nlp.simple.*;
-
-public class PrimaryController {
-
-    @FXML
-    private void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
     }
 
-    @FXML
-    private void calculateStuff() throws IOException {
+    protected void calculateStuff() {
         System.out.println("Hi");
         doStuff();
     }
 
-    private int calculateWordCount(Document doc){
+    private int calculateWordCount(Document doc) {
 
         var wordCount = 0;
 
@@ -38,30 +36,27 @@ public class PrimaryController {
     private void doStuff() {
         BasicConfigurator.configure();
 
-//        Scanner scanner = new Scanner(System. in);
-
         System.out.println("Which Language is your text? [english/german]]");
-//        String lang = scanner.nextLine();
+
         String lang = "english";
         System.out.println("language: " + lang);
         System.out.println("Please enter your text.");
-        String text = "My house is a beautiful house.";
-//        String text = scanner.nextLine();
+        String text = "My house is a nice house!";
 
         //TODO: Ask for Input and asynchronously startup the NLP?
         Properties props = new Properties();
-
-        try {
-            props.load(IOUtils.readerFromString("StanfordCoreNLP-" + lang + ".properties"));
-        } catch (IOException e) {
-            //TODO: Error Handling
-            e.printStackTrace();
+        
+        if (!lang.equals("english")) {
+            try {
+                props.load(IOUtils.readerFromString("StanfordCoreNLP-" + lang + ".properties"));
+            } catch (IOException e) {
+                //TODO: Error Handling
+                e.printStackTrace();
+            }
         }
-
         // Annotation ann = corenlp.process("Bananen wachsen an Bäumen im Dschungel.");
         //We should be workig with one Documet object
         Document doc = new Document(props, text);
-
 
 
         // Create a document. No computation is done yet.
@@ -84,5 +79,4 @@ public class PrimaryController {
 
         }
     }
-
 }

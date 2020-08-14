@@ -1,4 +1,4 @@
-package dev.florianklueckmann;
+package dev.florianklueckmann.latic;
 
 public class GUIStarter {
 
