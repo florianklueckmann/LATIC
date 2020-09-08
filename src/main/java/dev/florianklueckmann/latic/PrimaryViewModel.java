@@ -2,8 +2,13 @@ package dev.florianklueckmann.latic;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import dev.florianklueckmann.latic.services.DocumentKeeper;
+import dev.florianklueckmann.latic.services.NlpTextAnalyzer;
+import dev.florianklueckmann.latic.services.SimpleTextAnalyzer;
+import dev.florianklueckmann.latic.services.TextFormattingService;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -29,8 +34,8 @@ public class PrimaryViewModel implements Initializable {
     @FXML
     protected TextArea textAreaInput;
 
-    @FXML
-    protected TextFlow textFlowOutput;
+//    @FXML
+//    protected TextFlow textFlowOutput;
 
 //    @FXML
 //    protected Label testLabel;
@@ -51,7 +56,12 @@ public class PrimaryViewModel implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        primaryModel = new PrimaryModel();
+        var documentKeeper = new DocumentKeeper();
+        var textFormatter = new TextFormattingService();
+        var simpleTextAnalyzer = new SimpleTextAnalyzer(textFormatter);
+        var nlp = new NlpTextAnalyzer();
+
+        primaryModel = new PrimaryModel(simpleTextAnalyzer, textFormatter, nlp);
 //        optionsListView.setItems(createOptionsList());
 
         Bindings.bindBidirectional(inputProperty(), textAreaInput.textProperty());
@@ -73,6 +83,12 @@ public class PrimaryViewModel implements Initializable {
 //    }
 
     public void AnalyzeText(ActionEvent actionEvent) {
-        primaryModel.calculateStuff();
+        System.out.println("Input getParagraphs: ");
+        System.out.println(textAreaInput.getParagraphs());
+        System.out.println();
+
+        primaryModel.setParagraphs(textAreaInput.getParagraphs());
+        primaryModel.initializeDocument();
+        primaryModel.analyzeAndPrintToConsole();
     }
 }
