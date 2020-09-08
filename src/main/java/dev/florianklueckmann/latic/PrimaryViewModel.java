@@ -17,19 +17,23 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.text.TextFlow;
 
 public class PrimaryViewModel implements Initializable {
 
     private PrimaryModel primaryModel;
 
-    @FXML
-    protected ListView<CheckBox> optionsListView;
+//    @FXML
+//    protected ListView<CheckBox> optionsListView;
 
     @FXML
-    protected TextArea itemTextArea;
+    protected TextArea textAreaInput;
 
     @FXML
-    protected Label testLabel;
+    protected TextFlow textFlowOutput;
+
+//    @FXML
+//    protected Label testLabel;
 
     final StringProperty item = new SimpleStringProperty("");
 
@@ -41,17 +45,17 @@ public class PrimaryViewModel implements Initializable {
         item.set(input);
     }
 
-    public final StringProperty itemProperty() {
+    public final StringProperty inputProperty() {
         return item;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         primaryModel = new PrimaryModel();
-        optionsListView.setItems(createOptionsList());
+//        optionsListView.setItems(createOptionsList());
 
-        Bindings.bindBidirectional(itemProperty(), itemTextArea.textProperty());
-        Bindings.bindBidirectional(itemProperty(), testLabel.textProperty());
+        Bindings.bindBidirectional(inputProperty(), textAreaInput.textProperty());
+//        Bindings.bindBidirectional(outputProperty(), textFlowOutput.text);
     }
 
     @FXML
@@ -59,16 +63,16 @@ public class PrimaryViewModel implements Initializable {
         App.setRoot("SecondaryView");
     }
 
-    @FXML
-    protected ObservableList<CheckBox> createOptionsList() {
-        return FXCollections.observableArrayList(
-                new CheckBox("TextIsGerman"),
-                new CheckBox("WordCount"),
-                new CheckBox("SentenceLength"),
-                new CheckBox("ParseAll"));
-    }
+//    @FXML
+//    protected ObservableList<CheckBox> createOptionsList() {
+//        return FXCollections.observableArrayList(
+//                new CheckBox("TextIsGerman"),
+//                new CheckBox("WordCount"),
+//                new CheckBox("SentenceLength"),
+//                new CheckBox("ParseAll"));
+//    }
 
-    public void CalculateStuffCommand(ActionEvent actionEvent) {
+    public void AnalyzeText(ActionEvent actionEvent) {
         primaryModel.calculateStuff();
     }
 }
