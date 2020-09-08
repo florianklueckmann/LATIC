@@ -1,82 +1,147 @@
 package dev.florianklueckmann.latic;
 
+import dev.florianklueckmann.latic.services.DocumentKeeper;
+import dev.florianklueckmann.latic.services.NlpTextAnalyzer;
+import dev.florianklueckmann.latic.services.SimpleTextAnalyzer;
+import dev.florianklueckmann.latic.services.TextFormattingService;
 import edu.stanford.nlp.io.IOUtils;
+import edu.stanford.nlp.ling.Word;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextFormatter;
 import org.apache.log4j.BasicConfigurator;
 
+import javax.annotation.RegEx;
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.io.IOException;
-import java.util.Properties;
+import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class PrimaryModel {
 
-    public PrimaryModel() {
+    private DocumentKeeper documentKeeper;
+    private String language = "english"; //TODO: Maybe use ENUM
+    private Properties props;
+    SimpleTextAnalyzer simpleTextAnalyzer;
+    TextFormattingService textFormattingService;
+    NlpTextAnalyzer nlp;
 
+    public List<CharSequence> getParagraphs() {
+        return paragraphs;
     }
 
-    protected void calculateStuff() {
-        System.out.println("Hi");
-        doStuff();
+    public void setParagraphs(List<CharSequence> paragraphs) {
+        this.paragraphs = paragraphs;
     }
 
-    private int calculateWordCount(Document doc) {
+    List<CharSequence> paragraphs;
 
-        var wordCount = 0;
-
-        for (Sentence sent : doc.sentences()) {
-            wordCount += sent.words().size();
-        }
-
-        return wordCount;
+    public Document getDoc() {
+        return doc;
     }
 
-    private void doStuff() {
+    Document doc;
+
+
+    public PrimaryModel(SimpleTextAnalyzer simpleTextAnalyzer, TextFormattingService textFormattingService, NlpTextAnalyzer nlp) {
         BasicConfigurator.configure();
+        props = new Properties();
 
-        System.out.println("Which Language is your text? [english/german]]");
+        this.simpleTextAnalyzer = simpleTextAnalyzer;
+        this.textFormattingService = textFormattingService;
+        this.nlp = nlp;
+    }
 
-        String lang = "english";
-        System.out.println("language: " + lang);
-        System.out.println("Please enter your text.");
-        String text = "My house is a nice house!";
+    //TODO: Throw Exception if paragraphs not set?
+    public void initializeDocument() {
+        this.doc = new Document(props, this.paragraphs.stream()
+                .map(charSequence -> charSequence.toString().trim())
+                .collect(Collectors.joining(" ")));
+    }
 
-        //TODO: Ask for Input and asynchronously startup the NLP?
-        Properties props = new Properties();
-        
-        if (!lang.equals("english")) {
-            try {
-                props.load(IOUtils.readerFromString("StanfordCoreNLP-" + lang + ".properties"));
-            } catch (IOException e) {
-                //TODO: Error Handling
-                e.printStackTrace();
+    public void initializeDocument(String text) {
+        this.doc = new Document(props, text);
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        //TODO: Lookup Option<String>
+        if (language.length() > 0) {
+            this.language = language;
+            if (!language.equals("english")) {
+                try {
+                    props.load(IOUtils.readerFromString("StanfordCoreNLP-" + language + ".properties"));
+                } catch (IOException e) {
+                    //TODO: Error Handling
+                    e.printStackTrace();
+                }
             }
         }
-        // Annotation ann = corenlp.process("Bananen wachsen an Bäumen im Dschungel.");
-        //We should be workig with one Documet object
-        Document doc = new Document(props, text);
+    }
 
-
-        // Create a document. No computation is done yet.
-        //Document doc = new Document(germanProperties, "Bananen wachsen an Bäumen im Dschungel." );
-        //Document docGer = new Document("Bananen wachsen an Bäumen im Dschungel.");
-
-
-//        doc.sentences(germanProperties);
-
-        System.out.println("Doc word count: " + calculateWordCount(doc)); //fast
-
-        for (Sentence sent : doc.sentences()) {  // Will iterate over the sentences
-            // We're only asking for words -- no need to load any models yet
-            System.out.println("The second word of the sentence '" + sent + "' is " + sent.word(1)); //fast
-            // When we ask for the lemma, it will load and run the part of speech tagger
-            System.out.println("The third lemma of the sentence '" + sent + "' is " + sent.lemma(2)); //3.5sec
-            // When we ask for the parse, it will load and run the parser
-            System.out.println("The parse of the sentence '" + sent + "' is " + sent.parse()); //11.4sec
-            // ...
-
+    public void printSentences() {
+        for (var sent : doc.sentences()) {
+            System.out.println(" ");
+            System.out.println(sent);
+            System.out.println(" ");
         }
+    }
+
+    public void parseSentences() {
+        for (Sentence sent : doc.sentences()) {
+            //System.out.println("The parse of the sentence '" + sent + "' is " + sent.parse()); //11.4sec
+            System.out.println("lemmas" + sent.lemmas());
+            System.out.println("tokenize" + sent.words());
+        }
+    }
+
+
+    protected int getAverageSentenceLengthSyllables() {
+        return 0;
+    }
+
+    //CORENLP Stuff
+    void testingStuff() {
+
+        //var sent = doc.sentence(0);
+
+        for (var sen : doc.sentences()) {
+            var posTags = sen.posTags();
+            log(sen);
+            log("POS: \n" + posTags);
+            log((int) posTags.stream().filter(e -> e.equals("ADP")).count());
+        }
+
+        System.out.println("WC: " +simpleTextAnalyzer.getWordCount());
+        System.out.println("SC: " +simpleTextAnalyzer.getSentenceCount());
+        System.out.println("AVGSENTWW: " +simpleTextAnalyzer.getAverageSentenceLengthCharactersWithoutWhitespaces());
+        System.out.println("AVGSENT: " +simpleTextAnalyzer.getAverageSentenceLengthCharacters());
+        System.out.println();
+    }
+
+
+    protected void analyzeAndPrintToConsole() {
+        System.out.println("Hi");
+
+        setLanguage("german");
+
+        simpleTextAnalyzer.setDoc(doc);
+        System.out.println(simpleTextAnalyzer.getTextLength(paragraphs));
+        //initializeDocument(input);
+        System.out.println(doc.text());
+
+        testingStuff();
+    }
+
+    private void log(Object o) {
+        System.out.println(o);
     }
 }
