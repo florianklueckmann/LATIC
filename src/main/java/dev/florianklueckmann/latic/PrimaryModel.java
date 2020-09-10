@@ -11,7 +11,10 @@ import edu.stanford.nlp.simple.Sentence;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.Background;
+import javafx.scene.text.Text;
 import org.apache.log4j.BasicConfigurator;
 
 import javax.annotation.RegEx;
@@ -120,10 +123,10 @@ public class PrimaryModel {
             log((int) posTags.stream().filter(e -> e.equals("ADP")).count());
         }
 
-        System.out.println("WC: " +simpleTextAnalyzer.getWordCount());
-        System.out.println("SC: " +simpleTextAnalyzer.getSentenceCount());
-        System.out.println("AVGSENTWW: " +simpleTextAnalyzer.getAverageSentenceLengthCharactersWithoutWhitespaces());
-        System.out.println("AVGSENT: " +simpleTextAnalyzer.getAverageSentenceLengthCharacters());
+        System.out.println("WC: " + simpleTextAnalyzer.getWordCount());
+        System.out.println("SC: " + simpleTextAnalyzer.getSentenceCount());
+        System.out.println("AVGSENTWW: " + simpleTextAnalyzer.getAverageSentenceLengthCharactersWithoutWhitespaces());
+        System.out.println("AVGSENT: " + simpleTextAnalyzer.getAverageSentenceLengthCharacters());
         System.out.println();
     }
 
@@ -139,6 +142,39 @@ public class PrimaryModel {
         System.out.println(doc.text());
 
         testingStuff();
+    }
+
+    protected String analyze() {
+        setLanguage("german");
+
+        simpleTextAnalyzer.setDoc(doc);
+        System.out.println(simpleTextAnalyzer.getTextLength(paragraphs));
+
+        System.out.println("WC: " + simpleTextAnalyzer.getWordCount());
+        System.out.println("SC: " + simpleTextAnalyzer.getSentenceCount());
+        System.out.println("AVGSENTWW: " + simpleTextAnalyzer.getAverageSentenceLengthCharactersWithoutWhitespaces());
+        System.out.println("AVGSENT: " + simpleTextAnalyzer.getAverageSentenceLengthCharacters());
+        System.out.println();
+
+        return new StringBuilder()
+                .append(appendResultLine("Word count", simpleTextAnalyzer.getWordCount()))
+                .append(appendResultLine("Sentence count", simpleTextAnalyzer.getSentenceCount()))
+                .append(appendResultLine("Average sentence length without whitespaces", simpleTextAnalyzer.getAverageSentenceLengthCharactersWithoutWhitespaces()))
+                .append(appendResultLine("Average sentence length", simpleTextAnalyzer.getAverageSentenceLengthCharacters()))
+                .toString();
+
+    }
+
+    protected String appendResultLine(String label, double result) {
+        return label + ": " + result + "\n";
+    }
+
+    protected String appendResultLine(String label, int result) {
+        return label + ": " + result + "\n";
+    }
+
+    protected String appendResultLine(String label, String result) {
+        return label + ": " + result + "\n";
     }
 
     private void log(Object o) {
