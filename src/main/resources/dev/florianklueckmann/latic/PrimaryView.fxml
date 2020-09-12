@@ -5,6 +5,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -16,9 +17,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import org.fxmisc.richtext.StyleClassedTextArea?>
-
 <?import org.fxmisc.richtext.InlineCssTextArea?>
+
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.florianklueckmann.latic.PrimaryViewModel">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
@@ -43,8 +43,9 @@
             <center>
                 <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <children>
-                        <ChoiceBox fx:id="choiceboxLanguage" layoutX="9.0" layoutY="31.0" prefHeight="25.0" prefWidth="142.0" />
+                        <ChoiceBox fx:id="choiceBoxLanguage" layoutX="9.0" layoutY="31.0" onAction="#changeLanguage" prefHeight="25.0" prefWidth="142.0" />
                         <Label layoutX="9.0" layoutY="14.0" text="Language" />
+
                         <CheckBox fx:id="checkboxWordCount" layoutX="9.0" layoutY="66.0" mnemonicParsing="false" text="Word Count" />
                         <CheckBox fx:id="checkboxPronounsAll" layoutX="9.0" layoutY="91.0" mnemonicParsing="false" text="Pronouns">
                             <font>
@@ -75,20 +76,20 @@
     <center>
         <VBox BorderPane.alignment="CENTER">
             <children>
-                  <TextArea fx:id="textAreaInput" wrapText="true" VBox.vgrow="ALWAYS" />
-                  <InlineCssTextArea fx:id="textAreaOutput" prefHeight="200.0" prefWidth="561.0" wrapText="true" VBox.vgrow="ALWAYS" />
-            <HBox fillHeight="false" prefHeight="99.0" prefWidth="600.0" VBox.vgrow="NEVER">
-               <children>
-                  <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
-                     <children>
+                <TextArea fx:id="textAreaInput" wrapText="true" VBox.vgrow="ALWAYS" />
+                <InlineCssTextArea fx:id="textAreaOutput" prefHeight="200.0" prefWidth="561.0" wrapText="true" VBox.vgrow="ALWAYS" />
+                <HBox fillHeight="false" prefHeight="99.0" prefWidth="600.0" VBox.vgrow="NEVER">
+                    <children>
+                        <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                            <children>
                                 <Button fx:id="buttonAnalyze" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#AnalyzeText" text="Analyze" />
-                     </children>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </VBox>
-               </children>
-            </HBox>
+                            </children>
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </VBox>
+                    </children>
+                </HBox>
             </children>
         </VBox>
     </center>
