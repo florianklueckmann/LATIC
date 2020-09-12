@@ -53,6 +53,14 @@
             <classifier>mac</classifier>
         </dependency>
 
+    <!-- JavaFX PlugIns-->
+
+        <dependency>
+            <groupId>org.fxmisc.richtext</groupId>
+            <artifactId>richtextfx</artifactId>
+            <version>0.10.5</version>
+        </dependency>
+
     <!--CoreNLP-->
         <dependency>
             <groupId>edu.stanford.nlp</groupId>
