@@ -62,6 +62,7 @@
                         <CheckBox fx:id="checkboxSentenceLengthWords" layoutX="24.0" layoutY="176.0" mnemonicParsing="false" text="Words" />
                         <CheckBox fx:id="checkboxSentenceLengthCharacters" layoutX="24.0" layoutY="196.0" mnemonicParsing="false" text="Characters" />
                         <CheckBox fx:id="checkboxSentenceLengthSyllables" layoutX="24.0" layoutY="216.0" mnemonicParsing="false" text="Syllables" />
+                  <ListView fx:id="checkList" layoutY="245.0" prefHeight="323.0" prefWidth="200.0" />
                     </children>
                 </AnchorPane>
             </center>
