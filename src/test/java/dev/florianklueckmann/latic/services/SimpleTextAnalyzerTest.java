@@ -56,47 +56,47 @@ class SimpleTextAnalyzerTest {
 
     @Test
     void getWordCount() {
-        Assertions.assertEquals(deItemEarthAndSun.getWordCount(), simpleTextAnalyzer.getWordCount());
+        Assertions.assertEquals(deItemEarthAndSun.getWordCount(), simpleTextAnalyzer.wordCount());
     }
 
     @Test
     void getTextCharCountWithoutPuncts() {
-        Assertions.assertEquals(82, simpleTextAnalyzer.getTextCharCountWithoutPuncts());
+        Assertions.assertEquals(82, simpleTextAnalyzer.textCountCharactersWithoutPunctuation());
     }
 
     @Test
     void getAverageWordLengthCharacters() {
-        Assertions.assertEquals(deItemEarthAndSun.getAvgWordLengthChar(), simpleTextAnalyzer.getAverageWordLengthCharacters(), 0.01);
+        Assertions.assertEquals(deItemEarthAndSun.getAvgWordLengthChar(), simpleTextAnalyzer.averageWordLengthCharacters(), 0.01);
     }
 
     @Test
     void getAverageSentenceLengthCharacters() {
-        Assertions.assertEquals(17.33, simpleTextAnalyzer.getAverageSentenceLengthCharacters(), 0.01);
+        Assertions.assertEquals(17.33, simpleTextAnalyzer.averageSentenceLengthCharacters(), 0.01);
     }
 
     @Test
     void getAverageSentenceLengthCharactersWithoutWhitespaces() {
-        Assertions.assertEquals(14.8333, simpleTextAnalyzer.getAverageSentenceLengthCharactersWithoutWhitespaces(), 0.01);
+        Assertions.assertEquals(14.8333, simpleTextAnalyzer.averageSentenceLengthCharactersWithoutWhitespaces(), 0.01);
     }
 
     @Test
     void getAverageSentenceLengthWords() {
-        Assertions.assertEquals(deItemEarthAndSun.getAvgSentenceLengthWords(), simpleTextAnalyzer.getAverageSentenceLengthWords(), 0.01);
+        Assertions.assertEquals(deItemEarthAndSun.getAvgSentenceLengthWords(), simpleTextAnalyzer.averageSentenceLengthWords(), 0.01);
     }
 
     @Test
     void getSentenceCount() {
-        Assertions.assertEquals(deItemEarthAndSun.getSentenceCount(), simpleTextAnalyzer.getSentenceCount());
+        Assertions.assertEquals(deItemEarthAndSun.getSentenceCount(), simpleTextAnalyzer.sentenceCount());
     }
 
     @Test
     void getUniqueWords() {
-        Assertions.assertEquals(19, simpleTextAnalyzer.getUniqueWords().size());
+        Assertions.assertEquals(19, simpleTextAnalyzer.uniqueWords().size());
     }
 
     @Test
     void getLexicalDiversity() {
-        Assertions.assertEquals(0.90, simpleTextAnalyzer.getLexicalDiversity(), 0.01);
+        Assertions.assertEquals(0.90, simpleTextAnalyzer.lexicalDiversity(), 0.01);
     }
 
     @Test
@@ -109,7 +109,7 @@ class SimpleTextAnalyzerTest {
                 "1 Jahr."
         ));
 
-        Assertions.assertEquals(105, simpleTextAnalyzer.getTextLength(testParagraphs));
+        Assertions.assertEquals(105, simpleTextAnalyzer.textLengthCharacters(testParagraphs));
     }
     @Test
     void getTextLengthWithoutWhiteSpaces() {
@@ -121,7 +121,7 @@ class SimpleTextAnalyzerTest {
                 "1 Jahr."
         ));
 
-        Assertions.assertEquals(89, simpleTextAnalyzer.getTextLengthWithoutWhiteSpaces(testParagraphs));
+        Assertions.assertEquals(89, simpleTextAnalyzer.textLengthCharactersWithoutWhiteSpaces(testParagraphs));
     }
 
     @Test

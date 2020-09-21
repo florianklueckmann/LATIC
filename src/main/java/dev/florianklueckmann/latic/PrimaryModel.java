@@ -1,28 +1,15 @@
 package dev.florianklueckmann.latic;
 
-import dev.florianklueckmann.latic.services.DocumentKeeper;
-import dev.florianklueckmann.latic.services.NlpTextAnalyzer;
-import dev.florianklueckmann.latic.services.SimpleTextAnalyzer;
-import dev.florianklueckmann.latic.services.TextFormattingService;
+import dev.florianklueckmann.latic.services.*;
 import edu.stanford.nlp.io.IOUtils;
-import edu.stanford.nlp.ling.Word;
 import edu.stanford.nlp.simple.Document;
-import edu.stanford.nlp.simple.Sentence;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
-import javafx.scene.layout.Background;
-import javafx.scene.text.Text;
 import org.apache.log4j.BasicConfigurator;
 
-import javax.annotation.RegEx;
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class PrimaryModel {
@@ -87,6 +74,10 @@ public class PrimaryModel {
                     e.printStackTrace();
                 }
             }
+            //TODO Find a better way to set language
+            if (language.equals("english")) {
+                props = new Properties();
+            }
         }
     }
 
@@ -98,71 +89,109 @@ public class PrimaryModel {
         }
     }
 
-    public void parseSentences() {
-        for (Sentence sent : doc.sentences()) {
-            //System.out.println("The parse of the sentence '" + sent + "' is " + sent.parse()); //11.4sec
-            System.out.println("lemmas" + sent.lemmas());
-            System.out.println("tokenize" + sent.words());
-        }
+    public String wordClassesAsString() {
+        var sb = new StringBuilder();
+
+        WordClassService wordClassCounter;
+
+        if (language.toLowerCase().equals("german"))
+            wordClassCounter = new GermanWordClassService();
+        else
+            wordClassCounter = new EnglishWordClassService();
+
+        wordClassCounter.analyzeWordClasses(doc.sentences()).entrySet().stream()
+                .filter(stringIntegerEntry -> stringIntegerEntry.getValue() > 0)
+                .forEach(stringIntegerEntry ->
+                        sb.append(stringIntegerEntry.getKey()).append(": ").append(stringIntegerEntry.getValue()).append("\n"));
+
+        return sb.toString();
     }
 
+    public List<IntegerLinguisticFeature> wordClassesAsList() {
+
+        List<IntegerLinguisticFeature> featureList = new ArrayList<>();
+
+        WordClassService wordClassCounter;
+
+        if (language.toLowerCase().equals("german"))
+            wordClassCounter = new GermanWordClassService();
+        else
+            wordClassCounter = new EnglishWordClassService();
+
+        wordClassCounter.analyzeWordClasses(doc.sentences())
+                .forEach((key, value) -> featureList.add(new IntegerLinguisticFeature(key, key, value)));
+
+        return featureList;
+    }
 
     protected int getAverageSentenceLengthSyllables() {
         return 0;
     }
 
-    //CORENLP Stuff
-    void testingStuff() {
+    protected String analyze() {
+        // setLanguage("german");
 
-        //var sent = doc.sentence(0);
+        simpleTextAnalyzer.setDoc(doc);
 
-        for (var sen : doc.sentences()) {
-            var posTags = sen.posTags();
-            log(sen);
-            log("POS: \n" + posTags);
-            log((int) posTags.stream().filter(e -> e.equals("ADP")).count());
+        var sb = new StringBuilder()
+                .append(appendResultLine("Word count", simpleTextAnalyzer.wordCount()))
+                .append(appendResultLine("Sentence count", simpleTextAnalyzer.sentenceCount()))
+                .append(appendResultLine("Average sentence length without whitespaces", simpleTextAnalyzer.averageSentenceLengthCharactersWithoutWhitespaces()))
+                .append(appendResultLine("Average sentence length", simpleTextAnalyzer.averageSentenceLengthCharacters()))
+                .append(wordClassesAsString());
+
+        doc.sentences().forEach(sentence -> sb.append(sentence).append("\n").append(sentence.posTags()).append("\n"));
+
+        return sb.toString();
+
+    }
+
+    protected List<String> sentencesAndPosTags() {
+        List<String> results = new ArrayList<>();
+        doc.sentences().forEach(sentence -> results.add(sentence + "\n" + sentence.posTags()));
+        return results;
+    }
+
+    protected List<LinguisticFeature> analyzeGeneralItemCharacteristics() {
+        simpleTextAnalyzer.setDoc(doc);
+        nlp.setDoc(doc);
+
+        ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
+        List<String> errorList = new ArrayList<>();
+
+        for (var lingFeature : GeneralItemCharacteristics.values()) {
+            java.lang.reflect.Method method;
+            try {
+                method = simpleTextAnalyzer.getClass().getMethod(lingFeature.getId());
+                if (lingFeature.getId().contains("average"))
+                    featureList.add(new DoubleLinguisticFeature(
+                            lingFeature.getName(),
+                            lingFeature.getId(),
+                            (double) method.invoke(simpleTextAnalyzer)));
+                else if (lingFeature.getId().contains("count"))
+                    featureList.add(new IntegerLinguisticFeature(
+                            lingFeature.getName(),
+                            lingFeature.getId(),
+                            (int) method.invoke(simpleTextAnalyzer)));
+                else
+                    featureList.add(new StringLinguisticFeature(
+                            lingFeature.getName(),
+                            lingFeature.getId(),
+                            String.valueOf(method.invoke(simpleTextAnalyzer))));
+
+            } catch (NoSuchMethodException e) {
+//                e.printStackTrace();
+                featureList.add(new StringLinguisticFeature(lingFeature.getName(), lingFeature.getId(), "NoSuchMethodException"));
+            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+                featureList.add(new StringLinguisticFeature(lingFeature.getName(), lingFeature.getId(), "IllegalAccessException"));
+            } catch (InvocationTargetException e) {
+//                e.printStackTrace();
+                featureList.add(new StringLinguisticFeature(lingFeature.getName(), lingFeature.getId(), "InvocationTargetException"));
+            }
         }
 
-        System.out.println("WC: " + simpleTextAnalyzer.getWordCount());
-        System.out.println("SC: " + simpleTextAnalyzer.getSentenceCount());
-        System.out.println("AVGSENTWW: " + simpleTextAnalyzer.getAverageSentenceLengthCharactersWithoutWhitespaces());
-        System.out.println("AVGSENT: " + simpleTextAnalyzer.getAverageSentenceLengthCharacters());
-        System.out.println();
-    }
-
-
-    protected void analyzeAndPrintToConsole() {
-        System.out.println("Hi");
-
-        setLanguage("german");
-
-        simpleTextAnalyzer.setDoc(doc);
-        System.out.println(simpleTextAnalyzer.getTextLength(paragraphs));
-        //initializeDocument(input);
-        System.out.println(doc.text());
-
-        testingStuff();
-    }
-
-    protected String analyze() {
-        setLanguage("german");
-
-        simpleTextAnalyzer.setDoc(doc);
-        System.out.println(simpleTextAnalyzer.getTextLength(paragraphs));
-
-        System.out.println("WC: " + simpleTextAnalyzer.getWordCount());
-        System.out.println("SC: " + simpleTextAnalyzer.getSentenceCount());
-        System.out.println("AVGSENTWW: " + simpleTextAnalyzer.getAverageSentenceLengthCharactersWithoutWhitespaces());
-        System.out.println("AVGSENT: " + simpleTextAnalyzer.getAverageSentenceLengthCharacters());
-        System.out.println();
-
-        return new StringBuilder()
-                .append(appendResultLine("Word count", simpleTextAnalyzer.getWordCount()))
-                .append(appendResultLine("Sentence count", simpleTextAnalyzer.getSentenceCount()))
-                .append(appendResultLine("Average sentence length without whitespaces", simpleTextAnalyzer.getAverageSentenceLengthCharactersWithoutWhitespaces()))
-                .append(appendResultLine("Average sentence length", simpleTextAnalyzer.getAverageSentenceLengthCharacters()))
-                .toString();
-
+        return featureList;
     }
 
     protected String appendResultLine(String label, double result) {
