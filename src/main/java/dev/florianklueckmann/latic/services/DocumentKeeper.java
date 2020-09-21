@@ -4,16 +4,14 @@ import edu.stanford.nlp.simple.Document;
 
 import java.util.Properties;
 
-public class DocumentKeeper implements IDocumentKeeper {
+public class DocumentKeeper {
 
     private Document doc;
 
-    @Override
     public void initializeDocument(String input, Properties props) {
         this.doc = new Document(props, input);
     }
 
-    @Override
     public Document getDocument() {
         return this.doc;
     }

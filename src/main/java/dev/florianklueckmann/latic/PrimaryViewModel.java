@@ -10,18 +10,12 @@ import dev.florianklueckmann.latic.services.SimpleTextAnalyzer;
 import dev.florianklueckmann.latic.services.TextFormattingService;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import org.fxmisc.richtext.InlineCssTextArea;
-import org.fxmisc.richtext.StyleClassedTextArea;
-import org.fxmisc.richtext.model.StyledDocument;
 
 public class PrimaryViewModel implements Initializable {
 
@@ -31,10 +25,27 @@ public class PrimaryViewModel implements Initializable {
     protected TextArea textAreaInput;
 
     @FXML
-    protected TextFlow textFlowOutput;
+    protected InlineCssTextArea textAreaOutput;
 
     @FXML
-    protected InlineCssTextArea textAreaOutput;
+    ChoiceBox<String> choiceBoxLanguage;
+
+    public ListProperty<String> languages = new SimpleListProperty<>();
+
+    public void setLanguages() {
+        languages.add("English");
+        languages.add("German");
+
+        choiceBoxLanguage.setValue("English");
+    }
+
+    public List<String> getLanguages() {
+        return languages.get();
+    }
+
+    public ListProperty<String> languageProperty() {
+        return languages;
+    }
 
     final StringProperty item = new SimpleStringProperty("");
 
@@ -68,7 +79,6 @@ public class PrimaryViewModel implements Initializable {
         return result.get();
     }
 
-    // Define a getter for the property itself
     ListProperty<String> resultProperty() {
         return result;
     }
@@ -80,11 +90,27 @@ public class PrimaryViewModel implements Initializable {
         var documentKeeper = new DocumentKeeper();
         var textFormatter = new TextFormattingService();
         var simpleTextAnalyzer = new SimpleTextAnalyzer(textFormatter);
-        var nlp = new NlpTextAnalyzer();
+        var nlp = new NlpTextAnalyzer(textFormatter);
 
         primaryModel = new PrimaryModel(simpleTextAnalyzer, textFormatter, nlp);
 
+        initializeBindings();
+
+        initializeGui();
+    }
+
+    private void initializeBindings() {
         Bindings.bindBidirectional(inputProperty(), textAreaInput.textProperty());
+        Bindings.bindBidirectional(languageProperty(), choiceBoxLanguage.itemsProperty());
+    }
+
+    private void initializeGui() {
+        setLanguages();
+    }
+
+    public void changeLanguage() {
+        System.out.println(choiceBoxLanguage.getValue());
+        primaryModel.setLanguage(choiceBoxLanguage.getValue().toLowerCase());
     }
 
     @FXML
@@ -93,15 +119,29 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void AnalyzeText(ActionEvent actionEvent) {
-        System.out.println("Input getParagraphs: ");
-        System.out.println(textAreaInput.getParagraphs());
-
-        System.out.println();
-
         primaryModel.setParagraphs(textAreaInput.getParagraphs());
         primaryModel.initializeDocument();
 
-        setResults(primaryModel.analyze());
+        addResults("Item:");
+        textAreaInput.getParagraphs().forEach(charSequence -> addResults(charSequence.toString()));
 
+        primaryModel.analyzeGeneralItemCharacteristics()
+                .forEach(linguisticFeature -> addResults(
+                        //linguisticFeature.getId() +  " : " +
+                        linguisticFeature.getName() + " : " +
+                        linguisticFeature.getValue()));
+
+        primaryModel.wordClassesAsList()
+                .forEach(linguisticFeature -> addResults(
+                        //linguisticFeature.getId() +  " : " +
+                        linguisticFeature.getName() + " : " +
+                        linguisticFeature.getValue()));
+
+        addResults("\n" + "----------------Text and Tags----------------" + "\n");
+
+        primaryModel.sentencesAndPosTags()
+                .forEach(result -> addResults(result));
+
+        addResults("\n" + "---------------------------------------------" + "\n");
     }
 }
