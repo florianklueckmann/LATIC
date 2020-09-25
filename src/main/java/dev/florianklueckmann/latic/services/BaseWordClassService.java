@@ -1,18 +1,20 @@
 package dev.florianklueckmann.latic.services;
 
+import dev.florianklueckmann.latic.IntegerLinguisticFeature;
+import dev.florianklueckmann.latic.LinguisticFeature;
 import edu.stanford.nlp.simple.Sentence;
+import javafx.collections.ObservableList;
 
 import java.util.List;
-import java.util.Map;
 
 public abstract class BaseWordClassService implements WordClassService {
 
     @Override
-    public Map<String, Integer> analyzeWordClasses(List<Sentence> sentences){
+    public ObservableList<IntegerLinguisticFeature> analyzeWordClasses(List<Sentence> sentences){
         sentences.forEach(sent -> sent.posTags().forEach(this::countTags));
         return createResultMap();
     }
 
-    protected abstract Map<String, Integer> createResultMap();
+    protected abstract ObservableList<IntegerLinguisticFeature> createResultMap();
 
 }

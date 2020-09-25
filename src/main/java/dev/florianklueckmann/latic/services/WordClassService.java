@@ -1,13 +1,14 @@
 package dev.florianklueckmann.latic.services;
 
+import dev.florianklueckmann.latic.IntegerLinguisticFeature;
 import edu.stanford.nlp.simple.Sentence;
+import javafx.collections.ObservableList;
 
 import java.util.List;
-import java.util.Map;
 
 public interface WordClassService {
 
-    Map<String, Integer> analyzeWordClasses(List<Sentence> sentences);
+    ObservableList<IntegerLinguisticFeature> analyzeWordClasses(List<Sentence> sentences);
 
     void countTags(String tag);
 

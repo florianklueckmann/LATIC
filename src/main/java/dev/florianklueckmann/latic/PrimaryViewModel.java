@@ -91,7 +91,9 @@ public class PrimaryViewModel implements Initializable {
         return result;
     }
 
-    ObservableList<Task> tasks;
+    ObservableList<Task> textTasks;
+    ObservableList<Task> generalTasks;
+    ObservableList<Task> languageSpecificTasks;
 
 
     @Override
@@ -117,31 +119,40 @@ public class PrimaryViewModel implements Initializable {
     private void initializeGui() {
         System.out.println("GUI");
         setLanguages();
+        createCheckboxes();
 
-//        ObservableList<Task> tasks = FXCollections.observableArrayList(
-//                Arrays.stream(GeneralItemCharacteristics.values())
-//                        .map(generalItemCharacteristics -> new Task(generalItemCharacteristics.getName(), generalItemCharacteristics.getId()))
-//                        .collect(Collectors.toList())
-//        );
+    }
 
-//        ObservableList<Task> tasks = FXCollections.observableArrayList();
-//        Arrays.stream(GeneralItemCharacteristics.values())
-//                .forEach(generalItemCharacteristics -> tasks.add(new Task(generalItemCharacteristics.getName(), generalItemCharacteristics.getId())));
-
-        tasks = FXCollections.observableArrayList(
-                Arrays.stream(GeneralItemCharacteristics.values()).map(generalItemCharacteristics -> new Task(generalItemCharacteristics.getName(), generalItemCharacteristics.getId())).collect(Collectors.toList())
+    private void createCheckboxes() {
+        generalTasks = FXCollections.observableArrayList(
+                Arrays.stream(GeneralItemCharacteristics.values())
+                        .map(generalItemCharacteristics -> new Task(generalItemCharacteristics.getName(), generalItemCharacteristics.getId()))
+                        .collect(Collectors.toList())
         );
 
-//        tasks.forEach(task -> task.selectedProperty().get());
-//
-//        tasks.forEach(task -> task.selectedProperty().addListener((observable, wasSelected, isSelected) -> {
-//            if (isSelected) {
-//                reactionLog.getItems().add(reactionStrings.get(task.getName()));
-//                reactionLog.scrollTo(reactionLog.getItems().size() - 1);
-//            }
-//        }));
+        textTasks = FXCollections.observableArrayList(
+                Arrays.stream(TextInformation.values())
+                .map(textInformation -> new Task(textInformation.getName(), textInformation.getId()))
+                .collect(Collectors.toList()));
 
-        checkList.setItems(tasks);
+        if (choiceBoxLanguage.getValue().equals("German")){
+            languageSpecificTasks = FXCollections.observableArrayList(
+                    Arrays.stream(GermanItemCharacteristics.values())
+                            .map(germanItemCharacteristic -> new Task(germanItemCharacteristic.getName(), germanItemCharacteristic.getId()))
+                            .collect(Collectors.toList())
+            );
+        }
+
+        if (choiceBoxLanguage.getValue().equals("English")) {
+            languageSpecificTasks = FXCollections.observableArrayList(
+                    Arrays.stream(EnglishItemCharacteristics.values())
+                            .map(englishItemCharacteristics -> new Task(englishItemCharacteristics.getName(), englishItemCharacteristics.getId()))
+                            .collect(Collectors.toList())
+            );
+        }
+
+        checkList.setItems(FXCollections.concat(generalTasks, textTasks, languageSpecificTasks));
+//        checkList.setItems(languageSpecificTasks);
         checkList.setCellFactory(CheckBoxListCell.forListView(Task::selectedProperty, new StringConverter<Task>() {
             @Override
             public String toString(Task object) {
@@ -153,27 +164,12 @@ public class PrimaryViewModel implements Initializable {
                 return null;
             }
         }));
-
-
-//            checkList = new ListView<>(tasks);
-
-//        checkList.setCellFactory(CheckBoxListCell.forListView(task -> task.selectedProperty(), new StringConverter<>() {
-//            @Override
-//            public String toString(Task object) {
-//                System.out.println(object.getName());
-//                return object.getName();
-//            }
-//
-//            @Override
-//            public Task fromString(String string) {
-//                return null;
-//            }
-//        }));
     }
 
     public void changeLanguage() {
         System.out.println(choiceBoxLanguage.getValue());
         primaryModel.setLanguage(choiceBoxLanguage.getValue().toLowerCase());
+        createCheckboxes();
     }
 
     @FXML
@@ -189,23 +185,67 @@ public class PrimaryViewModel implements Initializable {
         addResults("Item:");
         textAreaInput.getParagraphs().forEach(charSequence -> addResults(charSequence.toString()));
 
-        primaryModel.analyzeGeneralItemCharacteristics(tasks)
+        primaryModel.analyzeGeneralItemCharacteristics(generalTasks)
                 .forEach(linguisticFeature -> addResults(
                         //linguisticFeature.getId() +  " : " +
                         linguisticFeature.getName() + " : " +
                         linguisticFeature.getValue()));
+//
+//        primaryModel.wordClassesAsList(languageSpecificTasks)
+////                .filter(linguisticFeature -> languageSpecificTasks.stream().anyMatch(languageTask -> languageTask.getId().equals(linguisticFeature.getId())))
+//
+//                .forEach(linguisticFeature -> addResults(
+//                        //linguisticFeature.getId() +  " : " +
+//                        linguisticFeature.getName() + " : " +
+//                        linguisticFeature.getValue()));
 
-        primaryModel.wordClassesAsList()
-                .forEach(linguisticFeature -> addResults(
+        log("---- selected Tasks ----");
+        languageSpecificTasks.stream().forEach(task -> log(task.getId() + " : " + task.isSelected()));
+        log("---- end log-----");
+        for (var linguisticFeature : primaryModel.wordClassesAsList(languageSpecificTasks))
+        {
+            if (languageSpecificTasks.stream().anyMatch(task -> task.getId().equals(linguisticFeature.getId()) && task.isSelected()))
+            {
+                log("TRUEEEE");
+                addResults(
                         //linguisticFeature.getId() +  " : " +
                         linguisticFeature.getName() + " : " +
-                        linguisticFeature.getValue()));
+                                linguisticFeature.getValue());
+            }
+            log(linguisticFeature.getId() + " : " + linguisticFeature.getName() + " : " +
+                    linguisticFeature.getValue());
+        }
 
         addResults("\n" + "----------------Text and Tags----------------" + "\n");
 
-        primaryModel.sentencesAndPosTags()
-                .forEach(result -> addResults(result));
+//        primaryModel.sentencesAndPosTags()
+//                .forEach(result -> addResults(result));
+
+//        primaryModel.analyzeTextInformation(textTasks).
+
+        for (var linguisticFeature : primaryModel.analyzeTextInformation(textTasks))
+        {
+            if (textTasks.stream().anyMatch(task -> task.getId().equals(linguisticFeature.getId()) && task.isSelected()))
+            {
+                log("TRUEEEE");
+                addResults(
+                        //linguisticFeature.getId() +  " : " +
+                        linguisticFeature.getName() + " : \n" +
+                                linguisticFeature.getValue());
+            }
+            log(linguisticFeature.getId() + " : " + linguisticFeature.getName() + " : " +
+                    linguisticFeature.getValue());
+        }
 
         addResults("\n" + "---------------------------------------------" + "\n");
     }
+
+    private void appendSelectedTextInformation() {
+
+    }
+
+    private void log(Object o){
+        System.out.println(o);
+    }
+
 }

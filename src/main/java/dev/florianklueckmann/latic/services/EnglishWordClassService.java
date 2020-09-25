@@ -1,5 +1,10 @@
 package dev.florianklueckmann.latic.services;
 
+import dev.florianklueckmann.latic.IntegerLinguisticFeature;
+import dev.florianklueckmann.latic.LinguisticFeature;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -114,29 +119,30 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
         unknown++;
     }
 
-    protected Map<String, Integer> createResultMap() {
-        var wordClassMap = new LinkedHashMap<String, Integer>();
-        wordClassMap.put("Adjectives", adjectives);
-        wordClassMap.put("Adverbs", adverbs);
-        wordClassMap.put("Conjunctions", conjunctions);
-        wordClassMap.put("Determiner", determiner);
-        wordClassMap.put("Existential there", existentialThere);
-        wordClassMap.put("Foreign words", foreignWords);
-        wordClassMap.put("Interjections", interjections);
-        wordClassMap.put("List item markers", listItemMarkers);
-        wordClassMap.put("Modal", modal);
-        wordClassMap.put("Nouns", nouns);
-        wordClassMap.put("Numbers", numbers);
-        wordClassMap.put("Particles", particles);
-        wordClassMap.put("Possessive endings", possessiveEndings);
-        wordClassMap.put("Preposition or subordinating conjunction", prepositionOrSubordinatingConjunction);
-        wordClassMap.put("Pronouns", pronouns);
-        wordClassMap.put("Symbols", symbols);
-        wordClassMap.put("Verbs", verbs);
-        wordClassMap.put("to", to);
-        wordClassMap.put("Punctuation", punctuations);
-        wordClassMap.put("Unknown", unknown);
+    protected ObservableList<IntegerLinguisticFeature> createResultMap() {
+//        var wordClassMap = new LinkedHashMap<String, Integer>();
+        ObservableList<IntegerLinguisticFeature> outList = FXCollections.observableArrayList();
+        outList.add(new IntegerLinguisticFeature("Adjectives", "adjectives", adjectives));
+        outList.add(new IntegerLinguisticFeature("Adverbs", "adverbs", adverbs));
+        outList.add(new IntegerLinguisticFeature("Conjunctions", "conjunctions", conjunctions));
+        outList.add(new IntegerLinguisticFeature("Determiner", "determiner", determiner));
+        outList.add(new IntegerLinguisticFeature("Existential there", "existentialThere",existentialThere));
+        outList.add(new IntegerLinguisticFeature("Foreign words", "foreignWords", foreignWords));
+        outList.add(new IntegerLinguisticFeature("Interjections", "interjections", interjections));
+        outList.add(new IntegerLinguisticFeature("List item markers", "interjections", interjections));
+        outList.add(new IntegerLinguisticFeature("Modal", "modal", modal));
+        outList.add(new IntegerLinguisticFeature("Nouns", "nouns", nouns));
+        outList.add(new IntegerLinguisticFeature("Numbers", "numbers", numbers));
+        outList.add(new IntegerLinguisticFeature("Particles", "particles", particles));
+        outList.add(new IntegerLinguisticFeature("Possessive endings", "possessiveEndings", possessiveEndings));
+        outList.add(new IntegerLinguisticFeature("Preposition or subordinating conjunction", "prepositionOrSubordinatingConjunction", prepositionOrSubordinatingConjunction));
+        outList.add(new IntegerLinguisticFeature("Pronouns", "pronouns", pronouns));
+        outList.add(new IntegerLinguisticFeature("Symbols", "symbols", symbols));
+        outList.add(new IntegerLinguisticFeature("Verbs", "verbs", verbs));
+        outList.add(new IntegerLinguisticFeature("to", "to", to));
+        outList.add(new IntegerLinguisticFeature("Punctuation", "punctuations", punctuations));
+        outList.add(new IntegerLinguisticFeature("Unknown", "unknown", unknown));
 
-        return wordClassMap;
+        return outList;
     }
 }

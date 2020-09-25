@@ -13,6 +13,8 @@ public class Task {
     public Task(String name, String id) {
         this.name.set(name);
         this.id.set(id);
+
+        setSelected(true);
     }
 
     public String getId() {
