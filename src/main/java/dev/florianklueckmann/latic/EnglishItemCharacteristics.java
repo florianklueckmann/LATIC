@@ -19,7 +19,7 @@ public enum EnglishItemCharacteristics {
     SYMBOLS("Symbols", "symbols"),
     VERBS("Verbs", "verbs"),
     TO("to", "to"),
-    PUNCTUATIONS("Punctuation", "punctuation"),
+    PUNCTUATION("Punctuation", "punctuation"),
     UNKNOWN("Unknown", "unknown");
 
     private final String name;

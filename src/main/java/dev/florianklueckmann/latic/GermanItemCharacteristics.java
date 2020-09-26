@@ -16,7 +16,7 @@ public enum GermanItemCharacteristics {
     PRONOUNS("Pronouns", "pronouns"),
     SYMBOLS("Symbols", "symbols"),
     VERBS("Verbs", "verbs"),
-    PUNCTUATIONS("Punctuation", "punctuation"),
+    PUNCTUATION("Punctuation", "punctuation"),
     UNKNOWN("Unknown", "unknown");
 
     private final String name;

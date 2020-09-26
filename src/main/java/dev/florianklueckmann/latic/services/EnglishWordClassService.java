@@ -84,7 +84,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
             return;
         }
 
-        if (tag.contains("RB")) {
+        if (tag.contains("RB") && !tag.contains("-")) {
             adverbs++;
             return;
         }
@@ -108,7 +108,17 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
             verbs++;
             return;
         }
-        if (tag.equals(".")) {
+        if (
+                tag.equals(".") ||
+                tag.equals(",") ||
+                tag.equals(":") ||
+                tag.equals("\"") ||
+                tag.equals("-RRB-") ||
+                tag.equals("-LRB-") ||
+                tag.equals("``") ||
+                tag.equals("''") ||
+                tag.equals("NFP")
+        ) {
             punctuations++;
             return;
         }
@@ -135,7 +145,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
                 new IntegerLinguisticFeature("Symbols", "symbols", symbols),
                 new IntegerLinguisticFeature("Verbs", "verbs", verbs),
                 new IntegerLinguisticFeature("to", "to", to),
-                new IntegerLinguisticFeature("Punctuation", "punctuations", punctuations),
+                new IntegerLinguisticFeature("Punctuation", "punctuation", punctuations),
                 new IntegerLinguisticFeature("Unknown", "unknown", unknown)
         );
     }

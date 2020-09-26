@@ -178,7 +178,6 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void AnalyzeText(ActionEvent actionEvent) {
-//    public void AnalyzeText(ObservableList<Task> tasks) {
         primaryModel.setParagraphs(textAreaInput.getParagraphs());
         primaryModel.initializeDocument();
 
@@ -190,23 +189,14 @@ public class PrimaryViewModel implements Initializable {
                         //linguisticFeature.getId() +  " : " +
                         linguisticFeature.getName() + " : " +
                         linguisticFeature.getValue()));
-//
-//        primaryModel.wordClassesAsList(languageSpecificTasks)
-////                .filter(linguisticFeature -> languageSpecificTasks.stream().anyMatch(languageTask -> languageTask.getId().equals(linguisticFeature.getId())))
-//
-//                .forEach(linguisticFeature -> addResults(
-//                        //linguisticFeature.getId() +  " : " +
-//                        linguisticFeature.getName() + " : " +
-//                        linguisticFeature.getValue()));
 
-        log("---- selected Tasks ----");
-        languageSpecificTasks.stream().forEach(task -> log(task.getId() + " : " + task.isSelected()));
-        log("---- end log-----");
+//        log("---- selected Tasks ----");
+//        languageSpecificTasks.stream().forEach(task -> log(task.getId() + " : " + task.isSelected()));
+//        log("---- end log-----");
         for (var linguisticFeature : primaryModel.wordClassesAsList(languageSpecificTasks))
         {
             if (languageSpecificTasks.stream().anyMatch(task -> task.getId().equals(linguisticFeature.getId()) && task.isSelected()))
             {
-                log("TRUEEEE");
                 addResults(
                         //linguisticFeature.getId() +  " : " +
                         linguisticFeature.getName() + " : " +
@@ -218,16 +208,10 @@ public class PrimaryViewModel implements Initializable {
 
         addResults("\n" + "----------------Text and Tags----------------" + "\n");
 
-//        primaryModel.sentencesAndPosTags()
-//                .forEach(result -> addResults(result));
-
-//        primaryModel.analyzeTextInformation(textTasks).
-
         for (var linguisticFeature : primaryModel.analyzeTextInformation(textTasks))
         {
             if (textTasks.stream().anyMatch(task -> task.getId().equals(linguisticFeature.getId()) && task.isSelected()))
             {
-                log("TRUEEEE");
                 addResults(
                         //linguisticFeature.getId() +  " : " +
                         linguisticFeature.getName() + " : \n" +
