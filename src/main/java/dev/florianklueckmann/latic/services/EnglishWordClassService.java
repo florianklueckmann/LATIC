@@ -1,12 +1,8 @@
 package dev.florianklueckmann.latic.services;
 
 import dev.florianklueckmann.latic.IntegerLinguisticFeature;
-import dev.florianklueckmann.latic.LinguisticFeature;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class EnglishWordClassService extends BaseWordClassService implements WordClassService {
     private int adjectives = 0;
@@ -119,30 +115,28 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
         unknown++;
     }
 
-    protected ObservableList<IntegerLinguisticFeature> createResultMap() {
-//        var wordClassMap = new LinkedHashMap<String, Integer>();
-        ObservableList<IntegerLinguisticFeature> outList = FXCollections.observableArrayList();
-        outList.add(new IntegerLinguisticFeature("Adjectives", "adjectives", adjectives));
-        outList.add(new IntegerLinguisticFeature("Adverbs", "adverbs", adverbs));
-        outList.add(new IntegerLinguisticFeature("Conjunctions", "conjunctions", conjunctions));
-        outList.add(new IntegerLinguisticFeature("Determiner", "determiner", determiner));
-        outList.add(new IntegerLinguisticFeature("Existential there", "existentialThere",existentialThere));
-        outList.add(new IntegerLinguisticFeature("Foreign words", "foreignWords", foreignWords));
-        outList.add(new IntegerLinguisticFeature("Interjections", "interjections", interjections));
-        outList.add(new IntegerLinguisticFeature("List item markers", "interjections", interjections));
-        outList.add(new IntegerLinguisticFeature("Modal", "modal", modal));
-        outList.add(new IntegerLinguisticFeature("Nouns", "nouns", nouns));
-        outList.add(new IntegerLinguisticFeature("Numbers", "numbers", numbers));
-        outList.add(new IntegerLinguisticFeature("Particles", "particles", particles));
-        outList.add(new IntegerLinguisticFeature("Possessive endings", "possessiveEndings", possessiveEndings));
-        outList.add(new IntegerLinguisticFeature("Preposition or subordinating conjunction", "prepositionOrSubordinatingConjunction", prepositionOrSubordinatingConjunction));
-        outList.add(new IntegerLinguisticFeature("Pronouns", "pronouns", pronouns));
-        outList.add(new IntegerLinguisticFeature("Symbols", "symbols", symbols));
-        outList.add(new IntegerLinguisticFeature("Verbs", "verbs", verbs));
-        outList.add(new IntegerLinguisticFeature("to", "to", to));
-        outList.add(new IntegerLinguisticFeature("Punctuation", "punctuations", punctuations));
-        outList.add(new IntegerLinguisticFeature("Unknown", "unknown", unknown));
-
-        return outList;
+    protected ObservableList<IntegerLinguisticFeature> createResultList() {
+        return FXCollections.observableArrayList(
+                new IntegerLinguisticFeature("Adjectives", "adjectives", adjectives),
+                new IntegerLinguisticFeature("Adverbs", "adverbs", adverbs),
+                new IntegerLinguisticFeature("Conjunctions", "conjunctions", conjunctions),
+                new IntegerLinguisticFeature("Determiner", "determiner", determiner),
+                new IntegerLinguisticFeature("Existential there", "existentialThere", existentialThere),
+                new IntegerLinguisticFeature("Foreign words", "foreignWords", foreignWords),
+                new IntegerLinguisticFeature("Interjections", "interjections", interjections),
+                new IntegerLinguisticFeature("List item markers", "interjections", interjections),
+                new IntegerLinguisticFeature("Modal", "modal", modal),
+                new IntegerLinguisticFeature("Nouns", "nouns", nouns),
+                new IntegerLinguisticFeature("Numbers", "numbers", numbers),
+                new IntegerLinguisticFeature("Particles", "particles", particles),
+                new IntegerLinguisticFeature("Possessive endings", "possessiveEndings", possessiveEndings),
+                new IntegerLinguisticFeature("Preposition or subordinating conjunction", "prepositionOrSubordinatingConjunction", prepositionOrSubordinatingConjunction),
+                new IntegerLinguisticFeature("Pronouns", "pronouns", pronouns),
+                new IntegerLinguisticFeature("Symbols", "symbols", symbols),
+                new IntegerLinguisticFeature("Verbs", "verbs", verbs),
+                new IntegerLinguisticFeature("to", "to", to),
+                new IntegerLinguisticFeature("Punctuation", "punctuations", punctuations),
+                new IntegerLinguisticFeature("Unknown", "unknown", unknown)
+        );
     }
 }

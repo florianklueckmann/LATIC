@@ -4,8 +4,6 @@ import dev.florianklueckmann.latic.IntegerLinguisticFeature;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.LinkedHashMap;
-
 public class GermanWordClassService extends BaseWordClassService implements WordClassService {
 
     int adjectives = 0;
@@ -101,27 +99,26 @@ public class GermanWordClassService extends BaseWordClassService implements Word
         unknown++;
     }
 
-    protected ObservableList<IntegerLinguisticFeature> createResultMap() {
-//        var wordClassMap = new LinkedHashMap<String, Integer>();
-        ObservableList<IntegerLinguisticFeature> outlist = FXCollections.observableArrayList();
-        outlist.add(new IntegerLinguisticFeature("Adjectives", "adjectives", adjectives)  );
-        outlist.add(new IntegerLinguisticFeature("Adpositions", "adpositions", adpositions)  );
-        outlist.add(new IntegerLinguisticFeature("Adverbs", "adverbs", adverbs)  );
-        outlist.add(new IntegerLinguisticFeature("Coordinating Conjunctions", "coordinatingConjunctions", coordinatingConjunctions)  );
-        outlist.add(new IntegerLinguisticFeature("Subordinating Conjunctions", "subordinatingConjunctions", subordinatingConjunctions)  );
-        outlist.add(new IntegerLinguisticFeature("Determiner", "determiner", determiner)  );
-        outlist.add(new IntegerLinguisticFeature("Proper nouns", "properNouns", properNouns)  );
-        outlist.add(new IntegerLinguisticFeature("Interjections", "interjections", interjections)  );
-        outlist.add(new IntegerLinguisticFeature("Modal", "modals", modals)  );
-        outlist.add(new IntegerLinguisticFeature("Nouns", "nouns", nouns)  );
-        outlist.add(new IntegerLinguisticFeature("Numbers", "numbers", numbers)  );
-        outlist.add(new IntegerLinguisticFeature("Particles", "particles", particles)  );
-        outlist.add(new IntegerLinguisticFeature("Pronouns", "pronouns", pronouns)  );
-        outlist.add(new IntegerLinguisticFeature("Symbols", "symbols", symbols)  );
-        outlist.add(new IntegerLinguisticFeature("Verbs", "verbs", verbs)  );
-        outlist.add(new IntegerLinguisticFeature("Punctuation", "punctuations", punctuations)  );
-        outlist.add(new IntegerLinguisticFeature("Unknown", "unknown", unknown)  );
+    protected ObservableList<IntegerLinguisticFeature> createResultList() {
 
-        return outlist;
+        return FXCollections.observableArrayList(
+                new IntegerLinguisticFeature("Adjectives", "adjectives", adjectives),
+                new IntegerLinguisticFeature("Adpositions", "adpositions", adpositions),
+                new IntegerLinguisticFeature("Adverbs", "adverbs", adverbs),
+                new IntegerLinguisticFeature("Coordinating Conjunctions", "coordinatingConjunctions", coordinatingConjunctions),
+                new IntegerLinguisticFeature("Subordinating Conjunctions", "subordinatingConjunctions", subordinatingConjunctions),
+                new IntegerLinguisticFeature("Determiner", "determiner", determiner),
+                new IntegerLinguisticFeature("Proper nouns", "properNouns", properNouns),
+                new IntegerLinguisticFeature("Interjections", "interjections", interjections),
+                new IntegerLinguisticFeature("Modal", "modals", modals),
+                new IntegerLinguisticFeature("Nouns", "nouns", nouns),
+                new IntegerLinguisticFeature("Numbers", "numbers", numbers),
+                new IntegerLinguisticFeature("Particles", "particles", particles),
+                new IntegerLinguisticFeature("Pronouns", "pronouns", pronouns),
+                new IntegerLinguisticFeature("Symbols", "symbols", symbols),
+                new IntegerLinguisticFeature("Verbs", "verbs", verbs),
+                new IntegerLinguisticFeature("Punctuation", "punctuations", punctuations),
+                new IntegerLinguisticFeature("Unknown", "unknown", unknown)
+        );
     }
 }

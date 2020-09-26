@@ -11,6 +11,4 @@ public interface WordClassService {
     ObservableList<IntegerLinguisticFeature> analyzeWordClasses(List<Sentence> sentences);
 
     void countTags(String tag);
-
-//    Map<String, Integer> createResultMap();
 }
