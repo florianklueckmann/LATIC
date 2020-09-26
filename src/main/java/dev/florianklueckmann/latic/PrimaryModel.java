@@ -124,11 +124,6 @@ public class PrimaryModel {
         }
 
         return featureList;
-
-//        return wordClassCounter.analyzeWordClasses(doc.sentences());
-//                .forEach((key, value) -> featureList.add(new IntegerLinguisticFeature(key, key, value)));
-//                //TODO Nicht ausgewählte Features filtern.
-//        return featureList;
     }
 
     protected int getAverageSentenceLengthSyllables() {
@@ -136,7 +131,6 @@ public class PrimaryModel {
     }
 
     protected String analyze() {
-        // setLanguage("german");
 
         simpleTextAnalyzer.setDoc(doc);
 
