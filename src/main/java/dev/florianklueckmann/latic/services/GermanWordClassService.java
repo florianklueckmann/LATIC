@@ -117,7 +117,7 @@ public class GermanWordClassService extends BaseWordClassService implements Word
                 new IntegerLinguisticFeature("Pronouns", "pronouns", pronouns),
                 new IntegerLinguisticFeature("Symbols", "symbols", symbols),
                 new IntegerLinguisticFeature("Verbs", "verbs", verbs),
-                new IntegerLinguisticFeature("Punctuation", "punctuations", punctuations),
+                new IntegerLinguisticFeature("Punctuation", "punctuation", punctuations),
                 new IntegerLinguisticFeature("Unknown", "unknown", unknown)
         );
     }
