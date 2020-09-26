@@ -8,7 +8,7 @@ import static java.lang.Math.toIntExact;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SimpleTextAnalyzer {
+public class SimpleTextAnalyzer implements TextAnalyzer {
 
     Document doc;
     //ArrayList<CharSequence> paragraphs;

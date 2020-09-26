@@ -5,7 +5,7 @@ import edu.stanford.nlp.simple.Document;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public abstract class BaseTextAnalyzer {
+public abstract class BaseTextAnalyzer implements TextAnalyzer {
     Document doc;
 
     public Document getDoc() {

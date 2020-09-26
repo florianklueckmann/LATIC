@@ -1,7 +1,8 @@
 package dev.florianklueckmann.latic.services;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import dev.florianklueckmann.latic.IntegerLinguisticFeature;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class GermanWordClassService extends BaseWordClassService implements WordClassService {
 
@@ -98,26 +99,26 @@ public class GermanWordClassService extends BaseWordClassService implements Word
         unknown++;
     }
 
-    protected Map<String, Integer> createResultMap() {
-        var wordClassMap = new LinkedHashMap<String, Integer>();
-        wordClassMap.put("Adjectives", adjectives);
-        wordClassMap.put("Adpositions", adpositions);
-        wordClassMap.put("Adverbs", adverbs);
-        wordClassMap.put("Coordinating Conjunctions", coordinatingConjunctions);
-        wordClassMap.put("Subordinating Conjunctions", subordinatingConjunctions);
-        wordClassMap.put("Determiner", determiner);
-        wordClassMap.put("Proper nouns", properNouns);
-        wordClassMap.put("Interjections", interjections);
-        wordClassMap.put("Modal", modals);
-        wordClassMap.put("Nouns", nouns);
-        wordClassMap.put("Numbers", numbers);
-        wordClassMap.put("Particles", particles);
-        wordClassMap.put("Pronouns", pronouns);
-        wordClassMap.put("Symbols", symbols);
-        wordClassMap.put("Verbs", verbs);
-        wordClassMap.put("Punctuation", punctuations);
-        wordClassMap.put("Unknown", unknown);
+    protected ObservableList<IntegerLinguisticFeature> createResultList() {
 
-        return wordClassMap;
+        return FXCollections.observableArrayList(
+                new IntegerLinguisticFeature("Adjectives", "adjectives", adjectives),
+                new IntegerLinguisticFeature("Adpositions", "adpositions", adpositions),
+                new IntegerLinguisticFeature("Adverbs", "adverbs", adverbs),
+                new IntegerLinguisticFeature("Coordinating Conjunctions", "coordinatingConjunctions", coordinatingConjunctions),
+                new IntegerLinguisticFeature("Subordinating Conjunctions", "subordinatingConjunctions", subordinatingConjunctions),
+                new IntegerLinguisticFeature("Determiner", "determiner", determiner),
+                new IntegerLinguisticFeature("Proper nouns", "properNouns", properNouns),
+                new IntegerLinguisticFeature("Interjections", "interjections", interjections),
+                new IntegerLinguisticFeature("Modal", "modals", modals),
+                new IntegerLinguisticFeature("Nouns", "nouns", nouns),
+                new IntegerLinguisticFeature("Numbers", "numbers", numbers),
+                new IntegerLinguisticFeature("Particles", "particles", particles),
+                new IntegerLinguisticFeature("Pronouns", "pronouns", pronouns),
+                new IntegerLinguisticFeature("Symbols", "symbols", symbols),
+                new IntegerLinguisticFeature("Verbs", "verbs", verbs),
+                new IntegerLinguisticFeature("Punctuation", "punctuations", punctuations),
+                new IntegerLinguisticFeature("Unknown", "unknown", unknown)
+        );
     }
 }
