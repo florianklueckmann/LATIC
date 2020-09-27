@@ -1,50 +1,108 @@
 package dev.florianklueckmann.latic;
 
 import javafx.beans.property.*;
-import javafx.collections.ObservableMap;
+
+import java.util.HashMap;
 
 public class TextItemData {
     StringProperty text;
     StringProperty textAndPosTags;
     StringProperty posTagsPerSentence;
     IntegerProperty wordCount;
-    DoubleProperty averageWordLengthChar;
+    DoubleProperty averageWordLengthCharacters;
     IntegerProperty sentenceCount;
     DoubleProperty averageSentenceLengthCharacters;
     DoubleProperty averageSentenceLengthCharactersWithoutWhitespaces;
     DoubleProperty averageSentenceLengthWords;
-    MapProperty<String, Integer> posTagCount;
+    DoubleProperty lexicalDiversity;
+    DoubleProperty lixReadabilityScore;
+
+    public double getLexicalDiversity()
+    {
+        return lexicalDiversity.get();
+    }
+
+    public DoubleProperty lexicalDiversityProperty()
+    {
+        return lexicalDiversity;
+    }
+
+    public void setLexicalDiversity(double lexicalDiversity)
+    {
+        this.lexicalDiversity.set(lexicalDiversity);
+    }
+
+    public double getLixReadabilityScore()
+    {
+        return lixReadabilityScore.get();
+    }
+
+    public DoubleProperty lixReadabilityScoreProperty()
+    {
+        return lixReadabilityScore;
+    }
+
+    public void setLixReadabilityScore(double lixReadabilityScore)
+    {
+        this.lixReadabilityScore.set(lixReadabilityScore);
+    }
+
+    ListProperty<IntegerLinguisticFeature> posTagCount;
+
+    private HashMap<String, LinguisticFeature> properties;
+
+    //Set properties
+    public Object setProperty(String key, LinguisticFeature value) {
+        return this.properties.put(key, value); //Returns old value if existing
+    }
+
+    //Get properties
+    public LinguisticFeature getProperty(String key) {
+        return this.properties.getOrDefault(key, null);
+    }
+
+    public HashMap<String, LinguisticFeature> getProperties()
+    {
+        return properties;
+    }
+
+    public void setProperties(HashMap<String, LinguisticFeature> properties)
+    {
+        this.properties = properties;
+    }
+
     public TextItemData(String text,
                     String textAndPosTags,
                     String posTagsPerSentence,
                     Integer wordCount,
-                    Double averageWordLengthChar,
+                    Double averageWordLengthCharacters,
                     Integer sentenceCount,
                     Double averageSentenceLengthCharacters,
                     Double averageSentenceLengthCharactersWithoutWhitespaces,
                     Double averageSentenceLengthWords,
-                    ObservableMap<String, Integer> posTagCount) {
+                    Double lexicalDiversity,
+                    Double lixReadabilityScore) {
         this.text = new SimpleStringProperty(text);
         this.textAndPosTags = new SimpleStringProperty(textAndPosTags);
         this.posTagsPerSentence = new SimpleStringProperty(posTagsPerSentence);
         this.wordCount = new SimpleIntegerProperty(wordCount);
-        this.averageWordLengthChar = new SimpleDoubleProperty(averageWordLengthChar);
+        this.averageWordLengthCharacters = new SimpleDoubleProperty(averageWordLengthCharacters);
         this.sentenceCount = new SimpleIntegerProperty(sentenceCount);
         this.averageSentenceLengthCharacters = new SimpleDoubleProperty(averageSentenceLengthCharacters);
         this.averageSentenceLengthCharactersWithoutWhitespaces = new SimpleDoubleProperty(averageSentenceLengthCharactersWithoutWhitespaces);
         this.averageSentenceLengthWords = new SimpleDoubleProperty(averageSentenceLengthWords);
-        this.posTagCount = new SimpleMapProperty<>(posTagCount);
+        this.lexicalDiversity = new SimpleDoubleProperty(lexicalDiversity);
+        this.lixReadabilityScore = new SimpleDoubleProperty(lixReadabilityScore);
     }
     public TextItemData() {
         this.text = new SimpleStringProperty("");
         this.textAndPosTags = new SimpleStringProperty("");
         this.posTagsPerSentence = new SimpleStringProperty("");
         this.wordCount = new SimpleIntegerProperty(0);
-        this.averageWordLengthChar = new SimpleDoubleProperty(0.0);
+        this.averageWordLengthCharacters = new SimpleDoubleProperty(0.0);
         this.sentenceCount = new SimpleIntegerProperty(0);
         this.averageSentenceLengthCharacters = new SimpleDoubleProperty(0.0);
         this.averageSentenceLengthCharactersWithoutWhitespaces = new SimpleDoubleProperty(0.0);
-        this.posTagCount = new SimpleMapProperty<>();
     }
 
     public double getAverageSentenceLengthWords() {
@@ -107,16 +165,16 @@ public class TextItemData {
         return wordCount;
     }
 
-    public double getAverageWordLengthChar() {
-        return averageWordLengthChar.get();
+    public double getAverageWordLengthCharacters() {
+        return averageWordLengthCharacters.get();
     }
 
-    public void setAverageWordLengthChar(double averageWordLengthChar) {
-        this.averageWordLengthChar.set(averageWordLengthChar);
+    public void setAverageWordLengthCharacters(double averageWordLengthCharacters) {
+        this.averageWordLengthCharacters.set(averageWordLengthCharacters);
     }
 
-    public DoubleProperty averageWordLengthCharProperty() {
-        return averageWordLengthChar;
+    public DoubleProperty averageWordLengthCharactersProperty() {
+        return averageWordLengthCharacters;
     }
 
     public int getSentenceCount() {
@@ -153,17 +211,5 @@ public class TextItemData {
 
     public DoubleProperty averageSentenceLengthCharactersWithoutWhitespacesProperty() {
         return averageSentenceLengthCharactersWithoutWhitespaces;
-    }
-
-    public ObservableMap<String, Integer> getPosTagCount() {
-        return posTagCount.get();
-    }
-
-    public void setPosTagCount(ObservableMap<String, Integer> posTagCount) {
-        this.posTagCount.set(posTagCount);
-    }
-
-    public MapProperty<String, Integer> posTagCountProperty() {
-        return posTagCount;
     }
 }

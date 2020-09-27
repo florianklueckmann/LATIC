@@ -3,7 +3,7 @@ package dev.florianklueckmann.latic;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class IntegerLinguisticFeature extends LinguisticFeatureBase {
+public class IntegerLinguisticFeature extends LinguisticFeatureBase implements LinguisticFeature {
     IntegerProperty value = new SimpleIntegerProperty();
 
     public IntegerLinguisticFeature(String name, String id, int value) {

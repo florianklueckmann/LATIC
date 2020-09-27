@@ -5,7 +5,9 @@ import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.simple.Document;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import org.apache.log4j.BasicConfigurator;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -124,6 +126,25 @@ public class PrimaryModel {
         }
 
         return featureList;
+    }
+
+    public ObservableMap<String, IntegerLinguisticFeature> wordClassesAsMap(ObservableList<Task> languageSpecificTasks) {
+
+        ObservableMap<String, IntegerLinguisticFeature> featureMap = FXCollections.observableHashMap();
+
+        WordClassService wordClassCounter;
+
+        if (language.toLowerCase().equals("german"))
+            wordClassCounter = new GermanWordClassService();
+        else
+            wordClassCounter = new EnglishWordClassService();
+
+        for(var linguisticFeature : wordClassCounter.analyzeWordClasses(doc.sentences())){
+            if (languageSpecificTasks.stream().anyMatch(task -> task.getId().equals(linguisticFeature.getId()) && task.selectedProperty().get()))
+                featureMap.put(linguisticFeature.getId(), linguisticFeature);
+        }
+
+        return featureMap;
     }
 
     protected int getAverageSentenceLengthSyllables() {
@@ -254,5 +275,97 @@ public class PrimaryModel {
 
     private void log(Object o) {
         System.out.println(o);
+    }
+
+    //TOOD REMOVE, OLD
+
+
+    protected TextItemData analyzeItem(ObservableList<Task> tasks) {
+        log("analyzeItem");
+        simpleTextAnalyzer.setDoc(doc);
+        nlp.setDoc(doc);
+
+        //
+
+//        simpleTextAnalyzer.setDoc(doc);
+//        nlp.setDoc(doc);
+
+        ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
+        List<String> errorList = new ArrayList<>();
+
+        var textItemData = new GermanTextItemData();
+
+
+        for (var task : tasks) {
+            if (task.selectedProperty().get())
+            {
+                java.lang.reflect.Method method;
+                java.lang.reflect.Field field;
+                try
+                {
+                    var methodName = task.getId();
+                    methodName = methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+                    methodName = "set" + methodName;
+                    log("methodName: " + methodName + " - " + "task.getId(): " + task.getId());
+
+                    method = textItemData.getClass().getMethod(methodName, int.class);
+                    method.invoke(textItemData, wordClassesAsMap(tasks).getOrDefault(task.getId(), new IntegerLinguisticFeature("default", "default", 123)).getValue());
+//                    field = textItemData.getClass().getField(task.getId());
+
+//                    field.set(textItemData, 123);
+//
+//                    if (task.getId().contains("average"))
+//                        featureList.add(new DoubleLinguisticFeature(
+//                                task.getName(),
+//                                task.getId(),
+//                                (double) method.invoke(simpleTextAnalyzer)));
+//                    else if (task.getId().contains("count"))
+//                        featureList.add(new IntegerLinguisticFeature(
+//                                task.getName(),
+//                                task.getId(),
+//                                (int) method.invoke(simpleTextAnalyzer)));
+//                    else
+//                        featureList.add(new StringLinguisticFeature(
+//                                task.getName(),
+//                                task.getId(),
+//                                String.valueOf(method.invoke(simpleTextAnalyzer))));
+
+                } catch (NoSuchMethodException e)
+                {
+                e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
+                } catch (IllegalAccessException e)
+                {
+                e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
+                }
+                catch (InvocationTargetException e)
+                {
+//                e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
+                }
+//                catch (NoSuchFieldException e)
+//                {
+//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchFieldException"));
+//                    e.printStackTrace();
+//                }
+            }
+        }
+
+        //
+
+        return textItemData;
+
+//        return new TextItemData(
+//                this.paragraphs.toString(),
+//                nlp.textAndPosTags(),
+//                nlp.posTagsPerSentence(),
+//                simpleTextAnalyzer.wordCount(),
+//                simpleTextAnalyzer.averageWordLengthCharacters(),
+//                simpleTextAnalyzer.sentenceCount(),
+//                simpleTextAnalyzer.averageSentenceLengthCharacters(),
+//                simpleTextAnalyzer.averageSentenceLengthCharactersWithoutWhitespaces(),
+//                simpleTextAnalyzer.averageSentenceLengthWords(),
+//                FXCollections.observableList(wordClassesAsList(tasks)));
     }
 }

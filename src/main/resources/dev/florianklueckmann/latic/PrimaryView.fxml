@@ -9,6 +9,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -39,6 +40,7 @@
             <children>
                 <TextArea fx:id="textAreaInput" wrapText="true" VBox.vgrow="ALWAYS" />
                 <InlineCssTextArea fx:id="textAreaOutput" prefHeight="200.0" prefWidth="561.0" wrapText="true" VBox.vgrow="ALWAYS" />
+            <TableView prefHeight="200.0" prefWidth="200.0" fx:id="tableViewResults" />
             </children>
         </VBox>
     </center>
