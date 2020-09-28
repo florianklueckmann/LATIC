@@ -17,6 +17,21 @@ public abstract class TextItemData {
     DoubleProperty lexicalDiversity;
     DoubleProperty lixReadabilityScore;
 
+//    IntegerProperty adverbs;
+//    IntegerProperty determiner;
+//    IntegerProperty interjections;
+//    IntegerProperty modals;
+//    IntegerProperty nouns;
+//    IntegerProperty numbers;
+//    IntegerProperty particles;
+//    IntegerProperty pronouns;
+//    IntegerProperty properNouns;
+//    IntegerProperty symbols;
+//    IntegerProperty verbs;
+//    IntegerProperty punctuation;
+//    IntegerProperty unknown;
+
+
     public double getLexicalDiversity()
     {
         return lexicalDiversity.get();
@@ -71,29 +86,7 @@ public abstract class TextItemData {
         this.properties = properties;
     }
 
-    public TextItemData(String text,
-                    String textAndPosTags,
-                    String posTagsPerSentence,
-                    Integer wordCount,
-                    Double averageWordLengthCharacters,
-                    Integer sentenceCount,
-                    Double averageSentenceLengthCharacters,
-                    Double averageSentenceLengthCharactersWithoutWhitespaces,
-                    Double averageSentenceLengthWords,
-                    Double lexicalDiversity,
-                    Double lixReadabilityScore) {
-        this.text = new SimpleStringProperty(text);
-        this.textAndPosTags = new SimpleStringProperty(textAndPosTags);
-        this.posTagsPerSentence = new SimpleStringProperty(posTagsPerSentence);
-        this.wordCount = new SimpleIntegerProperty(wordCount);
-        this.averageWordLengthCharacters = new SimpleDoubleProperty(averageWordLengthCharacters);
-        this.sentenceCount = new SimpleIntegerProperty(sentenceCount);
-        this.averageSentenceLengthCharacters = new SimpleDoubleProperty(averageSentenceLengthCharacters);
-        this.averageSentenceLengthCharactersWithoutWhitespaces = new SimpleDoubleProperty(averageSentenceLengthCharactersWithoutWhitespaces);
-        this.averageSentenceLengthWords = new SimpleDoubleProperty(averageSentenceLengthWords);
-        this.lexicalDiversity = new SimpleDoubleProperty(lexicalDiversity);
-        this.lixReadabilityScore = new SimpleDoubleProperty(lixReadabilityScore);
-    }
+
     public TextItemData() {
         this.text = new SimpleStringProperty();
         this.textAndPosTags = new SimpleStringProperty();

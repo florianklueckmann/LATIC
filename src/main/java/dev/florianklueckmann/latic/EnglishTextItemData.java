@@ -3,13 +3,8 @@ package dev.florianklueckmann.latic;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class GermanTextItemData extends TextItemData
+public class EnglishTextItemData extends TextItemData
 {
-    IntegerProperty adjectives;
-    IntegerProperty adpositions;
-    IntegerProperty conjunctions;
-    IntegerProperty coordinatingConjunctions;
-    IntegerProperty subordinatingConjunctions;
     IntegerProperty adverbs;
     IntegerProperty determiner;
     IntegerProperty interjections;
@@ -24,8 +19,16 @@ public class GermanTextItemData extends TextItemData
     IntegerProperty punctuation;
     IntegerProperty unknown;
 
+    IntegerProperty adjectives;
+    IntegerProperty conjunctions;
+    IntegerProperty existentialThere;
+    IntegerProperty foreignWords;
+    IntegerProperty listItemMarkers;
+    IntegerProperty possessiveEndings;
+    IntegerProperty prepositionOrSubordinatingConjunction;
+    IntegerProperty to;
 
-    public GermanTextItemData()
+    public EnglishTextItemData()
     {
 
         this.adverbs = new SimpleIntegerProperty();
@@ -42,27 +45,14 @@ public class GermanTextItemData extends TextItemData
         this.punctuation = new SimpleIntegerProperty();
         this.unknown = new SimpleIntegerProperty();
 
-
         this.adjectives = new SimpleIntegerProperty();
-        this.adpositions = new SimpleIntegerProperty();
         this.conjunctions = new SimpleIntegerProperty();
-        this.coordinatingConjunctions = new SimpleIntegerProperty();
-        this.subordinatingConjunctions = new SimpleIntegerProperty();
-    }
-
-    public int getAdpositions()
-    {
-        return adpositions.get();
-    }
-
-    public IntegerProperty adpositionsProperty()
-    {
-        return adpositions;
-    }
-
-    public void setAdpositions(int adpositions)
-    {
-        this.adpositions.set(adpositions);
+        this.existentialThere = new SimpleIntegerProperty();
+        this.foreignWords = new SimpleIntegerProperty();
+        this.listItemMarkers = new SimpleIntegerProperty();
+        this.possessiveEndings = new SimpleIntegerProperty();
+        this.prepositionOrSubordinatingConjunction = new SimpleIntegerProperty();
+        this.to = new SimpleIntegerProperty();
     }
 
     public int getConjunctions()
@@ -80,34 +70,94 @@ public class GermanTextItemData extends TextItemData
         this.conjunctions.set(conjunctions);
     }
 
-    public int getCoordinatingConjunctions()
+    public int getExistentialThere()
     {
-        return coordinatingConjunctions.get();
+        return existentialThere.get();
     }
 
-    public IntegerProperty coordinatingConjunctionsProperty()
+    public IntegerProperty existentialThereProperty()
     {
-        return coordinatingConjunctions;
+        return existentialThere;
     }
 
-    public void setCoordinatingConjunctions(int coordinatingConjunctions)
+    public void setExistentialThere(int existentialThere)
     {
-        this.coordinatingConjunctions.set(coordinatingConjunctions);
+        this.existentialThere.set(existentialThere);
     }
 
-    public int getSubordinatingConjunctions()
+    public int getForeignWords()
     {
-        return subordinatingConjunctions.get();
+        return foreignWords.get();
     }
 
-    public IntegerProperty subordinatingConjunctionsProperty()
+    public IntegerProperty foreignWordsProperty()
     {
-        return subordinatingConjunctions;
+        return foreignWords;
     }
 
-    public void setSubordinatingConjunctions(int subordinatingConjunctions)
+    public void setForeignWords(int foreignWords)
     {
-        this.subordinatingConjunctions.set(subordinatingConjunctions);
+        this.foreignWords.set(foreignWords);
+    }
+
+    public int getListItemMarkers()
+    {
+        return listItemMarkers.get();
+    }
+
+    public IntegerProperty listItemMarkersProperty()
+    {
+        return listItemMarkers;
+    }
+
+    public void setListItemMarkers(int listItemMarkers)
+    {
+        this.listItemMarkers.set(listItemMarkers);
+    }
+
+    public int getPossessiveEndings()
+    {
+        return possessiveEndings.get();
+    }
+
+    public IntegerProperty possessiveEndingsProperty()
+    {
+        return possessiveEndings;
+    }
+
+    public void setPossessiveEndings(int possessiveEndings)
+    {
+        this.possessiveEndings.set(possessiveEndings);
+    }
+
+    public int getPrepositionOrSubordinatingConjunction()
+    {
+        return prepositionOrSubordinatingConjunction.get();
+    }
+
+    public IntegerProperty prepositionOrSubordinatingConjunctionProperty()
+    {
+        return prepositionOrSubordinatingConjunction;
+    }
+
+    public void setPrepositionOrSubordinatingConjunction(int prepositionOrSubordinatingConjunction)
+    {
+        this.prepositionOrSubordinatingConjunction.set(prepositionOrSubordinatingConjunction);
+    }
+
+    public int getTo()
+    {
+        return to.get();
+    }
+
+    public IntegerProperty toProperty()
+    {
+        return to;
+    }
+
+    public void setTo(int to)
+    {
+        this.to.set(to);
     }
 
     public int getAdverbs()
