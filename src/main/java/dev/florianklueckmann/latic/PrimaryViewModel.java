@@ -199,7 +199,7 @@ public class PrimaryViewModel implements Initializable {
         primaryModel.setParagraphs(textAreaInput.getParagraphs());
         primaryModel.initializeDocument();
 
-        textItemDataResults.add(primaryModel.analyzeItem(languageSpecificTasks));
+        textItemDataResults.add(primaryModel.analyzeItem(textTasks, generalTasks, languageSpecificTasks));
 
         addResults("Item:");
         textAreaInput.getParagraphs().forEach(charSequence -> addResults(charSequence.toString()));

@@ -223,6 +223,64 @@ public class PrimaryModel {
         return featureList;
     }
 
+    protected void analyzeGeneralItemCharacteristics(TextItemData textItemData, ObservableList<Task> tasks) {
+        simpleTextAnalyzer.setDoc(doc);
+//        nlp.setDoc(doc);
+
+        ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
+        List<String> errorList = new ArrayList<>();
+
+        for (var task : tasks) {
+            if (task.selectedProperty().get())
+            {
+                java.lang.reflect.Method setter;
+                java.lang.reflect.Method simpleTextAnalyzerMethod;
+
+                var setterName = task.getId();
+                setterName = setterName.substring(0, 1).toUpperCase() + setterName.substring(1);
+                setterName = "set" + setterName;
+                log("methodName: " + setterName + " - " + "task.getId(): " + task.getId());
+
+//                setter = textItemData.getClass().getMethod(setterName, String.class);
+
+
+
+
+                try
+                {
+                    simpleTextAnalyzerMethod = simpleTextAnalyzer.getClass().getMethod(task.getId());
+
+                    if (task.getId().toLowerCase().contains("average")
+                            || task.getId().toLowerCase().contains("score")
+                            || task.getId().toLowerCase().equals("lexicaldiversity")) {
+                        setter = textItemData.getClass().getMethod(setterName, double.class);
+                        setter.invoke(textItemData, (double) simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer));
+                    }
+                    else if (task.getId().toLowerCase().contains("count")) {
+                        setter = textItemData.getClass().getMethod(setterName, int.class);
+                        setter.invoke(textItemData, (int) simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer));
+                    }
+                    else {
+                        setter = textItemData.getClass().getMethod(setterName, String.class);
+                        setter.invoke(textItemData, String.valueOf(simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer)));
+                    }
+                } catch (NoSuchMethodException e)
+                {
+                e.printStackTrace();
+//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
+                } catch (IllegalAccessException e)
+                {
+                e.printStackTrace();
+//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
+                } catch (InvocationTargetException e)
+                {
+                e.printStackTrace();
+//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
+                }
+            }
+        }
+    }
+
     protected List<LinguisticFeature> analyzeTextInformation(ObservableList<Task> tasks) {
 //        simpleTextAnalyzer.setDoc(doc);
         nlp.setDoc(doc);
@@ -261,6 +319,56 @@ public class PrimaryModel {
         return featureList;
     }
 
+    protected void analyzeTextInformation(TextItemData textItemData, ObservableList<Task> tasks) {
+//        simpleTextAnalyzer.setDoc(doc);
+        nlp.setDoc(doc);
+
+        ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
+        List<String> errorList = new ArrayList<>();
+
+        for (var task : tasks) {
+            if (task.selectedProperty().get())
+            {
+                java.lang.reflect.Method nlpMethod;
+                java.lang.reflect.Method setter;
+                try
+                {
+                    nlpMethod = nlp.getClass().getMethod(task.getId());
+
+                    var setterName = task.getId();
+                    setterName = setterName.substring(0, 1).toUpperCase() + setterName.substring(1);
+                    setterName = "set" + setterName;
+                    log("methodName: " + setterName + " - " + "task.getId(): " + task.getId());
+
+                    setter = textItemData.getClass().getMethod(setterName, String.class);
+
+                    setter.invoke(textItemData, String.valueOf(nlpMethod.invoke(nlp)));
+
+//                    textItemData.
+//                    featureList.add(new StringLinguisticFeature(
+//                            task.getName(),
+//                            task.getId(),
+//                            String.valueOf(nlpMethod.invoke(nlp))));
+
+                } catch (NoSuchMethodException e)
+                {
+//                e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
+                } catch (IllegalAccessException e)
+                {
+//                e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
+                } catch (InvocationTargetException e)
+                {
+//                e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
+                }
+            }
+        }
+
+
+    }
+
     protected String appendResultLine(String label, double result) {
         return label + ": " + result + "\n";
     }
@@ -280,7 +388,7 @@ public class PrimaryModel {
     //TOOD REMOVE, OLD
 
 
-    protected TextItemData analyzeItem(ObservableList<Task> tasks) {
+    protected TextItemData analyzeItem(ObservableList<Task> textTasks, ObservableList<Task> generalTasks, ObservableList<Task> languageTasks) {
         log("analyzeItem");
         simpleTextAnalyzer.setDoc(doc);
         nlp.setDoc(doc);
@@ -295,8 +403,11 @@ public class PrimaryModel {
 
         var textItemData = new GermanTextItemData();
 
+        analyzeTextInformation(textItemData, textTasks);
+        analyzeGeneralItemCharacteristics(textItemData, generalTasks);
 
-        for (var task : tasks) {
+
+        for (var task : languageTasks) {
             if (task.selectedProperty().get())
             {
                 java.lang.reflect.Method method;
@@ -309,7 +420,7 @@ public class PrimaryModel {
                     log("methodName: " + methodName + " - " + "task.getId(): " + task.getId());
 
                     method = textItemData.getClass().getMethod(methodName, int.class);
-                    method.invoke(textItemData, wordClassesAsMap(tasks).getOrDefault(task.getId(), new IntegerLinguisticFeature("default", "default", 123)).getValue());
+                    method.invoke(textItemData, wordClassesAsMap(languageTasks).getOrDefault(task.getId(), new IntegerLinguisticFeature("default", "default", 123)).getValue());
 //                    field = textItemData.getClass().getField(task.getId());
 
 //                    field.set(textItemData, 123);

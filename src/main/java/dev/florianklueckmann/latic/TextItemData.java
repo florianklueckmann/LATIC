@@ -4,7 +4,7 @@ import javafx.beans.property.*;
 
 import java.util.HashMap;
 
-public class TextItemData {
+public abstract class TextItemData {
     StringProperty text;
     StringProperty textAndPosTags;
     StringProperty posTagsPerSentence;
@@ -95,14 +95,17 @@ public class TextItemData {
         this.lixReadabilityScore = new SimpleDoubleProperty(lixReadabilityScore);
     }
     public TextItemData() {
-        this.text = new SimpleStringProperty("");
-        this.textAndPosTags = new SimpleStringProperty("");
-        this.posTagsPerSentence = new SimpleStringProperty("");
-        this.wordCount = new SimpleIntegerProperty(0);
-        this.averageWordLengthCharacters = new SimpleDoubleProperty(0.0);
-        this.sentenceCount = new SimpleIntegerProperty(0);
-        this.averageSentenceLengthCharacters = new SimpleDoubleProperty(0.0);
-        this.averageSentenceLengthCharactersWithoutWhitespaces = new SimpleDoubleProperty(0.0);
+        this.text = new SimpleStringProperty();
+        this.textAndPosTags = new SimpleStringProperty();
+        this.posTagsPerSentence = new SimpleStringProperty();
+        this.wordCount = new SimpleIntegerProperty();
+        this.averageWordLengthCharacters = new SimpleDoubleProperty();
+        this.sentenceCount = new SimpleIntegerProperty();
+        this.averageSentenceLengthCharacters = new SimpleDoubleProperty();
+        this.averageSentenceLengthCharactersWithoutWhitespaces = new SimpleDoubleProperty();
+        this.averageSentenceLengthWords = new SimpleDoubleProperty();
+        this.lexicalDiversity = new SimpleDoubleProperty();
+        this.lixReadabilityScore = new SimpleDoubleProperty();
     }
 
     public double getAverageSentenceLengthWords() {
