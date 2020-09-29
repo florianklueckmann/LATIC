@@ -1,14 +1,12 @@
 package dev.florianklueckmann.latic;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import dev.florianklueckmann.latic.services.DocumentKeeper;
-import dev.florianklueckmann.latic.services.NlpTextAnalyzer;
-import dev.florianklueckmann.latic.services.SimpleTextAnalyzer;
-import dev.florianklueckmann.latic.services.TextFormattingService;
+import dev.florianklueckmann.latic.services.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -20,10 +18,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import javafx.util.StringConverter;
 import org.fxmisc.richtext.InlineCssTextArea;
 
 public class PrimaryViewModel implements Initializable {
+
+    @FXML
+    public BorderPane mainPane;
 
     private PrimaryModel primaryModel;
 
@@ -101,6 +105,7 @@ public class PrimaryViewModel implements Initializable {
     ObservableList<Task> generalTasks;
     ObservableList<Task> languageSpecificTasks;
 
+    FileChooser fileChooser = new FileChooser();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -115,8 +120,66 @@ public class PrimaryViewModel implements Initializable {
         textItemDataResults = FXCollections.observableArrayList();
 
         initializeBindings();
-
+        initialzeFileChooser();
         initializeGui();
+    }
+
+    private void initialzeFileChooser() {
+
+        boolean isMac = System.getProperty("os.name").contains("Mac");
+                //.equals("Mac OS X");
+        boolean isWin = System.getProperty("os.name").contains("Win");
+        boolean isOther = !isMac && !isWin;
+
+        String initialFilePath;
+        if (isMac)
+            initialFilePath = System.getProperty("user.home")+File.separator+"Documents";
+        else if(isWin)
+            initialFilePath = System.getProperty("user.home");
+        else
+            initialFilePath = System.getProperty("user.home");
+
+
+
+
+        fileChooser.setInitialDirectory(new File(initialFilePath));
+        fileChooser.setTitle("Save File");
+        fileChooser.setInitialFileName("table");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Text file", "*.txt"),
+                new FileChooser.ExtensionFilter("CSV table file", "*.csv"));
+
+    }
+
+    private List<String[]> getTableData(){
+        var outList = new ArrayList<String[]>();
+
+        for (TextItemData textItemDataResult : textItemDataResults) {
+            outList.add(textItemDataResult.getValues());
+        }
+        for (TextItemData textItemData : textItemDataResults) {
+            System.out.println(textItemData.getValues()[0]);
+        }
+
+        return outList;
+
+    }
+
+    @FXML
+    private void handleSaveClicked(ActionEvent event){
+        Window stage = mainPane.getScene().getWindow();
+        CsvBuilder csvBuilder = new CsvBuilder();
+        try{
+            File file = csvBuilder.writeToFile(fileChooser.showSaveDialog(stage), getTableData());
+            fileChooser.setInitialDirectory(file.getParentFile());
+
+//            file.setWritable(true);
+
+
+            //TODO Write file to disk
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void initializeBindings() {

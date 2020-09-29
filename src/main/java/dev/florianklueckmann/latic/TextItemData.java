@@ -2,6 +2,7 @@ package dev.florianklueckmann.latic;
 
 import javafx.beans.property.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public abstract class TextItemData {
@@ -99,6 +100,21 @@ public abstract class TextItemData {
         this.averageSentenceLengthWords = new SimpleDoubleProperty();
         this.lexicalDiversity = new SimpleDoubleProperty();
         this.lixReadabilityScore = new SimpleDoubleProperty();
+    }
+
+    public String[] getValues() {
+        return new String[] {
+//                getText(),
+                getTextAndPosTags(),
+                getPosTagsPerSentence(),
+                String.valueOf(getWordCount()),
+                String.valueOf(getAverageWordLengthCharacters()),
+                String.valueOf(getSentenceCount()),
+                String.valueOf(getAverageSentenceLengthCharacters()),
+                String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()),
+                String.valueOf(getLexicalDiversity()),
+                String.valueOf(getLexicalDiversity())
+        };
     }
 
     public double getAverageSentenceLengthWords() {

@@ -50,6 +50,21 @@ public class GermanTextItemData extends TextItemData
         this.subordinatingConjunctions = new SimpleIntegerProperty();
     }
 
+    public String[] getValues() {
+        return new String[] {
+//                getText(),
+                getTextAndPosTags(),
+                getPosTagsPerSentence(),
+                String.valueOf(getWordCount()),
+                String.valueOf(getAverageWordLengthCharacters()),
+                String.valueOf(getSentenceCount()),
+                String.valueOf(getAverageSentenceLengthCharacters()),
+                String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()),
+                String.valueOf(getLexicalDiversity()),
+                String.valueOf(getLexicalDiversity())
+        };
+    }
+
     public int getAdpositions()
     {
         return adpositions.get();
