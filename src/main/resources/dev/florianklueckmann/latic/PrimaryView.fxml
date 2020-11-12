@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
@@ -9,13 +8,14 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import org.fxmisc.richtext.InlineCssTextArea?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.florianklueckmann.latic.PrimaryViewModel">
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.florianklueckmann.latic.PrimaryViewModel">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
@@ -39,6 +39,7 @@
             <children>
                 <TextArea fx:id="textAreaInput" wrapText="true" VBox.vgrow="ALWAYS" />
                 <InlineCssTextArea fx:id="textAreaOutput" prefHeight="200.0" prefWidth="561.0" wrapText="true" VBox.vgrow="ALWAYS" />
+            <TableView fx:id="tableViewResults" prefHeight="200.0" prefWidth="200.0" />
             </children>
         </VBox>
     </center>
@@ -69,16 +70,10 @@
       </VBox>
    </right>
    <bottom>
-          <HBox fillHeight="false" prefHeight="99.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+          <HBox alignment="CENTER" fillHeight="false" prefHeight="99.0" prefWidth="600.0" spacing="10.0">
               <children>
-                  <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
-                      <children>
-                          <Button fx:id="buttonAnalyze" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#AnalyzeText" text="Analyze" />
-                      </children>
-                      <HBox.margin>
-                          <Insets />
-                      </HBox.margin>
-                  </VBox>
+                    <Button fx:id="buttonAnalyze" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#AnalyzeText" text="Analyze" />
+            <Button fx:id="buttonSaveFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveClicked" text="Save file" />
               </children>
           </HBox>
    </bottom>

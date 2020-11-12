@@ -13,7 +13,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
 //    private int foreignWords = 0;
     private int interjections = 0;
     private int listItemMarkers = 0;
-    private int modal = 0;
+    private int modals = 0;
     private int nouns = 0;
     private int numbers = 0;
     private int particles = 0;
@@ -67,7 +67,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
         }
 
         if (tag.contains("MD")) {
-            modal++;
+            modals++;
             return;
         }
 
@@ -143,7 +143,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
 //                new IntegerLinguisticFeature("Foreign words", "foreignWords", foreignWords),
                 new IntegerLinguisticFeature("Interjections", "interjections", interjections),
                 new IntegerLinguisticFeature("List item markers", "listItemMarkers", listItemMarkers),
-                new IntegerLinguisticFeature("Modal", "modal", modal),
+                new IntegerLinguisticFeature("Modal", "modals", modals),
                 new IntegerLinguisticFeature("Nouns", "nouns", nouns),
                 new IntegerLinguisticFeature("Numbers", "numbers", numbers),
                 new IntegerLinguisticFeature("Particles", "particles", particles),

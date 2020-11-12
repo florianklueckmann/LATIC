@@ -1,6 +1,6 @@
 package dev.florianklueckmann.latic;
 
-public enum GeneralItemCharacteristics {
+public enum GeneralItemCharacteristics implements ItemCharacteristics {
 
 //    TEXT("Text","text"),
 //    TEXT_AND_POS_TAGS("Tagged text","textAndPosTags"),
