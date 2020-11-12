@@ -10,7 +10,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
     private int conjunctions = 0;
     private int determiner = 0;
     private int existentialThere = 0;
-    private int foreignWords = 0;
+//    private int foreignWords = 0;
     private int interjections = 0;
     private int listItemMarkers = 0;
     private int modal = 0;
@@ -20,6 +20,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
     private int possessiveEndings = 0;
     private int prepositionOrSubordinatingConjunction = 0;
     private int pronouns = 0;
+    private int properNouns = 0;
     private int symbols = 0;
     private int verbs = 0;
     private int to = 0;
@@ -44,10 +45,11 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
             existentialThere++;
             return;
         }
-        if (tag.contains("FW")) {
-            foreignWords++;
-            return;
-        }
+
+//        if (tag.contains("FW")) {
+//            foreignWords++;
+//            return;
+//        }
 
         if (tag.contains("IN")) {
             prepositionOrSubordinatingConjunction++;
@@ -69,7 +71,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
             return;
         }
 
-        if (tag.contains("NN")) {
+        if (tag.contains("NN") && !tag.equals("NNP")) {
             nouns++;
             return;
         }
@@ -84,6 +86,11 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
             return;
         }
 
+        if (tag.equals("NNP")) {
+            properNouns++;
+            return;
+        }
+
         if (tag.contains("RB") && !tag.contains("-")) {
             adverbs++;
             return;
@@ -92,7 +99,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
             particles++;
             return;
         }
-        if (tag.contains("SYM")) {
+        if (tag.contains("SYM") || tag.equals("$")) {
             symbols++;
             return;
         }
@@ -117,6 +124,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
                 tag.equals("-LRB-") ||
                 tag.equals("``") ||
                 tag.equals("''") ||
+                tag.equals("HYPH") ||
                 tag.equals("NFP")
         ) {
             punctuations++;
@@ -132,9 +140,9 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
                 new IntegerLinguisticFeature("Conjunctions", "conjunctions", conjunctions),
                 new IntegerLinguisticFeature("Determiner", "determiner", determiner),
                 new IntegerLinguisticFeature("Existential there", "existentialThere", existentialThere),
-                new IntegerLinguisticFeature("Foreign words", "foreignWords", foreignWords),
+//                new IntegerLinguisticFeature("Foreign words", "foreignWords", foreignWords),
                 new IntegerLinguisticFeature("Interjections", "interjections", interjections),
-                new IntegerLinguisticFeature("List item markers", "interjections", interjections),
+                new IntegerLinguisticFeature("List item markers", "listItemMarkers", listItemMarkers),
                 new IntegerLinguisticFeature("Modal", "modal", modal),
                 new IntegerLinguisticFeature("Nouns", "nouns", nouns),
                 new IntegerLinguisticFeature("Numbers", "numbers", numbers),
@@ -142,6 +150,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
                 new IntegerLinguisticFeature("Possessive endings", "possessiveEndings", possessiveEndings),
                 new IntegerLinguisticFeature("Preposition or subordinating conjunction", "prepositionOrSubordinatingConjunction", prepositionOrSubordinatingConjunction),
                 new IntegerLinguisticFeature("Pronouns", "pronouns", pronouns),
+                new IntegerLinguisticFeature("Proper nouns", "properNouns", properNouns),
                 new IntegerLinguisticFeature("Symbols", "symbols", symbols),
                 new IntegerLinguisticFeature("Verbs", "verbs", verbs),
                 new IntegerLinguisticFeature("to", "to", to),
