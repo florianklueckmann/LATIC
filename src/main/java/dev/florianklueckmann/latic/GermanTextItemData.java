@@ -2,9 +2,14 @@ package dev.florianklueckmann.latic;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-public class GermanTextItemData extends TextItemData
-{
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+public class GermanTextItemData extends TextItemData {
     IntegerProperty adjectives;
     IntegerProperty adpositions;
     IntegerProperty conjunctions;
@@ -25,8 +30,7 @@ public class GermanTextItemData extends TextItemData
     IntegerProperty unknown;
 
 
-    public GermanTextItemData()
-    {
+    public GermanTextItemData() {
 
         this.adverbs = new SimpleIntegerProperty();
         this.determiner = new SimpleIntegerProperty();
@@ -51,287 +55,246 @@ public class GermanTextItemData extends TextItemData
     }
 
     public String[] getValues() {
-        return new String[] {
-//                getText(),
-                getTextAndPosTags(),
-                getPosTagsPerSentence(),
-                String.valueOf(getWordCount()),
-                String.valueOf(getAverageWordLengthCharacters()),
-                String.valueOf(getSentenceCount()),
-                String.valueOf(getAverageSentenceLengthCharacters()),
-                String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()),
-                String.valueOf(getLexicalDiversity()),
-                String.valueOf(getLexicalDiversity())
+
+        String[] superValues = super.getValues();
+        String[] values = new String[]{
+                String.valueOf(getAdjectives()),
+                String.valueOf(getAdpositions()),
+                String.valueOf(getConjunctions()),
+                String.valueOf(getCoordinatingConjunctions()),
+                String.valueOf(getSubordinatingConjunctions()),
+                String.valueOf(getAdverbs()),
+                String.valueOf(getDeterminer()),
+                String.valueOf(getInterjections()),
+                String.valueOf(getModals()),
+                String.valueOf(getNouns()),
+                String.valueOf(getNumbers()),
+                String.valueOf(getParticles()),
+                String.valueOf(getPronouns()),
+                String.valueOf(getProperNouns()),
+                String.valueOf(getSymbols()),
+                String.valueOf(getVerbs()),
+                String.valueOf(getPunctuation()),
+                String.valueOf(getUnknown())
         };
+
+        return Stream.concat(Arrays.stream(superValues), Arrays.stream(values))
+                .toArray(String[]::new);
     }
 
-    public int getAdpositions()
-    {
+    public int getAdpositions() {
         return adpositions.get();
     }
 
-    public IntegerProperty adpositionsProperty()
-    {
+    public IntegerProperty adpositionsProperty() {
         return adpositions;
     }
 
-    public void setAdpositions(int adpositions)
-    {
+    public void setAdpositions(int adpositions) {
         this.adpositions.set(adpositions);
     }
 
-    public int getConjunctions()
-    {
+    public int getConjunctions() {
         return conjunctions.get();
     }
 
-    public IntegerProperty conjunctionsProperty()
-    {
+    public IntegerProperty conjunctionsProperty() {
         return conjunctions;
     }
 
-    public void setConjunctions(int conjunctions)
-    {
+    public void setConjunctions(int conjunctions) {
         this.conjunctions.set(conjunctions);
     }
 
-    public int getCoordinatingConjunctions()
-    {
+    public int getCoordinatingConjunctions() {
         return coordinatingConjunctions.get();
     }
 
-    public IntegerProperty coordinatingConjunctionsProperty()
-    {
+    public IntegerProperty coordinatingConjunctionsProperty() {
         return coordinatingConjunctions;
     }
 
-    public void setCoordinatingConjunctions(int coordinatingConjunctions)
-    {
+    public void setCoordinatingConjunctions(int coordinatingConjunctions) {
         this.coordinatingConjunctions.set(coordinatingConjunctions);
     }
 
-    public int getSubordinatingConjunctions()
-    {
+    public int getSubordinatingConjunctions() {
         return subordinatingConjunctions.get();
     }
 
-    public IntegerProperty subordinatingConjunctionsProperty()
-    {
+    public IntegerProperty subordinatingConjunctionsProperty() {
         return subordinatingConjunctions;
     }
 
-    public void setSubordinatingConjunctions(int subordinatingConjunctions)
-    {
+    public void setSubordinatingConjunctions(int subordinatingConjunctions) {
         this.subordinatingConjunctions.set(subordinatingConjunctions);
     }
 
-    public int getAdverbs()
-    {
+    public int getAdverbs() {
         return adverbs.get();
     }
 
-    public IntegerProperty adverbsProperty()
-    {
+    public IntegerProperty adverbsProperty() {
         return adverbs;
     }
 
-    public void setAdverbs(int adverbs)
-    {
+    public void setAdverbs(int adverbs) {
         this.adverbs.set(adverbs);
     }
 
-    public int getDeterminer()
-    {
+    public int getDeterminer() {
         return determiner.get();
     }
 
-    public IntegerProperty determinerProperty()
-    {
+    public IntegerProperty determinerProperty() {
         return determiner;
     }
 
-    public void setDeterminer(int determiner)
-    {
+    public void setDeterminer(int determiner) {
         this.determiner.set(determiner);
     }
 
-    public int getInterjections()
-    {
+    public int getInterjections() {
         return interjections.get();
     }
 
-    public IntegerProperty interjectionsProperty()
-    {
+    public IntegerProperty interjectionsProperty() {
         return interjections;
     }
 
-    public void setInterjections(int interjections)
-    {
+    public void setInterjections(int interjections) {
         this.interjections.set(interjections);
     }
 
-    public int getModals()
-    {
+    public int getModals() {
         return modals.get();
     }
 
-    public IntegerProperty modalsProperty()
-    {
+    public IntegerProperty modalsProperty() {
         return modals;
     }
 
-    public void setModals(int modals)
-    {
+    public void setModals(int modals) {
         this.modals.set(modals);
     }
 
-    public int getNouns()
-    {
+    public int getNouns() {
         return nouns.get();
     }
 
-    public IntegerProperty nounsProperty()
-    {
+    public IntegerProperty nounsProperty() {
         return nouns;
     }
 
-    public void setNouns(int nouns)
-    {
+    public void setNouns(int nouns) {
         this.nouns.set(nouns);
     }
 
-    public int getNumbers()
-    {
+    public int getNumbers() {
         return numbers.get();
     }
 
-    public IntegerProperty numbersProperty()
-    {
+    public IntegerProperty numbersProperty() {
         return numbers;
     }
 
-    public void setNumbers(int numbers)
-    {
+    public void setNumbers(int numbers) {
         this.numbers.set(numbers);
     }
 
-    public int getParticles()
-    {
+    public int getParticles() {
         return particles.get();
     }
 
-    public IntegerProperty particlesProperty()
-    {
+    public IntegerProperty particlesProperty() {
         return particles;
     }
 
-    public void setParticles(int particles)
-    {
+    public void setParticles(int particles) {
         this.particles.set(particles);
     }
 
-    public int getPronouns()
-    {
+    public int getPronouns() {
         return pronouns.get();
     }
 
-    public IntegerProperty pronounsProperty()
-    {
+    public IntegerProperty pronounsProperty() {
         return pronouns;
     }
 
-    public void setPronouns(int pronouns)
-    {
+    public void setPronouns(int pronouns) {
         this.pronouns.set(pronouns);
     }
 
-    public int getProperNouns()
-    {
+    public int getProperNouns() {
         return properNouns.get();
     }
 
-    public IntegerProperty properNounsProperty()
-    {
+    public IntegerProperty properNounsProperty() {
         return properNouns;
     }
 
-    public void setProperNouns(int properNouns)
-    {
+    public void setProperNouns(int properNouns) {
         this.properNouns.set(properNouns);
     }
 
-    public int getSymbols()
-    {
+    public int getSymbols() {
         return symbols.get();
     }
 
-    public IntegerProperty symbolsProperty()
-    {
+    public IntegerProperty symbolsProperty() {
         return symbols;
     }
 
-    public void setSymbols(int symbols)
-    {
+    public void setSymbols(int symbols) {
         this.symbols.set(symbols);
     }
 
-    public int getVerbs()
-    {
+    public int getVerbs() {
         return verbs.get();
     }
 
-    public IntegerProperty verbsProperty()
-    {
+    public IntegerProperty verbsProperty() {
         return verbs;
     }
 
-    public void setVerbs(int verbs)
-    {
+    public void setVerbs(int verbs) {
         this.verbs.set(verbs);
     }
 
-    public int getPunctuation()
-    {
+    public int getPunctuation() {
         return punctuation.get();
     }
 
-    public IntegerProperty punctuationProperty()
-    {
+    public IntegerProperty punctuationProperty() {
         return punctuation;
     }
 
-    public void setPunctuation(int punctuation)
-    {
+    public void setPunctuation(int punctuation) {
         this.punctuation.set(punctuation);
     }
 
-    public int getUnknown()
-    {
+    public int getUnknown() {
         return unknown.get();
     }
 
-    public IntegerProperty unknownProperty()
-    {
+    public IntegerProperty unknownProperty() {
         return unknown;
     }
 
-    public void setUnknown(int unknown)
-    {
+    public void setUnknown(int unknown) {
         this.unknown.set(unknown);
     }
 
-    public int getAdjectives()
-    {
+    public int getAdjectives() {
         return adjectives.get();
     }
 
-    public IntegerProperty adjectivesProperty()
-    {
+    public IntegerProperty adjectivesProperty() {
         return adjectives;
     }
 
-    public void setAdjectives(int adjectives)
-    {
+    public void setAdjectives(int adjectives) {
         this.adjectives.set(adjectives);
     }
 }

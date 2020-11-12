@@ -1,6 +1,8 @@
 package dev.florianklueckmann.latic;
 
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -104,7 +106,7 @@ public abstract class TextItemData {
 
     public String[] getValues() {
         return new String[] {
-//                getText(),
+                getText(),
                 getTextAndPosTags(),
                 getPosTagsPerSentence(),
                 String.valueOf(getWordCount()),
@@ -130,7 +132,10 @@ public abstract class TextItemData {
     }
 
     public String getText() {
-        return text.get();
+        System.out.println("text: " + text.get());
+        if(!text.get().isEmpty())
+            return text.get();
+        else return "Empty";
     }
 
     public void setText(String text) {
