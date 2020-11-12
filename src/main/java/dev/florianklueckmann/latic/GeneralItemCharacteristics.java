@@ -6,13 +6,13 @@ public enum GeneralItemCharacteristics {
 //    TEXT_AND_POS_TAGS("Tagged text","textAndPosTags"),
 //    POS_TAGS_PER_SENTENCE("Tagged sentences","posTagsPerSentence"),
     WORD_COUNT("Word count","wordCount"),
-    AVERAGE_WORD_LENGTH_CHAR("Average word length characters","averageWordLengthCharacters"),
-    SENTENCE_COUNT("Sentence Count","sentenceCount"),
-    AVERAGE_SENTENCE_LENGTH_CHARACTERS("Average sentence length characters","averageSentenceLengthCharacters"),
-    AVERAGE_SENTENCE_LENGTH_CHARACTERS_WITHOUT_WHITESPACES("Average sentence length characters without whitespaces","averageSentenceLengthCharactersWithoutWhitespaces"),
-    AVERAGE_SENTENCE_LENGTH_WORDS("Average sentence length words","averageSentenceLengthWords"),
+    AVERAGE_WORD_LENGTH_CHAR("Word length (characters)","averageWordLengthCharacters"),
+    SENTENCE_COUNT("Number of sentences","sentenceCount"),
+    AVERAGE_SENTENCE_LENGTH_CHARACTERS("Sentence length (characters)","averageSentenceLengthCharacters"),
+    AVERAGE_SENTENCE_LENGTH_CHARACTERS_WITHOUT_WHITESPACES("Sentence length (characters w/o spaces)","averageSentenceLengthCharactersWithoutWhitespaces"),
+    AVERAGE_SENTENCE_LENGTH_WORDS("Sentence length (words)","averageSentenceLengthWords"),
     LEXICAL_DIVERSITY("Lexical Diversity","lexicalDiversity"),
-    LIX_SCORE("LIX readability score","lixReadabilityScore");
+    LIX_SCORE("LIX","lixReadabilityScore");
 
     private final String name;
 
