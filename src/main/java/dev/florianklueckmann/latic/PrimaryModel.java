@@ -5,6 +5,7 @@ import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.simple.Document;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import org.apache.log4j.BasicConfigurator;
 
 import java.io.IOException;
@@ -118,12 +119,31 @@ public class PrimaryModel {
         else
             wordClassCounter = new EnglishWordClassService();
 
-        for(var linguisticFeature : wordClassCounter.analyzeWordClasses(doc.sentences())){
+        for (var linguisticFeature : wordClassCounter.analyzeWordClasses(doc.sentences())) {
             if (languageSpecificTasks.stream().anyMatch(task -> task.getId().equals(linguisticFeature.getId()) && task.selectedProperty().get()))
                 featureList.add(linguisticFeature);
         }
 
         return featureList;
+    }
+
+    public ObservableMap<String, IntegerLinguisticFeature> wordClassesAsMap(ObservableList<Task> languageSpecificTasks) {
+
+        ObservableMap<String, IntegerLinguisticFeature> featureMap = FXCollections.observableHashMap();
+
+        WordClassService wordClassCounter;
+
+        if (language.toLowerCase().equals("german"))
+            wordClassCounter = new GermanWordClassService();
+        else
+            wordClassCounter = new EnglishWordClassService();
+
+        for (var linguisticFeature : wordClassCounter.analyzeWordClasses(doc.sentences())) {
+            if (languageSpecificTasks.stream().anyMatch(task -> task.getId().equals(linguisticFeature.getId()) && task.selectedProperty().get()))
+                featureMap.put(linguisticFeature.getId(), linguisticFeature);
+        }
+
+        return featureMap;
     }
 
     protected int getAverageSentenceLengthSyllables() {
@@ -155,17 +175,14 @@ public class PrimaryModel {
 
     protected List<LinguisticFeature> analyzeGeneralItemCharacteristics(ObservableList<Task> tasks) {
         simpleTextAnalyzer.setDoc(doc);
-//        nlp.setDoc(doc);
 
         ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
         List<String> errorList = new ArrayList<>();
 
         for (var task : tasks) {
-            if (task.selectedProperty().get())
-            {
+            if (task.selectedProperty().get()) {
                 java.lang.reflect.Method method;
-                try
-                {
+                try {
                     method = simpleTextAnalyzer.getClass().getMethod(task.getId());
                     if (task.getId().contains("average"))
                         featureList.add(new DoubleLinguisticFeature(
@@ -183,17 +200,14 @@ public class PrimaryModel {
                                 task.getId(),
                                 String.valueOf(method.invoke(simpleTextAnalyzer))));
 
-                } catch (NoSuchMethodException e)
-                {
-//                e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
                     featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
-                } catch (IllegalAccessException e)
-                {
-//                e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
                     featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
-                } catch (InvocationTargetException e)
-                {
-//                e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
                     featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
                 }
             }
@@ -202,42 +216,117 @@ public class PrimaryModel {
         return featureList;
     }
 
+    protected void analyzeGeneralItemCharacteristics(TextItemData textItemData, ObservableList<Task> tasks) {
+        simpleTextAnalyzer.setDoc(doc);
+
+        ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
+        List<String> errorList = new ArrayList<>();
+
+        for (var task : tasks) {
+            if (task.selectedProperty().get()) {
+                java.lang.reflect.Method setter;
+                java.lang.reflect.Method simpleTextAnalyzerMethod;
+
+                var setterName = task.getId();
+                setterName = setterName.substring(0, 1).toUpperCase() + setterName.substring(1);
+                setterName = "set" + setterName;
+                log("methodName: " + setterName + " - " + "task.getId(): " + task.getId());
+
+                try {
+                    simpleTextAnalyzerMethod = simpleTextAnalyzer.getClass().getMethod(task.getId());
+
+                    if (task.getId().toLowerCase().contains("average")
+                            || task.getId().toLowerCase().contains("score")
+                            || task.getId().toLowerCase().equals("lexicaldiversity")) {
+                        setter = textItemData.getClass().getMethod(setterName, double.class);
+                        setter.invoke(textItemData, (double) simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer));
+                    } else if (task.getId().toLowerCase().contains("count")) {
+                        setter = textItemData.getClass().getMethod(setterName, int.class);
+                        setter.invoke(textItemData, (int) simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer));
+                    } else {
+                        setter = textItemData.getClass().getMethod(setterName, String.class);
+                        setter.invoke(textItemData, String.valueOf(simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer)));
+                    }
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
+                }
+            }
+        }
+    }
+
     protected List<LinguisticFeature> analyzeTextInformation(ObservableList<Task> tasks) {
-//        simpleTextAnalyzer.setDoc(doc);
         nlp.setDoc(doc);
 
         ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
         List<String> errorList = new ArrayList<>();
 
         for (var task : tasks) {
-            if (task.selectedProperty().get())
-            {
+            if (task.selectedProperty().get()) {
                 java.lang.reflect.Method method;
-                try
-                {
+                try {
                     method = nlp.getClass().getMethod(task.getId());
-                        featureList.add(new StringLinguisticFeature(
-                                task.getName(),
-                                task.getId(),
-                                String.valueOf(method.invoke(nlp))));
+                    featureList.add(new StringLinguisticFeature(
+                            task.getName(),
+                            task.getId(),
+                            String.valueOf(method.invoke(nlp))));
 
-                } catch (NoSuchMethodException e)
-                {
-//                e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
                     featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
-                } catch (IllegalAccessException e)
-                {
-//                e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
                     featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
-                } catch (InvocationTargetException e)
-                {
-//                e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
                     featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
                 }
             }
         }
 
         return featureList;
+    }
+
+    protected void analyzeTextInformation(TextItemData textItemData, ObservableList<Task> tasks) {
+        nlp.setDoc(doc);
+
+        ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
+        List<String> errorList = new ArrayList<>();
+
+        for (var task : tasks) {
+            if (task.selectedProperty().get()) {
+                java.lang.reflect.Method nlpMethod;
+                java.lang.reflect.Method setter;
+                try {
+                    nlpMethod = nlp.getClass().getMethod(task.getId());
+
+                    var setterName = task.getId();
+                    setterName = setterName.substring(0, 1).toUpperCase() + setterName.substring(1);
+                    setterName = "set" + setterName;
+                    log("methodName: " + setterName + " - " + "task.getId(): " + task.getId());
+
+                    setter = textItemData.getClass().getMethod(setterName, String.class);
+
+                    setter.invoke(textItemData, String.valueOf(nlpMethod.invoke(nlp)));
+
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
+                }
+            }
+        }
     }
 
     protected String appendResultLine(String label, double result) {
@@ -254,5 +343,53 @@ public class PrimaryModel {
 
     private void log(Object o) {
         System.out.println(o);
+    }
+
+    protected TextItemData analyzeItem(ObservableList<Task> textTasks, ObservableList<Task> generalTasks, ObservableList<Task> languageTasks) {
+        log("analyzeItem");
+        simpleTextAnalyzer.setDoc(doc);
+        nlp.setDoc(doc);
+
+        ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
+        List<String> errorList = new ArrayList<>();
+
+        TextItemData textItemData;
+
+        if (language.toLowerCase().equals("german"))
+            textItemData = new GermanTextItemData(doc.text());
+        else
+            textItemData = new EnglishTextItemData(doc.text());
+
+        analyzeTextInformation(textItemData, textTasks);
+        analyzeGeneralItemCharacteristics(textItemData, generalTasks);
+
+
+        for (var task : languageTasks) {
+            if (task.selectedProperty().get()) {
+                java.lang.reflect.Method method;
+                java.lang.reflect.Field field;
+                try {
+                    var methodName = task.getId();
+                    methodName = methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+                    methodName = "set" + methodName;
+                    log("methodName: " + methodName + " - " + "task.getId(): " + task.getId());
+
+                    method = textItemData.getClass().getMethod(methodName, int.class);
+                    method.invoke(textItemData, wordClassesAsMap(languageTasks).getOrDefault(task.getId(), new IntegerLinguisticFeature("default", "default", 123)).getValue());
+
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
+                } catch (InvocationTargetException e) {
+//                e.printStackTrace();
+                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
+                }
+            }
+        }
+
+        return textItemData;
     }
 }

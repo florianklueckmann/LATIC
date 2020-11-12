@@ -1,14 +1,12 @@
 package dev.florianklueckmann.latic;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import dev.florianklueckmann.latic.services.DocumentKeeper;
-import dev.florianklueckmann.latic.services.NlpTextAnalyzer;
-import dev.florianklueckmann.latic.services.SimpleTextAnalyzer;
-import dev.florianklueckmann.latic.services.TextFormattingService;
+import dev.florianklueckmann.latic.services.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -19,12 +17,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import javafx.util.StringConverter;
 import org.fxmisc.richtext.InlineCssTextArea;
 
 public class PrimaryViewModel implements Initializable {
 
+    @FXML
+    public BorderPane mainPane;
+
     private PrimaryModel primaryModel;
+
+    @FXML
+    public TableView<TextItemData> tableViewResults;
 
     @FXML
     protected TextArea textAreaInput;
@@ -37,6 +45,8 @@ public class PrimaryViewModel implements Initializable {
 
     @FXML
     ListView<Task> checkList;
+
+    ObservableList<TextItemData> textItemDataResults;
 
     public ListProperty<String> languages = new SimpleListProperty<>();
 
@@ -95,6 +105,7 @@ public class PrimaryViewModel implements Initializable {
     ObservableList<Task> generalTasks;
     ObservableList<Task> languageSpecificTasks;
 
+    FileChooser fileChooser = new FileChooser();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -106,9 +117,69 @@ public class PrimaryViewModel implements Initializable {
 
         primaryModel = new PrimaryModel(simpleTextAnalyzer, textFormatter, nlp);
 
-        initializeBindings();
+        textItemDataResults = FXCollections.observableArrayList();
 
+        initializeBindings();
+        initialzeFileChooser();
         initializeGui();
+    }
+
+    private void initialzeFileChooser() {
+
+        boolean isMac = System.getProperty("os.name").contains("Mac");
+                //.equals("Mac OS X");
+        boolean isWin = System.getProperty("os.name").contains("Win");
+        boolean isOther = !isMac && !isWin;
+
+        String initialFilePath;
+        if (isMac)
+            initialFilePath = System.getProperty("user.home")+File.separator+"Documents";
+        else if(isWin)
+            initialFilePath = System.getProperty("user.home");
+        else
+            initialFilePath = System.getProperty("user.home");
+
+
+
+
+        fileChooser.setInitialDirectory(new File(initialFilePath));
+        fileChooser.setTitle("Save File");
+        fileChooser.setInitialFileName("table");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Text file", "*.txt"),
+                new FileChooser.ExtensionFilter("CSV table file", "*.csv"));
+
+    }
+
+    private List<String[]> getTableData(){
+        var outList = new ArrayList<String[]>();
+
+        for (var textItemDataResult : textItemDataResults) {
+            outList.add(textItemDataResult.getValues());
+        }
+        for (var textItemData : textItemDataResults) {
+            System.out.println(textItemData.getValues()[0]);
+        }
+
+        return outList;
+
+    }
+
+    @FXML
+    private void handleSaveClicked(ActionEvent event){
+        Window stage = mainPane.getScene().getWindow();
+        CsvBuilder csvBuilder = new CsvBuilder();
+        try{
+            File file = csvBuilder.writeToFile(fileChooser.showSaveDialog(stage), getTableData());
+            fileChooser.setInitialDirectory(file.getParentFile());
+
+//            file.setWritable(true);
+
+
+            //TODO Write file to disk
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void initializeBindings() {
@@ -120,7 +191,6 @@ public class PrimaryViewModel implements Initializable {
         System.out.println("GUI");
         setLanguages();
         createCheckboxes();
-
     }
 
     private void createCheckboxes() {
@@ -135,20 +205,25 @@ public class PrimaryViewModel implements Initializable {
                 .map(textInformation -> new Task(textInformation.getName(), textInformation.getId()))
                 .collect(Collectors.toList()));
 
-        if (choiceBoxLanguage.getValue().equals("German")){
-            languageSpecificTasks = FXCollections.observableArrayList(
+        languageSpecificTasks = FXCollections.observableArrayList(
+                Arrays.stream(GeneralLanguageItemCharacteristics.values())
+                        .map(generalLanguageItemCharacteristics -> new Task(generalLanguageItemCharacteristics.getName(), generalLanguageItemCharacteristics.getId()))
+                        .collect(Collectors.toList()));
+
+        if (choiceBoxLanguage.getValue().equals("English")) {
+            languageSpecificTasks.addAll(FXCollections.observableArrayList(
+                    Arrays.stream(EnglishItemCharacteristics.values())
+                            .map(englishItemCharacteristic -> new Task(englishItemCharacteristic.getName(), englishItemCharacteristic.getId()))
+                            .collect(Collectors.toList())
+            ));
+        }
+
+        if (choiceBoxLanguage.getValue().equals("German")) {
+            languageSpecificTasks.addAll(FXCollections.observableArrayList(
                     Arrays.stream(GermanItemCharacteristics.values())
                             .map(germanItemCharacteristic -> new Task(germanItemCharacteristic.getName(), germanItemCharacteristic.getId()))
                             .collect(Collectors.toList())
-            );
-        }
-
-        if (choiceBoxLanguage.getValue().equals("English")) {
-            languageSpecificTasks = FXCollections.observableArrayList(
-                    Arrays.stream(EnglishItemCharacteristics.values())
-                            .map(englishItemCharacteristics -> new Task(englishItemCharacteristics.getName(), englishItemCharacteristics.getId()))
-                            .collect(Collectors.toList())
-            );
+            ));
         }
 
         checkList.setItems(FXCollections.concat(generalTasks, textTasks, languageSpecificTasks));
@@ -170,6 +245,7 @@ public class PrimaryViewModel implements Initializable {
         System.out.println(choiceBoxLanguage.getValue());
         primaryModel.setLanguage(choiceBoxLanguage.getValue().toLowerCase());
         createCheckboxes();
+//        createColumns();
     }
 
     @FXML
@@ -178,8 +254,12 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void AnalyzeText(ActionEvent actionEvent) {
+        createColumns();
+
         primaryModel.setParagraphs(textAreaInput.getParagraphs());
         primaryModel.initializeDocument();
+
+        textItemDataResults.add(primaryModel.analyzeItem(textTasks, generalTasks, languageSpecificTasks));
 
         addResults("Item:");
         textAreaInput.getParagraphs().forEach(charSequence -> addResults(charSequence.toString()));
@@ -222,6 +302,9 @@ public class PrimaryViewModel implements Initializable {
         }
 
         addResults("\n" + "---------------------------------------------" + "\n");
+
+
+        tableViewResults.setItems(textItemDataResults);
     }
 
     private void appendSelectedTextInformation() {
@@ -230,6 +313,42 @@ public class PrimaryViewModel implements Initializable {
 
     private void log(Object o){
         System.out.println(o);
+    }
+
+    private void createColumns() {
+        tableViewResults.getColumns().clear();
+        ObservableList<Task> tasks = FXCollections.observableArrayList();
+        tasks.addAll(textTasks);
+        tasks.addAll(generalTasks);
+        tasks.addAll(languageSpecificTasks);
+        for (var task : tasks) {
+            if (task.selectedProperty().get())
+            {
+                TableColumn<TextItemData, ?> column = new TableColumn<>(task.getName());
+                column.setId(task.getId());
+                System.out.println("ID: " + task.getId() + " Name: " + task.getName());
+//            column.setCellValueFactory(new LinguisticFeatureCallback((linguisticFeature) -> { return linguisticFeature.getId();}));
+                column.setCellValueFactory(new PropertyValueFactory<>(task.getId()));
+                tableViewResults.getColumns().add(column);
+            }
+        }
+//        if (choiceBoxLanguage.getValue().equals("English")) {
+//            for (var itemCharacteristic : EnglishItemCharacteristics.values()) {
+//                TableColumn<TextItem, ?> column = new TableColumn<>(itemCharacteristic.getName());
+//                column.setId(itemCharacteristic.getId());
+//                System.out.println("ID: " + itemCharacteristic.getId() + " Name: " + itemCharacteristic.getName());
+//                column.setCellValueFactory(new PropertyValueFactory<>(itemCharacteristic.getId()));
+//                tableViewResults.getColumns().add(column);
+//            }
+//        } else if(choiceBoxLanguage.getValue().equals("German")){
+//            for (var itemCharacteristic : GermanItemCharacteristics.values()) {
+//                TableColumn<TextItem, ?> column = new TableColumn<>(itemCharacteristic.getName());
+//                column.setId(itemCharacteristic.getId());
+//                System.out.println("ID: " + itemCharacteristic.getId() + " Name: " + itemCharacteristic.getName());
+//                column.setCellValueFactory(new PropertyValueFactory<>(itemCharacteristic.getId()));
+//                tableViewResults.getColumns().add(column);
+//            }
+//        }
     }
 
 }
