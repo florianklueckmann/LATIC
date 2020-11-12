@@ -3,6 +3,9 @@ package dev.florianklueckmann.latic;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 public class EnglishTextItemData extends TextItemData
 {
     IntegerProperty adverbs;
@@ -28,8 +31,9 @@ public class EnglishTextItemData extends TextItemData
     IntegerProperty prepositionOrSubordinatingConjunction;
     IntegerProperty to;
 
-    public EnglishTextItemData()
+    public EnglishTextItemData(String text)
     {
+        super(text);
 
         this.adverbs = new SimpleIntegerProperty();
         this.determiner = new SimpleIntegerProperty();
@@ -53,6 +57,36 @@ public class EnglishTextItemData extends TextItemData
         this.possessiveEndings = new SimpleIntegerProperty();
         this.prepositionOrSubordinatingConjunction = new SimpleIntegerProperty();
         this.to = new SimpleIntegerProperty();
+    }
+
+    public String[] getValues() {
+
+        String[] superValues = super.getValues();
+        String[] values = new String[]{
+                String.valueOf(getAdjectives()),
+                String.valueOf(getConjunctions()),
+                String.valueOf(getPrepositionOrSubordinatingConjunction()),
+                String.valueOf(getAdverbs()),
+                String.valueOf(getDeterminer()),
+                String.valueOf(getInterjections()),
+                String.valueOf(getModals()),
+                String.valueOf(getNouns()),
+                String.valueOf(getNumbers()),
+                String.valueOf(getParticles()),
+                String.valueOf(getPronouns()),
+                String.valueOf(getProperNouns()),
+                String.valueOf(getSymbols()),
+                String.valueOf(getVerbs()),
+                String.valueOf(getPunctuation()),
+                String.valueOf(getExistentialThere()),
+                String.valueOf(getListItemMarkers()),
+                String.valueOf(getPossessiveEndings()),
+                String.valueOf(getTo()),
+                String.valueOf(getUnknown())
+        };
+
+        return Stream.concat(Arrays.stream(superValues), Arrays.stream(values))
+                .toArray(String[]::new);
     }
 
     public int getConjunctions()

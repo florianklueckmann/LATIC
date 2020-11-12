@@ -90,8 +90,8 @@ public abstract class TextItemData {
     }
 
 
-    public TextItemData() {
-        this.text = new SimpleStringProperty();
+    public TextItemData(String text) {
+        this.text = new SimpleStringProperty(text);
         this.textAndPosTags = new SimpleStringProperty();
         this.posTagsPerSentence = new SimpleStringProperty();
         this.wordCount = new SimpleIntegerProperty();

@@ -2,6 +2,7 @@ package dev.florianklueckmann.latic;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -30,7 +31,9 @@ public class GermanTextItemData extends TextItemData {
     IntegerProperty unknown;
 
 
-    public GermanTextItemData() {
+    public GermanTextItemData(String text) {
+
+        super(text);
 
         this.adverbs = new SimpleIntegerProperty();
         this.determiner = new SimpleIntegerProperty();

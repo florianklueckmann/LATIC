@@ -154,10 +154,10 @@ public class PrimaryViewModel implements Initializable {
     private List<String[]> getTableData(){
         var outList = new ArrayList<String[]>();
 
-        for (TextItemData textItemDataResult : textItemDataResults) {
+        for (var textItemDataResult : textItemDataResults) {
             outList.add(textItemDataResult.getValues());
         }
-        for (TextItemData textItemData : textItemDataResults) {
+        for (var textItemData : textItemDataResults) {
             System.out.println(textItemData.getValues()[0]);
         }
 

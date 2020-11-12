@@ -440,9 +440,9 @@ public class PrimaryModel
         TextItemData textItemData;
 
         if (language.toLowerCase().equals("german"))
-            textItemData = new GermanTextItemData();
+            textItemData = new GermanTextItemData(doc.text());
         else
-            textItemData = new EnglishTextItemData();
+            textItemData = new EnglishTextItemData(doc.text());
 
 
 
