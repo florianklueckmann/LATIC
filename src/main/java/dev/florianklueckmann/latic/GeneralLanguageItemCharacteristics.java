@@ -12,6 +12,7 @@ public enum GeneralLanguageItemCharacteristics implements ItemCharacteristics {
     NUMBERS("Numbers", "numbers"),
     PARTICLES("Particles", "particles"),
     PRONOUNS("Pronouns", "pronouns"),
+    PROPER_NOUNS("Proper nouns", "properNouns"),
     SYMBOLS("Symbols", "symbols"),
     VERBS("Verbs", "verbs"),
     PUNCTUATION("Punctuation", "punctuation"),

@@ -5,9 +5,9 @@ public enum GermanItemCharacteristics {
     ADPOSITIONS("Adpositions", "adpositions"),
 //    ADVERBS("Adverbs", "adverbs"),
     COORDINATING_CONJUNCTIONS("Coordinating conjunctions", "coordinatingConjunctions"),
-    SUBORDINATING_CONJUNCTIONS("Subordinating conjunctions", "subordinatingConjunctions"),
+    SUBORDINATING_CONJUNCTIONS("Subordinating conjunctions", "subordinatingConjunctions");
 //    DETERMINER("Determiner", "determiner"),
-    PROPER_NOUNS("Proper nouns", "properNouns");
+//    PROPER_NOUNS("Proper nouns", "properNouns");
 //    INTERJECTIONS("Interjections", "interjections"),
 //    MODAL("Modals", "modals"),
 //    NOUNS("Nouns", "nouns"),
