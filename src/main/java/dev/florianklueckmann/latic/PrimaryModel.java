@@ -43,7 +43,7 @@ public class PrimaryModel {
 
     public PrimaryModel(SimpleTextAnalyzer simpleTextAnalyzer, TextFormattingService textFormattingService, NlpTextAnalyzer nlp) {
         BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.WARN);
+        Logger.getRootLogger().setLevel(App.loggingLevel);
         props = new Properties();
 
         this.simpleTextAnalyzer = simpleTextAnalyzer;
@@ -345,7 +345,7 @@ public class PrimaryModel {
     }
 
     private void log(Object o) {
-        System.out.println(o);
+        Logger.getLogger("PrimaryModel").log(Level.DEBUG, o);
     }
 
     protected TextItemData analyzeItem(ObservableList<Task> textTasks, ObservableList<Task> generalTasks, ObservableList<Task> languageTasks) {
