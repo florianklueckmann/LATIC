@@ -7,6 +7,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -41,6 +43,7 @@ public class PrimaryModel {
 
     public PrimaryModel(SimpleTextAnalyzer simpleTextAnalyzer, TextFormattingService textFormattingService, NlpTextAnalyzer nlp) {
         BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.WARN);
         props = new Properties();
 
         this.simpleTextAnalyzer = simpleTextAnalyzer;

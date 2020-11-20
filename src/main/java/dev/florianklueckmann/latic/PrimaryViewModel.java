@@ -157,9 +157,6 @@ public class PrimaryViewModel implements Initializable {
         for (var textItemDataResult : textItemDataResults) {
             outList.add(textItemDataResult.getValues());
         }
-        for (var textItemData : textItemDataResults) {
-            System.out.println(textItemData.getValues()[0]);
-        }
 
         return outList;
 
@@ -172,11 +169,6 @@ public class PrimaryViewModel implements Initializable {
         try{
             File file = csvBuilder.writeToFile(fileChooser.showSaveDialog(stage), getTableData());
             fileChooser.setInitialDirectory(file.getParentFile());
-
-//            file.setWritable(true);
-
-
-            //TODO Write file to disk
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -188,7 +180,6 @@ public class PrimaryViewModel implements Initializable {
     }
 
     private void initializeGui() {
-        System.out.println("GUI");
         setLanguages();
         createCheckboxes();
     }
@@ -242,10 +233,8 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void changeLanguage() {
-        System.out.println(choiceBoxLanguage.getValue());
         primaryModel.setLanguage(choiceBoxLanguage.getValue().toLowerCase());
         createCheckboxes();
-//        createColumns();
     }
 
     @FXML
@@ -326,29 +315,10 @@ public class PrimaryViewModel implements Initializable {
             {
                 TableColumn<TextItemData, ?> column = new TableColumn<>(task.getName());
                 column.setId(task.getId());
-                System.out.println("ID: " + task.getId() + " Name: " + task.getName());
-//            column.setCellValueFactory(new LinguisticFeatureCallback((linguisticFeature) -> { return linguisticFeature.getId();}));
                 column.setCellValueFactory(new PropertyValueFactory<>(task.getId()));
                 tableViewResults.getColumns().add(column);
             }
         }
-//        if (choiceBoxLanguage.getValue().equals("English")) {
-//            for (var itemCharacteristic : EnglishItemCharacteristics.values()) {
-//                TableColumn<TextItem, ?> column = new TableColumn<>(itemCharacteristic.getName());
-//                column.setId(itemCharacteristic.getId());
-//                System.out.println("ID: " + itemCharacteristic.getId() + " Name: " + itemCharacteristic.getName());
-//                column.setCellValueFactory(new PropertyValueFactory<>(itemCharacteristic.getId()));
-//                tableViewResults.getColumns().add(column);
-//            }
-//        } else if(choiceBoxLanguage.getValue().equals("German")){
-//            for (var itemCharacteristic : GermanItemCharacteristics.values()) {
-//                TableColumn<TextItem, ?> column = new TableColumn<>(itemCharacteristic.getName());
-//                column.setId(itemCharacteristic.getId());
-//                System.out.println("ID: " + itemCharacteristic.getId() + " Name: " + itemCharacteristic.getName());
-//                column.setCellValueFactory(new PropertyValueFactory<>(itemCharacteristic.getId()));
-//                tableViewResults.getColumns().add(column);
-//            }
-//        }
     }
 
 }
