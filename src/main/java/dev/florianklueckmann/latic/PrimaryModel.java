@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 public class PrimaryModel {
 
-    private DocumentKeeper documentKeeper;
     private String language = "english"; //TODO: Maybe use ENUM
     private Properties props;
     SimpleTextAnalyzer simpleTextAnalyzer;
