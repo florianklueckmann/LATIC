@@ -21,7 +21,6 @@ public class CsvBuilder {
     }
 
     private String escapeSpecialCharacters(String data) {
-        System.out.println("ESC: " + data);
         String escapedData = data.replaceAll("\\R", " ");
         if (data.contains(",") || data.contains("\"") || data.contains("'")) {
             data = data.replace("\"", "\"\"");
@@ -32,7 +31,6 @@ public class CsvBuilder {
 
 
     public File writeToFile(File file, List<String[]> dataLines) throws IOException {
-        System.out.println(dataLines.get(0)[0]);
         File csvOutputFile = new File(file.getPath());
         try (PrintWriter pw = new PrintWriter(file)) {
             for (String[] data : dataLines) {
