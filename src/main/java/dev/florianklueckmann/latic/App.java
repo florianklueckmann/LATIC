@@ -19,6 +19,11 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("PrimaryView"), 640, 480);
         stage.setScene(scene);
+
+        System.out.println("java version: "+System.getProperty("java.version"));
+        System.out.println("javafx.version: " + System.getProperty("javafx.version"));
+        System.out.println(System.getProperties());
+
         stage.show();
     }
 
