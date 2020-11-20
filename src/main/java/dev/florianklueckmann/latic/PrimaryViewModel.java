@@ -112,7 +112,6 @@ public class PrimaryViewModel implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        var documentKeeper = new DocumentKeeper();
         var textFormatter = new TextFormattingService();
         var simpleTextAnalyzer = new SimpleTextAnalyzer(textFormatter);
         var nlp = new NlpTextAnalyzer(textFormatter);
