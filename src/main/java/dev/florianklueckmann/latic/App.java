@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import org.apache.log4j.Level;
 
 /**
  * JavaFX App
@@ -14,6 +15,7 @@ import java.io.IOException;
 public class App extends Application {
 
     private static Scene scene;
+    protected static final Level loggingLevel = Level.WARN;
 
     @Override
     public void start(Stage stage) throws IOException {

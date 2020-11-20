@@ -22,6 +22,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.fxmisc.richtext.InlineCssTextArea;
 
 public class PrimaryViewModel implements Initializable {
@@ -259,9 +261,9 @@ public class PrimaryViewModel implements Initializable {
                         linguisticFeature.getName() + " : " +
                         linguisticFeature.getValue()));
 
-//        log("---- selected Tasks ----");
-//        languageSpecificTasks.stream().forEach(task -> log(task.getId() + " : " + task.isSelected()));
-//        log("---- end log-----");
+        log("---- selected Tasks ----");
+        languageSpecificTasks.stream().forEach(task -> log(task.getId() + " : " + task.isSelected()));
+        log("---- end selected Tasks -----");
         for (var linguisticFeature : primaryModel.wordClassesAsList(languageSpecificTasks))
         {
             if (languageSpecificTasks.stream().anyMatch(task -> task.getId().equals(linguisticFeature.getId()) && task.isSelected()))
@@ -300,8 +302,8 @@ public class PrimaryViewModel implements Initializable {
 
     }
 
-    private void log(Object o){
-        System.out.println(o);
+    private void log(Object o) {
+        Logger.getLogger("PrimaryViewModel").log(Level.DEBUG, o);
     }
 
     private void createColumns() {

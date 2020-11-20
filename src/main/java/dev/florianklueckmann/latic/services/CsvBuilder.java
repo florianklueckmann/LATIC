@@ -39,7 +39,6 @@ public class CsvBuilder {
             }
             for (String[] strings : dataLines) {
                 String s = convertToCSV(strings);
-                System.out.println(s);
             }
         }
         return csvOutputFile;
