@@ -223,6 +223,19 @@ public class PrimaryViewModel implements Initializable {
         }
     }
 
+    @FXML
+    private void handleSaveTestClicked(ActionEvent event){
+        var testData = primaryModel.testData();
+        Window stage = mainPane.getScene().getWindow();
+        CsvBuilder csvBuilder = new CsvBuilder();
+        try{
+            File file = csvBuilder.writeToFile(fileChooser.showSaveDialog(stage), testData);
+            fileChooser.setInitialDirectory(file.getParentFile());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private void initializeBindings() {
         Bindings.bindBidirectional(inputProperty(), textAreaInput.textProperty());
         Bindings.bindBidirectional(languageProperty(), choiceBoxLanguage.itemsProperty());
@@ -335,6 +348,17 @@ public class PrimaryViewModel implements Initializable {
         printResultToTextArea(currentItem);
 
         tableViewResults.setItems(textItemDataResults);
+
+        ObservableList<String[]>  testData = FXCollections.observableArrayList();
+
+        if(App.loggingLevel.equals(Level.DEBUG)){
+            try {
+                testData = primaryModel.testData();
+            } catch (Exception e) {
+                log(e);
+            }
+        }
+
     }
 
     private void printResultToTextArea(TextItemData textItemData, int... position) {

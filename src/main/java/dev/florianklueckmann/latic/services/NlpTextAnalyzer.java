@@ -62,4 +62,14 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
             }
         }
     }
+
+    public ObservableList<String[]> getWordTagPairList(){
+        ObservableList<String[]> list = FXCollections.observableArrayList();
+        for (var sentence: doc.sentences()) {
+            for (int i = 0; i < sentence.length(); i++) {
+                list.add(new String[] {sentence.word(i), sentence.posTag(i)});
+            }
+        }
+        return list;
+    }
 }
