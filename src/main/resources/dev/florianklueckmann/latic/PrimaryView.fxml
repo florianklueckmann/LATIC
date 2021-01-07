@@ -15,20 +15,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.fxmisc.richtext.InlineCssTextArea?>
 
+<?import javafx.scene.control.TreeView?>
 <BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.florianklueckmann.latic.PrimaryViewModel">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu fx:id="menuFile" mnemonicParsing="false" text="%file">
                     <items>
-                        <MenuItem fx:id="menuFileOpen" mnemonicParsing="false" text="Open" />
-                        <MenuItem fx:id="menuFileSave" mnemonicParsing="false" text="Save" />
-                        <MenuItem fx:id="menuFileClose" mnemonicParsing="false" text="Close" />
+                        <MenuItem fx:id="menuItemOpen" mnemonicParsing="false" text="%open" />
+                        <MenuItem fx:id="menuItemSave" mnemonicParsing="false" text="%save" />
+                        <MenuItem fx:id="menuItemClose" mnemonicParsing="false" text="%close" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu fx:id="menuHelp" mnemonicParsing="false" text="%help">
                     <items>
-                        <MenuItem fx:id="menuHelpDocumentation" mnemonicParsing="false" text="Documentation" />
+                        <MenuItem fx:id="menuItemDocumentation" mnemonicParsing="false" text="%documentation" />
                     </items>
                 </Menu>
             </menus>
@@ -46,8 +47,8 @@
    <right>
       <VBox prefHeight="472.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-                  <Label text="Language" />
-                  <ChoiceBox fx:id="choiceBoxLanguage" onAction="#changeLanguage" prefHeight="25.0" prefWidth="142.0" />
+                  <Label fx:id="labelLanguage" text="%language" />
+                  <ChoiceBox fx:id="choiceBoxLanguage"  onAction="#changeLanguage" prefHeight="25.0" prefWidth="142.0" />
             <Separator prefWidth="200.0" />
             <!--     <CheckBox fx:id="checkboxWordCount" layoutX="9.0" layoutY="66.0" mnemonicParsing="false" text="Word Count" />
                         <CheckBox fx:id="checkboxPronounsAll" layoutX="9.0" layoutY="91.0" mnemonicParsing="false" text="Pronouns">
@@ -65,15 +66,16 @@
                         <CheckBox fx:id="checkboxSentenceLengthWords" layoutX="24.0" layoutY="176.0" mnemonicParsing="false" text="Words" />
                         <CheckBox fx:id="checkboxSentenceLengthCharacters" layoutX="24.0" layoutY="196.0" mnemonicParsing="false" text="Characters" />
                         <CheckBox fx:id="checkboxSentenceLengthSyllables" layoutX="24.0" layoutY="216.0" mnemonicParsing="false" text="Syllables" /> -->
-            <ListView fx:id="checkList" prefHeight="323.0" prefWidth="200.0" VBox.vgrow="SOMETIMES" />
+<!--            <ListView fx:id="checkList" prefHeight="323.0" prefWidth="200.0" VBox.vgrow="SOMETIMES" />-->
+             <TreeView fx:id="treeView" prefHeight="323.0" prefWidth="200.0" VBox.vgrow="SOMETIMES" />
          </children>
       </VBox>
    </right>
    <bottom>
           <HBox alignment="CENTER" fillHeight="false" prefHeight="99.0" prefWidth="600.0" spacing="10.0">
               <children>
-                    <Button fx:id="buttonAnalyze" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#AnalyzeText" text="Analyze" />
-            <Button fx:id="buttonSaveFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveClicked" text="Save file" />
+                    <Button fx:id="buttonAnalyze" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#AnalyzeText" text="%analyze" />
+                    <Button fx:id="buttonSaveFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveClicked" text="%saveFile" />
               </children>
           </HBox>
    </bottom>
