@@ -1,5 +1,6 @@
 package dev.florianklueckmann.latic;
 
+import dev.florianklueckmann.latic.Translation.Translation;
 import dev.florianklueckmann.latic.services.*;
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.simple.Document;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class PrimaryModel {
 
-    private String language = "english"; //TODO: Maybe use ENUM
+    private Locale language = Translation.getInstance().getLocale(); //TODO: Maybe use ENUM
     private Properties props;
     SimpleTextAnalyzer simpleTextAnalyzer;
     TextFormattingService textFormattingService;
@@ -61,27 +62,27 @@ public class PrimaryModel {
         this.doc = new Document(props, text);
     }
 
-    public String getLanguage() {
+    public Locale getLanguage() {
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(Locale language) {
         //TODO: Lookup Option<String>
-        if (language.length() > 0) {
+//        if (language) {
             this.language = language;
-            if (!language.equals("english")) {
+            if (!language.getLanguage().equalsIgnoreCase("en")) {
                 try {
-                    props.load(IOUtils.readerFromString("StanfordCoreNLP-" + language + ".properties"));
+                    props.load(IOUtils.readerFromString("StanfordCoreNLP-" + language.getDisplayLanguage(Locale.ENGLISH).toLowerCase(Locale.ROOT) + ".properties"));
                 } catch (IOException e) {
                     //TODO: Error Handling
                     e.printStackTrace();
                 }
             }
             //TODO Find a better way to set language
-            if (language.equals("english")) {
+            if (language.getLanguage().equalsIgnoreCase("en")) {
                 props = new Properties();
             }
-        }
+//        }
     }
 
     public void printSentences() {
@@ -97,7 +98,8 @@ public class PrimaryModel {
 
         WordClassService wordClassCounter;
 
-        if (language.toLowerCase().equals("german"))
+        //TODO
+        if (language.equals(Locale.GERMAN))
             wordClassCounter = new GermanWordClassService();
         else
             wordClassCounter = new EnglishWordClassService();
@@ -116,7 +118,8 @@ public class PrimaryModel {
 
         WordClassService wordClassCounter;
 
-        if (language.toLowerCase().equals("german"))
+        //TODO
+        if (language.equals(Locale.GERMAN))
             wordClassCounter = new GermanWordClassService();
         else
             wordClassCounter = new EnglishWordClassService();
@@ -135,7 +138,8 @@ public class PrimaryModel {
 
         WordClassService wordClassCounter;
 
-        if (language.toLowerCase().equals("german"))
+        //TODO
+        if (language.equals(Locale.GERMAN))
             wordClassCounter = new GermanWordClassService();
         else
             wordClassCounter = new EnglishWordClassService();
@@ -357,7 +361,7 @@ public class PrimaryModel {
 
         TextItemData textItemData;
 
-        if (language.toLowerCase().equals("german"))
+        if (language.equals(Locale.GERMAN))
             textItemData = new GermanTextItemData(doc.text());
         else
             textItemData = new EnglishTextItemData(doc.text());

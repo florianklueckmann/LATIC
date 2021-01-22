@@ -1,5 +1,6 @@
 package dev.florianklueckmann.latic;
 
+import dev.florianklueckmann.latic.Translation.Translation;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -24,6 +25,10 @@ public class Task {
         return id.getReadOnlyProperty();
     }
 
+    @Override
+    public String toString(){
+        return getName();
+    }
 
 
     public String getName() {
