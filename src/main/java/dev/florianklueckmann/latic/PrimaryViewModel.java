@@ -137,7 +137,7 @@ public class PrimaryViewModel implements Initializable {
         textAreaOutput.appendText("\n");
     }
 
-    public void addResults(String results) {
+    public void addResultsToTextArea(String results) {
         textAreaOutput.appendText(results);
         textAreaOutput.appendText("\n");
     }
@@ -324,63 +324,25 @@ public class PrimaryViewModel implements Initializable {
                         .collect(Collectors.toList())
         );
 
-
         primaryModel.setParagraphs(textAreaInput.getParagraphs());
         primaryModel.initializeDocument();
 
         //TODO Only Anylyze Selected Items
         //TODO Dont duplicate tasks in textTasks
-        textItemDataResults.add(primaryModel.analyzeItem(textTasks, generalTasks, languageSpecificTasks));
-
-        addResults("Item:");
-        textAreaInput.getParagraphs().forEach(charSequence -> addResults(charSequence.toString()));
-
-        primaryModel.analyzeGeneralItemCharacteristics(generalTasks)
-                .forEach(linguisticFeature -> addResults(
-                        //linguisticFeature.getId() +  " : " +
-                        linguisticFeature.getName() + " : " +
-                        linguisticFeature.getValue()));
-
-        log("---- selected Tasks ----");
-        languageSpecificTasks.stream().forEach(task -> log(task.getId() + " : " + task.isSelected()));
-        log("---- end selected Tasks -----");
-        for (var linguisticFeature : primaryModel.wordClassesAsList(languageSpecificTasks))
-        {
-            if (languageSpecificTaskCheckBoxItems.stream().anyMatch(taskCheckBoxTreeItem -> taskCheckBoxTreeItem.getValue().getId().equals(linguisticFeature.getId()) && taskCheckBoxTreeItem.isSelected()))
-            {
-                addResults(
-                        //linguisticFeature.getId() +  " : " +
-                        linguisticFeature.getName() + " : " +
-                                linguisticFeature.getValue());
-            }
-            log(linguisticFeature.getId() + " : " + linguisticFeature.getName() + " : " +
-                    linguisticFeature.getValue());
-        }
-
-        addResults("\n" + "----------------Text and Tags----------------" + "\n");
-
-        for (var linguisticFeature : primaryModel.analyzeTextInformation(textTasks))
-        {
-            if (textTaskCheckBoxItems.stream().anyMatch(taskCheckBoxTreeItem -> taskCheckBoxTreeItem.getValue().getId().equals(linguisticFeature.getId()) && taskCheckBoxTreeItem.isSelected()))
-
-            {
-                addResults(
-                        //linguisticFeature.getId() +  " : " +
-                        linguisticFeature.getName() + " : \n" +
-                                linguisticFeature.getValue());
-            }
-            log(linguisticFeature.getId() + " : " + linguisticFeature.getName() + " : " +
-                    linguisticFeature.getValue());
-        }
-
-        addResults("\n" + "---------------------------------------------" + "\n");
-
+        var currentItem = primaryModel.processTasks(textTasks, generalTasks, languageSpecificTasks);
+        textItemDataResults.add(currentItem);
+        //TODO: Add Option to Disable TextAreaOutput
+        printResultToTextArea(currentItem);
 
         tableViewResults.setItems(textItemDataResults);
     }
 
-    private void appendSelectedTextInformation() {
-
+    private void printResultToTextArea(TextItemData textItemData, int... position) {
+            addResultsToTextArea(String.format("Item %s:", position.length == 1 ? position[0] : ""));
+        textItemData.getIdValueMap().forEach((key, value) -> addResultsToTextArea(
+                    String.format("%s:\n%s",
+                            Translation.getInstance().getTranslation(key), value)));
+            addResultsToTextArea("--------");
     }
 
     private void log(Object o) {
@@ -405,16 +367,6 @@ public class PrimaryViewModel implements Initializable {
                 tableViewResults.getColumns().add(column);
             }
         }
-
-//        for (var item : allTaskCheckBoxItems) {
-//            if (item.selectedProperty().get())
-//            {
-//                TableColumn<TextItemData, ?> column = new TableColumn<>(item.getValue().getName());
-//                column.setId(item.getValue().getId());
-//                column.setCellValueFactory(new PropertyValueFactory<>(item.getValue().getId()));
-//                tableViewResults.getColumns().add(column);
-//            }
-//        }
     }
 
 }

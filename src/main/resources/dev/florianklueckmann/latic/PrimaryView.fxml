@@ -50,23 +50,6 @@
                   <Label fx:id="labelLanguage" text="%language" />
                   <ChoiceBox fx:id="choiceBoxLanguage"  onAction="#changeLanguage" prefHeight="25.0" prefWidth="142.0" />
             <Separator prefWidth="200.0" />
-            <!--     <CheckBox fx:id="checkboxWordCount" layoutX="9.0" layoutY="66.0" mnemonicParsing="false" text="Word Count" />
-                        <CheckBox fx:id="checkboxPronounsAll" layoutX="9.0" layoutY="91.0" mnemonicParsing="false" text="Pronouns">
-                            <font>
-                                <Font name="System Bold" size="12.0" />
-                            </font>
-                        </CheckBox>
-                        <CheckBox fx:id="checkboxPronounsPersonal" layoutX="24.0" layoutY="110.0" mnemonicParsing="false" text="Personal" />
-                        <CheckBox fx:id="checkboxPronounsPossessive" layoutX="24.0" layoutY="130.0" mnemonicParsing="false" text="Possessive" />
-                        <CheckBox fx:id="checkboxSentenceLengthAll" layoutX="10.0" layoutY="157.0" mnemonicParsing="false" text="Sentence Length">
-                            <font>
-                                <Font name="System Bold" size="12.0" />
-                            </font>
-                        </CheckBox>
-                        <CheckBox fx:id="checkboxSentenceLengthWords" layoutX="24.0" layoutY="176.0" mnemonicParsing="false" text="Words" />
-                        <CheckBox fx:id="checkboxSentenceLengthCharacters" layoutX="24.0" layoutY="196.0" mnemonicParsing="false" text="Characters" />
-                        <CheckBox fx:id="checkboxSentenceLengthSyllables" layoutX="24.0" layoutY="216.0" mnemonicParsing="false" text="Syllables" /> -->
-<!--            <ListView fx:id="checkList" prefHeight="323.0" prefWidth="200.0" VBox.vgrow="SOMETIMES" />-->
              <TreeView fx:id="treeView" prefHeight="323.0" prefWidth="200.0" VBox.vgrow="SOMETIMES" />
          </children>
       </VBox>

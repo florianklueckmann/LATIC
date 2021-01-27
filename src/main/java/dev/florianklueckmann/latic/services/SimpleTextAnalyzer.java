@@ -1,10 +1,16 @@
 package dev.florianklueckmann.latic.services;
 
+import dev.florianklueckmann.latic.LinguisticFeature;
+import dev.florianklueckmann.latic.Task;
+import dev.florianklueckmann.latic.TextItemData;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import static java.lang.Math.toIntExact;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +34,68 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     public void setDoc(Document doc) {
         this.doc = doc;
     }
+
+
+    public void processTasks(TextItemData textItemData, ObservableList<Task> tasks) {
+        setDoc(doc);
+
+        ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
+        List<String> errorList = new ArrayList<>();
+
+        for (var task : tasks) {
+            if (task.selectedProperty().get()) {
+                java.lang.reflect.Method setter;
+                java.lang.reflect.Method simpleTextAnalyzerMethod;
+
+                var setterName = task.getId();
+                setterName = setterName.substring(0, 1).toUpperCase() + setterName.substring(1);
+                setterName = "set" + setterName;
+
+                try {
+                    simpleTextAnalyzerMethod = this.getClass().getMethod(task.getId());
+
+                    if (task.getId().toLowerCase().contains("average")
+                            || task.getId().toLowerCase().contains("score")
+                            || task.getId().toLowerCase().equals("lexicaldiversity")) {
+                        setter = textItemData.getClass().getMethod(setterName, double.class);
+                        setter.invoke(textItemData, (double) simpleTextAnalyzerMethod.invoke(this));
+                    } else if (task.getId().toLowerCase().contains("count")) {
+                        setter = textItemData.getClass().getMethod(setterName, int.class);
+                        setter.invoke(textItemData, (int) simpleTextAnalyzerMethod.invoke(this));
+                    } else {
+                        setter = textItemData.getClass().getMethod(setterName, String.class);
+                        setter.invoke(textItemData, String.valueOf(simpleTextAnalyzerMethod.invoke(this)));
+                    }
+
+//                    if (task.getId().toLowerCase().contains("average")
+//                            || task.getId().toLowerCase().contains("score")
+//                            || task.getId().toLowerCase().equals("lexicaldiversity")) {
+//                        setter = textItemData.getClass().getMethod(setterName, double.class);
+//                        setter.invoke(textItemData, (double) simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer));
+//                    } else if (task.getId().toLowerCase().contains("count")) {
+//                        setter = textItemData.getClass().getMethod(setterName, int.class);
+//                        setter.invoke(textItemData, (int) simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer));
+//                    } else {
+//                        setter = textItemData.getClass().getMethod(setterName, String.class);
+//                        setter.invoke(textItemData, String.valueOf(simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer)));
+//                    }
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
+                }
+            }
+        }
+    }
+
+
+
+
 
     protected boolean isPunctuation(String word) {
         return word.matches("([.,?!():;'\"])");

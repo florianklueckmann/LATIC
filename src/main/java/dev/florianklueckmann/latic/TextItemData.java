@@ -1,6 +1,8 @@
 package dev.florianklueckmann.latic;
 
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -118,6 +120,23 @@ public abstract class TextItemData {
         };
     }
 
+    public ObservableMap<String, String> getIdValueMap() {
+        var valueMap = new HashMap<String, String>();
+        valueMap.put("text",getText());
+        valueMap.put("textAndPosTags",getTextAndPosTags());
+        valueMap.put("posTagsPerSentence",getPosTagsPerSentence());
+        valueMap.put("wordCount",String.valueOf(getWordCount()));
+        valueMap.put("averageWordLengthCharacters",String.valueOf(getAverageWordLengthCharacters()));
+        valueMap.put("sentenceCount",String.valueOf(getSentenceCount()));
+        valueMap.put("averageSentenceLengthCharacters",String.valueOf(getAverageSentenceLengthCharacters()));
+        valueMap.put("averageSentenceLengthCharactersWithoutWhitespaces",String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()));
+        valueMap.put("averageSentenceLengthWords",String.valueOf(getLexicalDiversity()));
+        valueMap.put("lexicalDiversity",String.valueOf(getLexicalDiversity()));
+        valueMap.put("lixReadabilityScore",String.valueOf(getLixReadabilityScore()));
+
+        return FXCollections.observableMap(valueMap);
+    }
+
     public double getAverageSentenceLengthWords() {
         return averageSentenceLengthWords.get();
     }
@@ -131,7 +150,6 @@ public abstract class TextItemData {
     }
 
     public String getText() {
-        System.out.println("text: " + text.get());
         if(!text.get().isEmpty())
             return text.get();
         else return "Empty";
