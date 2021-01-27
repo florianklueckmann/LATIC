@@ -2,6 +2,7 @@ package dev.florianklueckmann.latic;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.ObservableMap;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -87,6 +88,33 @@ public class EnglishTextItemData extends TextItemData
 
         return Stream.concat(Arrays.stream(superValues), Arrays.stream(values))
                 .toArray(String[]::new);
+    }
+
+    @Override
+    public ObservableMap<String, String> getIdValueMap() {
+        var valueMap = super.getIdValueMap();
+        valueMap.put("adjectives",String.valueOf(getAdjectives()));
+        valueMap.put("conjunctions",String.valueOf(getConjunctions()));
+        valueMap.put("prepositionOrSubordinatingConjunction",String.valueOf(getPrepositionOrSubordinatingConjunction()));
+        valueMap.put("adverbs",String.valueOf(getAdverbs()));
+        valueMap.put("determiner",String.valueOf(getDeterminer()));
+        valueMap.put("interjections",String.valueOf(getInterjections()));
+        valueMap.put("modals",String.valueOf(getModals()));
+        valueMap.put("nouns",String.valueOf(getNouns()));
+        valueMap.put("numbers",String.valueOf(getNumbers()));
+        valueMap.put("particles",String.valueOf(getParticles()));
+        valueMap.put("pronouns",String.valueOf(getPronouns()));
+        valueMap.put("properNouns",String.valueOf(getProperNouns()));
+        valueMap.put("symbols",String.valueOf(getSymbols()));
+        valueMap.put("verbs",String.valueOf(getVerbs()));
+        valueMap.put("punctuation",String.valueOf(getPunctuation()));
+        valueMap.put("existentialThere",String.valueOf(getExistentialThere()));
+        valueMap.put("listItemMarkers",String.valueOf(getListItemMarkers()));
+        valueMap.put("possessiveEndings",String.valueOf(getPossessiveEndings()));
+        valueMap.put("to",String.valueOf(getTo()));
+        valueMap.put("unknown",String.valueOf(getUnknown()));
+
+        return valueMap;
     }
 
     public int getConjunctions()
