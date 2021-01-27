@@ -2,13 +2,14 @@ package dev.florianklueckmann.latic;
 
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
-import java.util.Arrays;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 
 public abstract class TextItemData {
-    StringProperty text;
+    final StringProperty text;
     StringProperty textAndPosTags;
     StringProperty posTagsPerSentence;
     IntegerProperty wordCount;
@@ -20,7 +21,7 @@ public abstract class TextItemData {
     DoubleProperty lexicalDiversity;
     DoubleProperty lixReadabilityScore;
 
-//    IntegerProperty adverbs;
+//    IntegerProperty advers;
 //    IntegerProperty determiner;
 //    IntegerProperty interjections;
 //    IntegerProperty modals;
@@ -95,13 +96,13 @@ public abstract class TextItemData {
         this.textAndPosTags = new SimpleStringProperty();
         this.posTagsPerSentence = new SimpleStringProperty();
         this.wordCount = new SimpleIntegerProperty();
-        this.averageWordLengthCharacters = new SimpleDoubleProperty();
+        this.averageWordLengthCharacters = new RoundedDoubleProperty();
         this.sentenceCount = new SimpleIntegerProperty();
-        this.averageSentenceLengthCharacters = new SimpleDoubleProperty();
-        this.averageSentenceLengthCharactersWithoutWhitespaces = new SimpleDoubleProperty();
-        this.averageSentenceLengthWords = new SimpleDoubleProperty();
-        this.lexicalDiversity = new SimpleDoubleProperty();
-        this.lixReadabilityScore = new SimpleDoubleProperty();
+        this.averageSentenceLengthCharacters = new RoundedDoubleProperty();
+        this.averageSentenceLengthCharactersWithoutWhitespaces = new RoundedDoubleProperty();
+        this.averageSentenceLengthWords = new RoundedDoubleProperty();
+        this.lexicalDiversity = new RoundedDoubleProperty();
+        this.lixReadabilityScore = new RoundedDoubleProperty();
     }
 
     public String[] getValues() {
@@ -119,6 +120,23 @@ public abstract class TextItemData {
         };
     }
 
+    public ObservableMap<String, String> getIdValueMap() {
+        var valueMap = new HashMap<String, String>();
+        valueMap.put("text",getText());
+        valueMap.put("textAndPosTags",getTextAndPosTags());
+        valueMap.put("posTagsPerSentence",getPosTagsPerSentence());
+        valueMap.put("wordCount",String.valueOf(getWordCount()));
+        valueMap.put("averageWordLengthCharacters",String.valueOf(getAverageWordLengthCharacters()));
+        valueMap.put("sentenceCount",String.valueOf(getSentenceCount()));
+        valueMap.put("averageSentenceLengthCharacters",String.valueOf(getAverageSentenceLengthCharacters()));
+        valueMap.put("averageSentenceLengthCharactersWithoutWhitespaces",String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()));
+        valueMap.put("averageSentenceLengthWords",String.valueOf(getLexicalDiversity()));
+        valueMap.put("lexicalDiversity",String.valueOf(getLexicalDiversity()));
+        valueMap.put("lixReadabilityScore",String.valueOf(getLixReadabilityScore()));
+
+        return FXCollections.observableMap(valueMap);
+    }
+
     public double getAverageSentenceLengthWords() {
         return averageSentenceLengthWords.get();
     }
@@ -132,7 +150,6 @@ public abstract class TextItemData {
     }
 
     public String getText() {
-        System.out.println("text: " + text.get());
         if(!text.get().isEmpty())
             return text.get();
         else return "Empty";

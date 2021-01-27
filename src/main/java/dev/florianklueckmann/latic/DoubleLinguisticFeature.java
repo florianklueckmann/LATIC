@@ -3,7 +3,7 @@ package dev.florianklueckmann.latic;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
-public class DoubleLinguisticFeature extends LinguisticFeatureBase {
+public class DoubleLinguisticFeature extends LinguisticFeatureBase{
     public Double getValue() {
         return value.get();
     }

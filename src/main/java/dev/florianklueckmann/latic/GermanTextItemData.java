@@ -5,8 +5,10 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -57,6 +59,7 @@ public class GermanTextItemData extends TextItemData {
         this.subordinatingConjunctions = new SimpleIntegerProperty();
     }
 
+    @Override
     public String[] getValues() {
 
         String[] superValues = super.getValues();
@@ -83,6 +86,31 @@ public class GermanTextItemData extends TextItemData {
 
         return Stream.concat(Arrays.stream(superValues), Arrays.stream(values))
                 .toArray(String[]::new);
+    }
+
+    @Override
+    public ObservableMap<String, String> getIdValueMap() {
+        var valueMap = super.getIdValueMap();
+        valueMap.put("adjectives",String.valueOf(getAdjectives()));
+        valueMap.put("adpositions",String.valueOf(getAdpositions()));
+        valueMap.put("conjunctions",String.valueOf(getConjunctions()));
+        valueMap.put("coordinatingConjunctions",String.valueOf(getCoordinatingConjunctions()));
+        valueMap.put("subordinatingConjunctions",String.valueOf(getSubordinatingConjunctions()));
+        valueMap.put("adverbs",String.valueOf(getAdverbs()));
+        valueMap.put("determiner",String.valueOf(getDeterminer()));
+        valueMap.put("interjections",String.valueOf(getInterjections()));
+        valueMap.put("modals",String.valueOf(getModals()));
+        valueMap.put("nouns",String.valueOf(getNouns()));
+        valueMap.put("numbers",String.valueOf(getNumbers()));
+        valueMap.put("particles",String.valueOf(getParticles()));
+        valueMap.put("pronouns",String.valueOf(getPronouns()));
+        valueMap.put("properNouns",String.valueOf(getProperNouns()));
+        valueMap.put("symbols",String.valueOf(getSymbols()));
+        valueMap.put("verbs",String.valueOf(getVerbs()));
+        valueMap.put("punctuation",String.valueOf(getPunctuation()));
+        valueMap.put("unknown",String.valueOf(getUnknown()));
+
+        return valueMap;
     }
 
     public int getAdpositions() {
