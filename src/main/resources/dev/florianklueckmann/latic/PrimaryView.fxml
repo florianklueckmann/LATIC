@@ -59,6 +59,7 @@
               <children>
                     <Button fx:id="buttonAnalyze" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#AnalyzeText" text="%analyze" />
                     <Button fx:id="buttonSaveFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveClicked" text="%saveFile" />
+                    <Button fx:id="buttonSaveTestFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveTestClicked" text="Save Test File" />
               </children>
           </HBox>
    </bottom>

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CsvBuilder {
-    private static final String DEFAULT_SEPARATOR = "~";
+    private static final String DEFAULT_SEPARATOR = ",";
 
     FileChooser fileChooser = new FileChooser();
 

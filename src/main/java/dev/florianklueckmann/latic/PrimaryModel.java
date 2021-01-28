@@ -183,4 +183,6 @@ public class PrimaryModel {
 
         return textItemData;
     }
+
+    public ObservableList<String[]> testData() { return nlp.getWordTagPairList(); };
 }

@@ -40,6 +40,7 @@ public class PrimaryViewModel implements Initializable {
     public MenuItem menuItemOpen;
     public MenuItem menuItemSave;
     public MenuItem menuItemClose;
+    public Button buttonSaveTestFile;
 
     private PrimaryModel primaryModel;
 
