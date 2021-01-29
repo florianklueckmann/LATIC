@@ -98,7 +98,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
 
     protected boolean isPunctuation(String word) {
-        return word.matches("([.,?!():;'\"])");
+        return word.matches("([\\W_])");
     }
 
     private int sentenceWordCount(Sentence sentence) {
