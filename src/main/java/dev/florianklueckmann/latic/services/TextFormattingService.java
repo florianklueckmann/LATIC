@@ -13,7 +13,7 @@ public class TextFormattingService {
     HashMap<String, String> abbrevDict;
 
     public TextFormattingService() {
-        this.puncts = new ArrayList<>(Arrays.asList(".", ",", "?", "!", "(", ")", ":", ";", "'", "\""));
+        this.puncts = new ArrayList<>(Arrays.asList(".", ",", "?", "!", "(", ")", ":", ";", "'", "\"", "\\", "/", "-", "_"));
         this.abbrevDict = new HashMap<>();
     }
 
