@@ -3,26 +3,25 @@ package dev.florianklueckmann.latic;
 public enum GeneralLanguageItemCharacteristics implements ItemCharacteristics {
 
 
-    ADJECTIVES("Adjectives", "adjectives"),
-    ADVERBS("Adverbs", "adverbs"),
-    DETERMINER("Determiner", "determiner"),
-    INTERJECTIONS("Interjections", "interjections"),
-    MODAL("Modals", "modals"),
-    NOUNS("Nouns", "nouns"),
-    NUMBERS("Numbers", "numbers"),
-    PARTICLES("Particles", "particles"),
-    PRONOUNS("Pronouns", "pronouns"),
-    PROPER_NOUNS("Proper nouns", "properNouns"),
-    SYMBOLS("Symbols", "symbols"),
-    VERBS("Verbs", "verbs"),
-    PUNCTUATION("Punctuation", "punctuation"),
-    UNKNOWN("Unknown", "unknown");
+    ADJECTIVES("adjectives", TaskLevel.WORD_CLASS),
+    ADVERBS("adverbs", TaskLevel.WORD_CLASS),
+    DETERMINER("determiner", TaskLevel.WORD_CLASS),
+    INTERJECTIONS("interjections", TaskLevel.WORD_CLASS),
+    MODAL("modals", TaskLevel.WORD_CLASS),
+    NOUNS("nouns", TaskLevel.WORD_CLASS),
+    NUMBERS("numbers", TaskLevel.WORD_CLASS),
+    PARTICLES("particles", TaskLevel.WORD_CLASS),
+    PRONOUNS("pronouns", TaskLevel.WORD_CLASS),
+    PROPER_NOUNS("properNouns", TaskLevel.WORD_CLASS),
+    SYMBOLS("symbols", TaskLevel.WORD_CLASS),
+    VERBS("verbs", TaskLevel.WORD_CLASS_VERBS),
+    PUNCTUATION("punctuation", TaskLevel.WORD_CLASS),
+    UNKNOWN("unknown", TaskLevel.WORD_CLASS);
 
+    private final TaskLevel level;
 
-    private final String name;
-
-    public String getName() {
-        return name;
+    public TaskLevel getLevel() {
+        return level;
     }
 
     private final String id;
@@ -31,8 +30,13 @@ public enum GeneralLanguageItemCharacteristics implements ItemCharacteristics {
         return id;
     }
 
-    GeneralLanguageItemCharacteristics(String name, String id) {
-        this.name = name;
+    GeneralLanguageItemCharacteristics(String id, TaskLevel level) {
         this.id = id;
+        this.level = level;
+    }
+
+    GeneralLanguageItemCharacteristics(String id) {
+        this.id = id;
+        this.level = TaskLevel.WORD;
     }
 }
