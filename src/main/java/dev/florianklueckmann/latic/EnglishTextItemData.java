@@ -20,6 +20,12 @@ public class EnglishTextItemData extends TextItemData
     IntegerProperty properNouns;
     IntegerProperty symbols;
     IntegerProperty verbs;
+    IntegerProperty verbsBaseForm = new SimpleIntegerProperty();
+    IntegerProperty verbsGerundOrPresentParticiple = new SimpleIntegerProperty();
+    IntegerProperty verbsPastTense = new SimpleIntegerProperty();
+    IntegerProperty verbsPastParticiple = new SimpleIntegerProperty();
+    IntegerProperty verbsNonThirdSingularPresent = new SimpleIntegerProperty();
+    IntegerProperty verbsThirdSingularPresent = new SimpleIntegerProperty();
     IntegerProperty punctuation;
     IntegerProperty unknown;
 
@@ -78,6 +84,12 @@ public class EnglishTextItemData extends TextItemData
                 String.valueOf(getProperNouns()),
                 String.valueOf(getSymbols()),
                 String.valueOf(getVerbs()),
+                String.valueOf(getVerbsBaseForm()),
+                String.valueOf(getVerbsPastTense()),
+                String.valueOf(getVerbsGerundOrPresentParticiple()),
+                String.valueOf(getVerbsPastParticiple()),
+                String.valueOf(getVerbsNonThirdSingularPresent()),
+                String.valueOf(getVerbsThirdSingularPresent()),
                 String.valueOf(getPunctuation()),
                 String.valueOf(getExistentialThere()),
                 String.valueOf(getListItemMarkers()),
@@ -107,6 +119,12 @@ public class EnglishTextItemData extends TextItemData
         valueMap.put("properNouns",String.valueOf(getProperNouns()));
         valueMap.put("symbols",String.valueOf(getSymbols()));
         valueMap.put("verbs",String.valueOf(getVerbs()));
+        valueMap.put("verbsBaseForm",String.valueOf(getVerbsBaseForm()));
+        valueMap.put("verbsPastTense",String.valueOf(getVerbsPastTense()));
+        valueMap.put("verbsGerundOrPresentParticiple",String.valueOf(getVerbsGerundOrPresentParticiple()));
+        valueMap.put("verbsPastParticiple",String.valueOf(getVerbsPastParticiple()));
+        valueMap.put("verbsNonThirdSingularPresent",String.valueOf(getVerbsNonThirdSingularPresent()));
+        valueMap.put("verbsThirdSingularPresent",String.valueOf(getVerbsThirdSingularPresent()));
         valueMap.put("punctuation",String.valueOf(getPunctuation()));
         valueMap.put("existentialThere",String.valueOf(getExistentialThere()));
         valueMap.put("listItemMarkers",String.valueOf(getListItemMarkers()));
@@ -430,5 +448,77 @@ public class EnglishTextItemData extends TextItemData
     public void setAdjectives(int adjectives)
     {
         this.adjectives.set(adjectives);
+    }
+
+    public int getVerbsBaseForm() {
+        return verbsBaseForm.get();
+    }
+
+    public IntegerProperty verbsBaseFormProperty() {
+        return verbsBaseForm;
+    }
+
+    public void setVerbsBaseForm(int verbsBaseForm) {
+        this.verbsBaseForm.set(verbsBaseForm);
+    }
+
+    public int getVerbsGerundOrPresentParticiple() {
+        return verbsGerundOrPresentParticiple.get();
+    }
+
+    public IntegerProperty verbsGerundOrPresentParticipleProperty() {
+        return verbsGerundOrPresentParticiple;
+    }
+
+    public void setVerbsGerundOrPresentParticiple(int verbsGerundOrPresentParticiple) {
+        this.verbsGerundOrPresentParticiple.set(verbsGerundOrPresentParticiple);
+    }
+
+    public int getVerbsPastTense() {
+        return verbsPastTense.get();
+    }
+
+    public IntegerProperty verbsPastTenseProperty() {
+        return verbsPastTense;
+    }
+
+    public void setVerbsPastTense(int verbsPastTense) {
+        this.verbsPastTense.set(verbsPastTense);
+    }
+
+    public int getVerbsPastParticiple() {
+        return verbsPastParticiple.get();
+    }
+
+    public IntegerProperty verbsPastParticipleProperty() {
+        return verbsPastParticiple;
+    }
+
+    public void setVerbsPastParticiple(int verbsPastParticiple) {
+        this.verbsPastParticiple.set(verbsPastParticiple);
+    }
+
+    public int getVerbsNonThirdSingularPresent() {
+        return verbsNonThirdSingularPresent.get();
+    }
+
+    public IntegerProperty verbsNonThirdSingularPresentProperty() {
+        return verbsNonThirdSingularPresent;
+    }
+
+    public void setVerbsNonThirdSingularPresent(int verbsNonThirdSingularPresent) {
+        this.verbsNonThirdSingularPresent.set(verbsNonThirdSingularPresent);
+    }
+
+    public int getVerbsThirdSingularPresent() {
+        return verbsThirdSingularPresent.get();
+    }
+
+    public IntegerProperty verbsThirdSingularPresentProperty() {
+        return verbsThirdSingularPresent;
+    }
+
+    public void setVerbsThirdSingularPresent(int verbsThirdSingularPresent) {
+        this.verbsThirdSingularPresent.set(verbsThirdSingularPresent);
     }
 }

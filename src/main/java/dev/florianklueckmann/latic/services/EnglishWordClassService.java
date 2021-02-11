@@ -23,6 +23,12 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
     private int properNouns = 0;
     private int symbols = 0;
     private int verbs = 0;
+    private int verbsBaseForm = 0;
+    private int verbsGerundOrPresentParticiple = 0;
+    private int verbsPastTense = 0;
+    private int verbsPastParticiple = 0;
+    private int verbsNonThirdSingularPresent = 0;
+    private int verbsThirdSingularPresent = 0;
     private int to = 0;
     private int punctuations = 0;
     private int unknown = 0;
@@ -113,6 +119,18 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
         }
         if (tag.contains("VB")) {
             verbs++;
+            if (tag.equalsIgnoreCase("VB"))
+                verbsBaseForm++;
+            else if (tag.equalsIgnoreCase("VBD"))
+                verbsPastTense++;
+            else if (tag.equalsIgnoreCase("VBG"))
+                verbsGerundOrPresentParticiple++;
+            else if (tag.equalsIgnoreCase("VBN"))
+                verbsPastParticiple++;
+            else if (tag.equalsIgnoreCase("VBP"))
+                verbsNonThirdSingularPresent++;
+            else if (tag.equalsIgnoreCase("VBZ"))
+                verbsThirdSingularPresent++;
             return;
         }
         if (
@@ -153,6 +171,12 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
                 new IntegerLinguisticFeature("Proper nouns", "properNouns", properNouns),
                 new IntegerLinguisticFeature("Symbols", "symbols", symbols),
                 new IntegerLinguisticFeature("Verbs", "verbs", verbs),
+                new IntegerLinguisticFeature("Verbs Base Form", "verbsBaseForm", verbsBaseForm),
+                new IntegerLinguisticFeature("Verbs Past Tense", "verbsPastTense", verbsPastTense),
+                new IntegerLinguisticFeature("Verbs Gerund/PresentParticiple", "verbsGerundOrPresentParticiple", verbsGerundOrPresentParticiple),
+                new IntegerLinguisticFeature("Verbs Past Participle", "verbsPastParticiple", verbsPastParticiple),
+                new IntegerLinguisticFeature("Verbs non Third Person Singular Present", "verbsNonThirdSingularPresent", verbsNonThirdSingularPresent),
+                new IntegerLinguisticFeature("Verbs Third Person Singular Present", "verbsThirdSingularPresent", verbsThirdSingularPresent),
                 new IntegerLinguisticFeature("to", "to", to),
                 new IntegerLinguisticFeature("Punctuation", "punctuation", punctuations),
                 new IntegerLinguisticFeature("Unknown", "unknown", unknown)
