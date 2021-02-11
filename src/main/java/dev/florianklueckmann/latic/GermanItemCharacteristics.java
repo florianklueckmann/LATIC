@@ -1,11 +1,11 @@
 package dev.florianklueckmann.latic;
 
-public enum GermanItemCharacteristics {
+public enum GermanItemCharacteristics implements ItemCharacteristics {
 //    ADJECTIVES("Adjectives", "adjectives"),
-    ADPOSITIONS("Adpositions", "adpositions"),
+    ADPOSITIONS( "adpositions", TaskLevel.WORD_CLASS),
 //    ADVERBS("Adverbs", "adverbs"),
-    COORDINATING_CONJUNCTIONS("Coordinating conjunctions", "coordinatingConjunctions"),
-    SUBORDINATING_CONJUNCTIONS("Subordinating conjunctions", "subordinatingConjunctions");
+    COORDINATING_CONJUNCTIONS("coordinatingConjunctions", TaskLevel.WORD_CLASS),
+    SUBORDINATING_CONJUNCTIONS( "subordinatingConjunctions", TaskLevel.WORD_CLASS);
 //    DETERMINER("Determiner", "determiner"),
 //    PROPER_NOUNS("Proper nouns", "properNouns");
 //    INTERJECTIONS("Interjections", "interjections"),
@@ -19,10 +19,10 @@ public enum GermanItemCharacteristics {
 //    PUNCTUATION("Punctuation", "punctuation"),
 //    UNKNOWN("Unknown", "unknown");
 
-    private final String name;
+    private final TaskLevel level;
 
-    public String getName() {
-        return name;
+    public TaskLevel getLevel() {
+        return level;
     }
 
     private final String id;
@@ -31,8 +31,14 @@ public enum GermanItemCharacteristics {
         return id;
     }
 
-    GermanItemCharacteristics(String name, String id) {
-        this.name = name;
+
+    GermanItemCharacteristics(String id, TaskLevel level) {
         this.id = id;
+        this.level = level;
+    }
+
+    GermanItemCharacteristics(String id) {
+        this.id = id;
+        this.level = TaskLevel.WORD;
     }
 }

@@ -2,22 +2,19 @@ package dev.florianklueckmann.latic;
 
 public enum GeneralItemCharacteristics implements ItemCharacteristics {
 
-//    TEXT("Text","text"),
-//    TEXT_AND_POS_TAGS("Tagged text","textAndPosTags"),
-//    POS_TAGS_PER_SENTENCE("Tagged sentences","posTagsPerSentence"),
-    WORD_COUNT("Word count","wordCount"),
-    AVERAGE_WORD_LENGTH_CHAR("Word length (characters)","averageWordLengthCharacters"),
-    SENTENCE_COUNT("Number of sentences","sentenceCount"),
-    AVERAGE_SENTENCE_LENGTH_CHARACTERS("Sentence length (characters)","averageSentenceLengthCharacters"),
-    AVERAGE_SENTENCE_LENGTH_CHARACTERS_WITHOUT_WHITESPACES("Sentence length (characters w/o spaces)","averageSentenceLengthCharactersWithoutWhitespaces"),
-    AVERAGE_SENTENCE_LENGTH_WORDS("Sentence length (words)","averageSentenceLengthWords"),
-    LEXICAL_DIVERSITY("Lexical Diversity","lexicalDiversity"),
-    LIX_SCORE("LIX","lixReadabilityScore");
+    WORD_COUNT("wordCount", TaskLevel.TEXT),
+    AVERAGE_WORD_LENGTH_CHAR("averageWordLengthCharacters", TaskLevel.WORD),
+    SENTENCE_COUNT("sentenceCount", TaskLevel.SENTENCE),
+    AVERAGE_SENTENCE_LENGTH_CHARACTERS("averageSentenceLengthCharacters", TaskLevel.SENTENCE_LENGTH),
+    AVERAGE_SENTENCE_LENGTH_CHARACTERS_WITHOUT_WHITESPACES("averageSentenceLengthCharactersWithoutWhitespaces", TaskLevel.SENTENCE_LENGTH),
+    AVERAGE_SENTENCE_LENGTH_WORDS("averageSentenceLengthWords", TaskLevel.SENTENCE_LENGTH),
+    LEXICAL_DIVERSITY("lexicalDiversity", TaskLevel.TEXT),
+    LIX_SCORE("lixReadabilityScore", TaskLevel.TEXT_READABILITY);
 
-    private final String name;
+    private final TaskLevel level;
 
-    public String getName() {
-        return name;
+    public TaskLevel getLevel() {
+        return level;
     }
 
     private final String id;
@@ -26,9 +23,9 @@ public enum GeneralItemCharacteristics implements ItemCharacteristics {
         return id;
     }
 
-    GeneralItemCharacteristics(String name, String id) {
-        this.name = name;
+    GeneralItemCharacteristics(String id, TaskLevel level) {
         this.id = id;
+        this.level = level;
     }
 
 }

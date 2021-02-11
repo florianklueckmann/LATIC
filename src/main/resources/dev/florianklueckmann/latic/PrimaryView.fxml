@@ -45,7 +45,7 @@
         </VBox>
     </center>
    <right>
-      <VBox prefHeight="472.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="472.0" prefWidth="300.0" BorderPane.alignment="CENTER">
          <children>
                   <Label fx:id="labelLanguage" text="%language" />
                   <ChoiceBox fx:id="choiceBoxLanguage"  onAction="#changeLanguage" prefHeight="25.0" prefWidth="142.0" />

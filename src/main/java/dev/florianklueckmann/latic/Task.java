@@ -10,10 +10,20 @@ public class Task {
     private ReadOnlyStringWrapper name = new ReadOnlyStringWrapper();
     private ReadOnlyStringWrapper id = new ReadOnlyStringWrapper();
     private BooleanProperty selected = new SimpleBooleanProperty(false);
+    private TaskLevel level;
 
-    public Task(String name, String id) {
+    public Task(TaskLevel taskLevel) {
+        this.name.set(taskLevel.name());
+        this.id.set(taskLevel.name());
+        this.level = taskLevel;
+
+        setSelected(true);
+    }
+
+    public Task(String name, String id, TaskLevel taskLevel) {
         this.name.set(name);
         this.id.set(id);
+        this.level = taskLevel;
 
         setSelected(true);
     }
@@ -38,6 +48,8 @@ public class Task {
         return name.getReadOnlyProperty();
     }
 
+    public TaskLevel getLevel() {return this.level;}
+
     public BooleanProperty selectedProperty() {
         return selected;
     }
@@ -46,5 +58,9 @@ public class Task {
     }
     public void setSelected(boolean selected) {
         this.selected.set(selected);
+    }
+
+    public boolean equals(Task task) {
+        return this.id.equals(task.id);
     }
 }
