@@ -13,7 +13,7 @@ public class Task {
     private TaskLevel level;
 
     public Task(TaskLevel taskLevel) {
-        this.name.set(taskLevel.name());
+        this.name.set(Translation.getInstance().getTranslation(taskLevel.name()));
         this.id.set(taskLevel.name());
         this.level = taskLevel;
 
