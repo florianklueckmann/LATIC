@@ -9,13 +9,13 @@ public enum GeneralLanguageItemCharacteristics implements ItemCharacteristics {
     INTERJECTIONS("interjections", TaskLevel.WORD_CLASS),
     MODAL("modals", TaskLevel.WORD_CLASS),
     NOUNS("nouns", TaskLevel.WORD_CLASS),
-    NUMBERS("numbers", TaskLevel.WORD_CLASS),
+    NUMBERS("numbers", TaskLevel.WORD),
     PARTICLES("particles", TaskLevel.WORD_CLASS),
     PRONOUNS("pronouns", TaskLevel.WORD_CLASS),
     PROPER_NOUNS("properNouns", TaskLevel.WORD_CLASS),
-    SYMBOLS("symbols", TaskLevel.WORD_CLASS),
+    SYMBOLS("symbols", TaskLevel.WORD),
     VERBS("verbs", TaskLevel.WORD_CLASS_VERBS),
-    PUNCTUATION("punctuation", TaskLevel.WORD_CLASS),
+    PUNCTUATION("punctuation", TaskLevel.WORD),
     UNKNOWN("unknown", TaskLevel.WORD_CLASS);
 
     private final TaskLevel level;
