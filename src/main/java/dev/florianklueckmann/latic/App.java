@@ -13,6 +13,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 /**
  * JavaFX App
@@ -26,6 +27,8 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("PrimaryView"), 800, 600);
+        Logger.getLogger("App").debug(String.format("JavaFX runtime: %s", System.getProperty("javafx.runtime.version")));
+        Logger.getLogger("App").debug(String.format("Java runtime: %s", System.getProperty("java.runtime.version")));
         stage.setScene(scene);
         stage.show();
     }
