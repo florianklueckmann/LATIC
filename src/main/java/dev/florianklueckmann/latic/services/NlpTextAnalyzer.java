@@ -1,14 +1,15 @@
 package dev.florianklueckmann.latic.services;
 
-import dev.florianklueckmann.latic.LinguisticFeature;
-import dev.florianklueckmann.latic.Task;
-import dev.florianklueckmann.latic.TextItemData;
+import dev.florianklueckmann.latic.*;
+import edu.stanford.nlp.simple.Token;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
 
@@ -17,12 +18,21 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
     }
     public String textAndPosTags() {
         StringBuilder sb = new StringBuilder();
-        doc.sentences().forEach(sentence -> sb.append(sentence).append("\n").append(sentence.posTags()).append("\n"));
+        //TODO if ListOfWordsToReplaceTags.contains(word) replace words tag with whatever. Maybe use a mapper?
+        System.out.println(doc.sentences().get(0).tokens().get(0).word());
+        System.out.println(doc.sentences().get(0).tokens().get(0).tag());
+        doc.sentences().forEach(sentence -> sb.append(sentence).append("\n").append(replaceTags(sentence.tokens())).append("\n"));
+        System.out.println(sb.toString());
         return sb.toString();
+    }
+
+    private List<String> replaceTags(List<Token> tokens) {
+        return TagMapper.getInstance().replaceTags(tokens);
     }
 
     public String posTagsPerSentence() {
         StringBuilder sb = new StringBuilder();
+        System.out.println(doc.sentences().get(0));
         doc.sentences().forEach(sentence -> sb.append(sentence).append("\n").append(sentence.parse().taggedLabeledYield()).append("\n"));
         return sb.toString();
     }
