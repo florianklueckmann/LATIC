@@ -1,11 +1,15 @@
 package dev.florianklueckmann.latic;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import dev.florianklueckmann.latic.Translation.Translation;
 import dev.florianklueckmann.latic.services.*;
 import javafx.beans.binding.Bindings;
@@ -19,6 +23,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -33,13 +39,14 @@ public class PrimaryViewModel implements Initializable {
     public BorderPane mainPane;
 
     @FXML
-    public Label labelLanguage;
+//    public Label labelLanguage;
     public Menu menuFile;
     public Menu menuHelp;
     public MenuItem menuItemDocumentation;
     public MenuItem menuItemOpen;
     public MenuItem menuItemSave;
     public MenuItem menuItemClose;
+    public ImageView logo;
 
     private PrimaryModel primaryModel;
 
@@ -79,13 +86,20 @@ public class PrimaryViewModel implements Initializable {
         menuItemOpen.textProperty().bind(Translation.getInstance().createStringBinding("open"));
         menuItemSave.textProperty().bind(Translation.getInstance().createStringBinding("save"));
         menuItemClose.textProperty().bind(Translation.getInstance().createStringBinding("close"));
-        labelLanguage.textProperty().bind(Translation.getInstance().createStringBinding("language"));
+//        labelLanguage.textProperty().bind(Translation.getInstance().createStringBinding("language"));
         buttonAnalyze.textProperty().bind(Translation.getInstance().createStringBinding("analyze"));
         buttonSaveFile.textProperty().bind(Translation.getInstance().createStringBinding("saveFile"));
 
         Label resultPlaceholder = new Label();
         resultPlaceholder.textProperty().bind(Translation.getInstance().createStringBinding("resultPlaceholder"));
         tableViewResults.setPlaceholder(resultPlaceholder);
+
+        try {
+            logo.setImage(new Image(new FileInputStream("src/main/resources/dev/florianklueckmann/latic/latic_text_white_60px.png")));
+        } catch (FileNotFoundException e) {
+            logo.setVisible(false);
+            e.printStackTrace();
+        }
     }
 
     public void setLanguages() {
@@ -505,7 +519,9 @@ public class PrimaryViewModel implements Initializable {
         var currentItem = primaryModel.processTasks(textTasks, generalTasks, wordLevelTasks);
         textItemDataResults.add(currentItem);
         //TODO: Add Option to Disable TextAreaOutput
-        printResultToTextArea(currentItem);
+        if (false) {
+            printResultToTextArea(currentItem);
+        }
 
         tableViewResults.setItems(textItemDataResults);
     }
