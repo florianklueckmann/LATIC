@@ -58,7 +58,8 @@ public class KnownTags {
             "NNP", "NNPS",
             "SYM",
             "TO",
-            "VB", "VBG", "VBN", "VBD", "VBZ", "VBP"
+            "VB", "VBG", "VBN", "VBD", "VBZ", "VBP",
+            "PUNCT"
     ).collect(Collectors.toCollection(HashSet::new));
 
     private final Map<Locale, HashSet<String>> tagsMap = Map.ofEntries(
