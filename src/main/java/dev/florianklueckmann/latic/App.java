@@ -1,13 +1,16 @@
 package dev.florianklueckmann.latic;
 
+import com.sun.javafx.css.StyleManager;
 import dev.florianklueckmann.latic.Translation.Translation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -26,9 +29,10 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("PrimaryView"), 800, 600);
+        scene = new Scene(loadFXML("PrimaryView"), 1000, 600);
         Logger.getLogger("App").debug(String.format("JavaFX runtime: %s", System.getProperty("javafx.runtime.version")));
         Logger.getLogger("App").debug(String.format("Java runtime: %s", System.getProperty("java.runtime.version")));
+        scene.getStylesheets().add("./dev/florianklueckmann/latic/main.css");
         stage.setScene(scene);
         stage.show();
     }
