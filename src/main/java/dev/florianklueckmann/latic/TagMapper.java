@@ -40,7 +40,16 @@ public class TagMapper {
             new AbstractMap.SimpleEntry<>("$", "SYM"),
             new AbstractMap.SimpleEntry<>("€", "SYM"),
             new AbstractMap.SimpleEntry<>("¥", "SYM"),
-            new AbstractMap.SimpleEntry<>("&", "SYM")
+            new AbstractMap.SimpleEntry<>("&", "SYM"),
+            new AbstractMap.SimpleEntry<>("|", "SYM"),
+            new AbstractMap.SimpleEntry<>("=", "SYM"),
+            new AbstractMap.SimpleEntry<>("+", "SYM"),
+            new AbstractMap.SimpleEntry<>("/", "SYM"),
+            new AbstractMap.SimpleEntry<>("\\", "SYM"),
+            new AbstractMap.SimpleEntry<>("~", "SYM"),
+            new AbstractMap.SimpleEntry<>("#", "SYM"),
+            new AbstractMap.SimpleEntry<>(">", "SYM"),
+            new AbstractMap.SimpleEntry<>("^", "SYM")
     );
     private final Map<Locale, Map<String, String>> localeFixedTagMaps = Map.ofEntries(
             new AbstractMap.SimpleEntry<>(SupportedLocales.ENGLISH.getLocale(), fixedTagsEn),
