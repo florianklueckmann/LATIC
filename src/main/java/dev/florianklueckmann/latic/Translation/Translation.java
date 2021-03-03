@@ -56,4 +56,8 @@ public class Translation {
     public StringBinding createStringBinding(final String key) {
         return Bindings.createStringBinding(() -> getTranslation(key), locale);
     }
+
+    public String getLanguageTag() {
+        return getLocale().toLanguageTag().toLowerCase(Locale.ROOT);
+    }
 }
