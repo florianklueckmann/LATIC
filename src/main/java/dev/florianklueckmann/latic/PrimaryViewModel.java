@@ -468,6 +468,7 @@ public class PrimaryViewModel implements Initializable {
         primaryModel.setLanguage(choiceBoxLanguage.getValue());
         //TODO Cleaner solution
         Translation.getInstance().setLocale(choiceBoxLanguage.getValue());
+        TagMapper.getInstance().loadInterjections();
         createCheckboxes();
     }
 
