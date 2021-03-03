@@ -8,8 +8,6 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 import dev.florianklueckmann.latic.Translation.Translation;
 import dev.florianklueckmann.latic.services.*;
 import javafx.beans.binding.Bindings;

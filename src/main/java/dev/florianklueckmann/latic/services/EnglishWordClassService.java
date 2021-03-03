@@ -134,16 +134,17 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
             return;
         }
         if (
-                tag.equals(".") ||
-                tag.equals(",") ||
-                tag.equals(":") ||
-                tag.equals("\"") ||
-                tag.equals("-RRB-") ||
-                tag.equals("-LRB-") ||
-                tag.equals("``") ||
-                tag.equals("''") ||
-                tag.equals("HYPH") ||
-                tag.equals("NFP")
+                tag.equals("PUNCT")
+//                tag.equals(".") ||
+//                tag.equals(",") ||
+//                tag.equals(":") ||
+//                tag.equals("\"") ||
+//                tag.equals("-RRB-") ||
+//                tag.equals("-LRB-") ||
+//                tag.equals("``") ||
+//                tag.equals("''") ||
+//                tag.equals("HYPH") ||
+//                tag.equals("NFP")
         ) {
             punctuations++;
             return;
