@@ -9,7 +9,6 @@ import java.util.HashMap;
 public abstract class TextItemData {
     final StringProperty text;
     StringProperty textAndPosTags;
-    StringProperty posTagsPerSentence;
     IntegerProperty wordCount;
     DoubleProperty averageWordLengthCharacters;
     IntegerProperty sentenceCount;
