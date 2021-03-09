@@ -72,11 +72,6 @@ public class PrimaryViewModel implements Initializable {
 
     public ListProperty<Locale> languages = new SimpleListProperty<>();
 
-//    List<CheckBoxTreeItem<Task>> rootBoxes;
-//    List<CheckBoxTreeItem<Task>> subRootBoxes;
-
-//    ObservableList<CheckBoxTreeItem<Task>> allTaskCheckBoxItems;
-
     public void bindGuiElements() {
         menuFile.textProperty().bind(Translation.getInstance().createStringBinding("file"));
         menuHelp.textProperty().bind(Translation.getInstance().createStringBinding("help"));
@@ -168,12 +163,6 @@ public class PrimaryViewModel implements Initializable {
     ObservableList<CheckBoxTreeItem<Task>> textTaskCheckBoxItems;
     ObservableList<CheckBoxTreeItem<Task>> languageSpecificTaskCheckBoxItems;
     ObservableList<CheckBoxTreeItem<Task>> generalTaskCheckBoxItems;
-    ObservableList<CheckBoxTreeItem<Task>> wordLevelTaskCheckBoxItems;
-    ObservableList<CheckBoxTreeItem<Task>> sentenceLevelTaskCheckBoxItems;
-    ObservableList<CheckBoxTreeItem<Task>> sentenceLengthTaskCheckBoxItems;
-    ObservableList<CheckBoxTreeItem<Task>> textLevelTaskCheckBoxItems;
-
-    ObservableList<CheckBoxTreeItem<Task>> checkBoxTreeItems = FXCollections.observableArrayList();
 
     ObservableList<CheckBoxTreeItem<Task>> taskCheckBoxItems;
 
@@ -225,8 +214,6 @@ public class PrimaryViewModel implements Initializable {
             initialFilePath = System.getProperty("user.home");
 
 
-
-
         fileChooser.setInitialDirectory(new File(initialFilePath));
         fileChooser.setTitle("Save File");
         fileChooser.setInitialFileName("table");
@@ -276,10 +263,6 @@ public class PrimaryViewModel implements Initializable {
                 rootBox.getChildren().add(subBox);
                 return;
             }
-//            else if (rootBox.getValue().getLevel().toString().contains(getMainLevel(subBox.getValue().getLevel()))){
-//                rootBox.getChildren().add(subBox);
-//                return;
-//            }
         }
     }
 
@@ -288,6 +271,7 @@ public class PrimaryViewModel implements Initializable {
                 .getLevel().toString()
                 .contains(getMainLevel(sub.getValue().getLevel()));
     }
+
     private String getSubLevel(TaskLevel taskLevel) {
         return taskLevel.toString().substring(taskLevel.toString().indexOf("_")+1);
     }
@@ -390,81 +374,6 @@ public class PrimaryViewModel implements Initializable {
         }
     }
 
-    private void createWordLevelCheckboxes() {
-        wordLevelTaskCheckBoxItems = FXCollections.observableArrayList();
-
-        wordLevelTaskCheckBoxItems.addAll(Arrays.stream
-                (GeneralLanguageItemCharacteristics.values())
-                .map(gLIC -> new CheckBoxTreeItem<Task>(
-                        new Task(Translation.getInstance().getTranslation(gLIC.getId()), gLIC.getId(), gLIC.getLevel()),
-                        null, true))
-                .collect(Collectors.toList()));
-
-        if (choiceBoxLanguage.getValue().equals(Locale.ENGLISH)) {
-            wordLevelTaskCheckBoxItems.addAll(FXCollections.observableArrayList(Arrays.stream(
-                    EnglishItemCharacteristics.values())
-                    .map(eIC -> new CheckBoxTreeItem<Task>(
-                            new Task(Translation.getInstance().getTranslation(eIC.getId()), eIC.getId(), eIC.getLevel()),
-                            null, true))
-                    .collect(Collectors.toList())
-            ));
-        }
-
-        if (choiceBoxLanguage.getValue().equals(Locale.GERMAN)) {
-            wordLevelTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
-                    Arrays.stream(GermanItemCharacteristics.values())
-                            .map(gIC -> new CheckBoxTreeItem<Task>(
-                                    new Task(Translation.getInstance().getTranslation(gIC.getId()), gIC.getId(), gIC.getLevel()),
-                                    null, true))
-                            .collect(Collectors.toList())
-            ));
-        }
-
-        taskCheckBoxItems.addAll(wordLevelTaskCheckBoxItems);
-    }
-
-    private void createSentenceLevelCheckboxes() {
-        sentenceLevelTaskCheckBoxItems = FXCollections.observableArrayList();
-
-        sentenceLevelTaskCheckBoxItems.addAll(Arrays.stream(
-                GeneralItemCharacteristics.values())
-                .filter(gIC -> gIC.getLevel().equals(TaskLevel.SENTENCE))
-                .map(sentenceLevelIC -> new CheckBoxTreeItem<Task>(
-                        new Task(Translation.getInstance().getTranslation(sentenceLevelIC.getId()), sentenceLevelIC.getId(), sentenceLevelIC.getLevel()),
-                        null, true))
-                .collect(Collectors.toList()));
-
-        taskCheckBoxItems.addAll(sentenceLevelTaskCheckBoxItems);
-    }
-
-    private void createSentenceLengthCheckboxes() {
-        sentenceLengthTaskCheckBoxItems = FXCollections.observableArrayList();
-
-        sentenceLengthTaskCheckBoxItems.addAll(Arrays.stream(
-                GeneralItemCharacteristics.values())
-                .filter(gIC -> gIC.getLevel().equals(TaskLevel.SENTENCE_LENGTH))
-                .map(sentenceLevelIC -> new CheckBoxTreeItem<Task>(
-                        new Task(Translation.getInstance().getTranslation(sentenceLevelIC.getId()), sentenceLevelIC.getId(), sentenceLevelIC.getLevel()),
-                        null, true))
-                .collect(Collectors.toList()));
-
-        taskCheckBoxItems.addAll(sentenceLengthTaskCheckBoxItems);
-    }
-
-    private void createTextLevelCheckboxes() {
-        textTaskCheckBoxItems = FXCollections.observableArrayList();
-
-        textTaskCheckBoxItems.addAll(Arrays.stream(
-                GeneralItemCharacteristics.values())
-                .filter(tIC -> tIC.getLevel().equals(TaskLevel.TEXT))
-                .map(sentenceLevelIC -> new CheckBoxTreeItem<Task>(
-                        new Task(Translation.getInstance().getTranslation(
-                                sentenceLevelIC.getId()), sentenceLevelIC.getId(), sentenceLevelIC.getLevel()), null, true))
-                .collect(Collectors.toList()));
-
-        taskCheckBoxItems.addAll(textTaskCheckBoxItems);
-    }
-
     public void changeLanguage() {
         primaryModel.setLanguage(choiceBoxLanguage.getValue());
         //TODO Cleaner solution
@@ -480,12 +389,6 @@ public class PrimaryViewModel implements Initializable {
 
     public void AnalyzeText(ActionEvent actionEvent) {
         initColumns();
-
-//        var allTasks = FXCollections.observableArrayList(
-//                taskCheckBoxItems.stream()
-//                        .map(TreeItem::getValue)
-//                        .collect(Collectors.toList())
-//        );
 
         var generalTasks = FXCollections.observableArrayList(
                 generalTaskCheckBoxItems.stream()
@@ -504,12 +407,6 @@ public class PrimaryViewModel implements Initializable {
                         .map(TreeItem::getValue)
                         .collect(Collectors.toList())
         );
-//
-//        var sentenceLevelTasks = FXCollections.observableArrayList(
-//                sentenceLevelTaskCheckBoxItems.stream()
-//                        .map(TreeItem::getValue)
-//                        .collect(Collectors.toList())
-//        );
 
         primaryModel.setParagraphs(textAreaInput.getParagraphs());
         primaryModel.initializeDocument();
