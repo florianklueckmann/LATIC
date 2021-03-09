@@ -341,6 +341,7 @@ public class PrimaryViewModel implements Initializable {
         }
 
         taskCheckBoxItems = FXCollections.concat(generalTaskCheckBoxItems, textTaskCheckBoxItems, languageSpecificTaskCheckBoxItems);
+        taskCheckBoxItems.add(new CheckBoxTreeItem<Task>(new Task("Text", "text", TaskLevel.TEXT), null, true));
 
         var boxSet = new HashSet<TaskLevel>();
 
