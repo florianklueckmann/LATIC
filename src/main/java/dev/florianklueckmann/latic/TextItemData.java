@@ -4,8 +4,6 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 
 public abstract class TextItemData {
@@ -94,7 +92,6 @@ public abstract class TextItemData {
     public TextItemData(String text) {
         this.text = new SimpleStringProperty(text);
         this.textAndPosTags = new SimpleStringProperty();
-        this.posTagsPerSentence = new SimpleStringProperty();
         this.wordCount = new SimpleIntegerProperty();
         this.averageWordLengthCharacters = new RoundedDoubleProperty();
         this.sentenceCount = new SimpleIntegerProperty();
@@ -109,7 +106,6 @@ public abstract class TextItemData {
         return new String[] {
                 getText(),
                 getTextAndPosTags(),
-                getPosTagsPerSentence(),
                 String.valueOf(getWordCount()),
                 String.valueOf(getAverageWordLengthCharacters()),
                 String.valueOf(getSentenceCount()),
@@ -124,7 +120,6 @@ public abstract class TextItemData {
         var valueMap = new HashMap<String, String>();
         valueMap.put("text",getText());
         valueMap.put("textAndPosTags",getTextAndPosTags());
-        valueMap.put("posTagsPerSentence",getPosTagsPerSentence());
         valueMap.put("wordCount",String.valueOf(getWordCount()));
         valueMap.put("averageWordLengthCharacters",String.valueOf(getAverageWordLengthCharacters()));
         valueMap.put("sentenceCount",String.valueOf(getSentenceCount()));
@@ -173,18 +168,6 @@ public abstract class TextItemData {
 
     public StringProperty textAndPosTagsProperty() {
         return textAndPosTags;
-    }
-
-    public String getPosTagsPerSentence() {
-        return posTagsPerSentence.get();
-    }
-
-    public void setPosTagsPerSentence(String posTagsPerSentence) {
-        this.posTagsPerSentence.set(posTagsPerSentence);
-    }
-
-    public StringProperty posTagsPerSentenceProperty() {
-        return posTagsPerSentence;
     }
 
     public int getWordCount() {
