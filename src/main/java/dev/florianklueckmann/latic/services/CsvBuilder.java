@@ -1,7 +1,5 @@
 package dev.florianklueckmann.latic.services;
 
-import javafx.stage.FileChooser;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,11 +10,9 @@ import java.util.stream.Stream;
 public class CsvBuilder {
     private static final String DEFAULT_SEPARATOR = ",";
 
-    FileChooser fileChooser = new FileChooser();
-
     private String convertToCSV(String[] data) {
         return Stream.of(data)
-                .map(s -> escapeSpecialCharacters(s))
+                .map(this::escapeSpecialCharacters)
                 .collect(Collectors.joining(DEFAULT_SEPARATOR));
     }
 
@@ -36,9 +32,6 @@ public class CsvBuilder {
             for (String[] data : dataLines) {
                 String x = convertToCSV(data);
                 pw.println(x);
-            }
-            for (String[] strings : dataLines) {
-                String s = convertToCSV(strings);
             }
         }
         return csvOutputFile;
