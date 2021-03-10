@@ -201,14 +201,14 @@ public class PrimaryViewModel implements Initializable {
     private void initialzeFileChooser() {
 
         boolean isMac = System.getProperty("os.name").contains("Mac");
-                //.equals("Mac OS X");
+        //.equals("Mac OS X");
         boolean isWin = System.getProperty("os.name").contains("Win");
         boolean isOther = !isMac && !isWin;
 
         String initialFilePath;
         if (isMac)
-            initialFilePath = System.getProperty("user.home")+File.separator+"Documents";
-        else if(isWin)
+            initialFilePath = System.getProperty("user.home") + File.separator + "Documents";
+        else if (isWin)
             initialFilePath = System.getProperty("user.home");
         else
             initialFilePath = System.getProperty("user.home");
@@ -223,7 +223,7 @@ public class PrimaryViewModel implements Initializable {
 
     }
 
-    private List<String[]> getTableData(){
+    private List<String[]> getTableData() {
         var outList = new ArrayList<String[]>();
 
         for (var textItemDataResult : textItemDataResults) {
@@ -235,13 +235,13 @@ public class PrimaryViewModel implements Initializable {
     }
 
     @FXML
-    private void handleSaveClicked(ActionEvent event){
+    private void handleSaveClicked(ActionEvent event) {
         Window stage = mainPane.getScene().getWindow();
         CsvBuilder csvBuilder = new CsvBuilder();
-        try{
+        try {
             File file = csvBuilder.writeToFile(fileChooser.showSaveDialog(stage), getTableData());
             fileChooser.setInitialDirectory(file.getParentFile());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -258,7 +258,7 @@ public class PrimaryViewModel implements Initializable {
 
     private void addBoxToParent(List<CheckBoxTreeItem<Task>> rootBoxes, CheckBoxTreeItem<Task> subBox) {
         for (var rootBox : rootBoxes) {
-            if(rootBox.getValue().getLevel().equals(subBox.getValue().getLevel())) {
+            if (rootBox.getValue().getLevel().equals(subBox.getValue().getLevel())) {
 //                System.out.println(rootBox.getChildren().size());
                 rootBox.getChildren().add(subBox);
                 return;
@@ -273,7 +273,7 @@ public class PrimaryViewModel implements Initializable {
     }
 
     private String getSubLevel(TaskLevel taskLevel) {
-        return taskLevel.toString().substring(taskLevel.toString().indexOf("_")+1);
+        return taskLevel.toString().substring(taskLevel.toString().indexOf("_") + 1);
     }
 
     private String getMainLevel(TaskLevel subTaskLevel) {
@@ -287,7 +287,7 @@ public class PrimaryViewModel implements Initializable {
     private CheckBoxTreeItem<Task> getRoot(CheckBoxTreeItem<Task> item) {
         CheckBoxTreeItem<Task> root = item;
 
-        while(item.getParent() != null) {
+        while (item.getParent() != null) {
             root = (CheckBoxTreeItem<Task>) item.getParent();
         }
         return root;
@@ -329,7 +329,7 @@ public class PrimaryViewModel implements Initializable {
 
         var boxSet = new HashSet<TaskLevel>();
 
-        for(var checkBox : taskCheckBoxItems) {
+        for (var checkBox : taskCheckBoxItems) {
             boxSet.add(checkBox.getValue().getLevel());
         }
 
@@ -337,7 +337,7 @@ public class PrimaryViewModel implements Initializable {
                 new CheckBoxTreeItem<Task>(new Task(taskLevel), null, true))
                 .collect(Collectors.toList());
 
-        for(var item : taskCheckBoxItems) {
+        for (var item : taskCheckBoxItems) {
             addBoxToParent(boxes, item);
         }
         var root = new CheckBoxTreeItem<Task>(new Task(TaskLevel.ROOT));
@@ -365,10 +365,10 @@ public class PrimaryViewModel implements Initializable {
         }
     }
 
-    private void expandTreeView(TreeItem<?> item){
-        if(item != null && !item.isLeaf()){
+    private void expandTreeView(TreeItem<?> item) {
+        if (item != null && !item.isLeaf()) {
             item.setExpanded(true);
-            for(TreeItem<?> child:item.getChildren()){
+            for (TreeItem<?> child : item.getChildren()) {
                 expandTreeView(child);
             }
         }
@@ -401,7 +401,7 @@ public class PrimaryViewModel implements Initializable {
                         .map(TreeItem::getValue)
                         .collect(Collectors.toList())
         );
-//
+
         var wordLevelTasks = FXCollections.observableArrayList(
                 languageSpecificTaskCheckBoxItems.stream()
                         .map(TreeItem::getValue)
@@ -424,24 +424,23 @@ public class PrimaryViewModel implements Initializable {
     }
 
     private void printResultToTextArea(TextItemData textItemData, int... position) {
-            addResultsToTextArea(String.format("Item %s:", position.length == 1 ? position[0] : ""));
+        addResultsToTextArea(String.format("Item %s:", position.length == 1 ? position[0] : ""));
         textItemData.getIdValueMap().forEach((key, value) -> addResultsToTextArea(
-                    String.format("%s:\n%s",
-                            Translation.getInstance().getTranslation(key), value)));
-            addResultsToTextArea("--------");
+                String.format("%s:\n%s",
+                        Translation.getInstance().getTranslation(key), value)));
+        addResultsToTextArea("--------");
     }
 
     private void log(Object o) {
         Logger.getLogger("PrimaryViewModel").log(Level.DEBUG, o);
     }
 
-    private void createColumns(CheckBoxTreeItem<Task> root){
+    private void createColumns(CheckBoxTreeItem<Task> root) {
 //        System.out.println("Current Parent :" + root.getValue());
-        for(TreeItem<Task> child: root.getChildren()){
-            if(child.getChildren().isEmpty()){
+        for (TreeItem<Task> child : root.getChildren()) {
+            if (child.getChildren().isEmpty()) {
 //                System.out.println(child.getValue());
-                if (((CheckBoxTreeItem<Task>) child).selectedProperty().get())
-                {
+                if (((CheckBoxTreeItem<Task>) child).selectedProperty().get()) {
 //                    System.out.println(child.getValue().getName());
                     TableColumn<TextItemData, ?> column = new TableColumn<>();
                     column.textProperty().bind(Translation.getInstance().createStringBinding(child.getValue().getId()));
