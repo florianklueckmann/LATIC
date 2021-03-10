@@ -360,6 +360,7 @@ public class PrimaryViewModel implements Initializable {
                 node.getChildren().add(item);
                 if (item != null && !item.isLeaf()) {
                     structureBoxes(item, boxes);
+                    item.getChildren().sort(Comparator.comparing(taskTreeItem -> taskTreeItem.getValue().getName()));
                 }
             }
         }
