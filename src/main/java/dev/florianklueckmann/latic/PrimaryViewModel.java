@@ -325,7 +325,6 @@ public class PrimaryViewModel implements Initializable {
         }
 
         taskCheckBoxItems = FXCollections.concat(generalTaskCheckBoxItems, textTaskCheckBoxItems, languageSpecificTaskCheckBoxItems);
-        taskCheckBoxItems.add(new CheckBoxTreeItem<Task>(new Task("Text", "text", TaskLevel.TEXT), null, true));
 
         var boxSet = new HashSet<TaskLevel>();
 
@@ -441,6 +440,7 @@ public class PrimaryViewModel implements Initializable {
         for (TreeItem<Task> child : root.getChildren()) {
             if (child.getChildren().isEmpty()) {
 //                System.out.println(child.getValue());
+                //TODO Refactor into method
                 if (((CheckBoxTreeItem<Task>) child).selectedProperty().get()) {
 //                    System.out.println(child.getValue().getName());
                     TableColumn<TextItemData, ?> column = new TableColumn<>();
@@ -455,9 +455,21 @@ public class PrimaryViewModel implements Initializable {
         }
     }
 
+    private void addItemColumn() {
+        var itemCheckBox = new CheckBoxTreeItem<Task>(new Task("Text", "text", TaskLevel.ROOT), null, true);
+
+        //TODO refactor into method
+        TableColumn<TextItemData, ?> column = new TableColumn<>();
+        column.textProperty().bind(Translation.getInstance().createStringBinding(itemCheckBox.getValue().getId()));
+        column.setId(itemCheckBox.getValue().getId());
+        column.setCellValueFactory(new PropertyValueFactory<>(itemCheckBox.getValue().getId()));
+        tableViewResults.getColumns().add(column);
+    }
+
     private void initColumns() {
         //TODO Bindings for Columns
         tableViewResults.getColumns().clear();
+        addItemColumn();
         createColumns((CheckBoxTreeItem<Task>) treeView.getRoot());
     }
 
