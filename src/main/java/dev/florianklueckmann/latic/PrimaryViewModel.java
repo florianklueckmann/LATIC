@@ -45,6 +45,7 @@ public class PrimaryViewModel implements Initializable {
     public MenuItem menuItemSave;
     public MenuItem menuItemClose;
     public ImageView logo;
+    public Button buttonDelete;
 
     private PrimaryModel primaryModel;
 
@@ -473,4 +474,8 @@ public class PrimaryViewModel implements Initializable {
         createColumns((CheckBoxTreeItem<Task>) treeView.getRoot());
     }
 
+    public void handleDeleteClicked(ActionEvent actionEvent) {
+        textItemDataResults.clear();
+        tableViewResults.getColumns().clear();
+    }
 }

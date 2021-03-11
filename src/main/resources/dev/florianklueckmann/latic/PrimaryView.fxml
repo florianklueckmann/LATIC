@@ -32,6 +32,7 @@
            <HBox id="bottomMenuBox" alignment="CENTER" fillHeight="false" prefHeight="99.0" prefWidth="600.0" spacing="10.0" GridPane.rowIndex="2">
                <Button fx:id="buttonAnalyze" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#AnalyzeText" styleClass="btn-white" text="%analyze" />
                <Button fx:id="buttonSaveFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveClicked" styleClass="btn-white" text="%saveFile" />
+               <Button fx:id="buttonDelete" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDeleteClicked" styleClass="btn-white" text="%delete" />
    <!--            <JFXButton fx:id="buttonAnalyze" onAction="#AnalyzeText" ripplerFill="WHITE" styleClass="btn-primary" text="%analyze" textFill="WHITE" />-->
    <!--            <JFXButton fx:id="buttonSaveFile" onAction="#handleSaveClicked" ripplerFill="WHITE" styleClass="btn-primary" text="%saveFile" textFill="WHITE" />-->
            </HBox>
