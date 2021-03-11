@@ -475,7 +475,16 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void handleDeleteClicked(ActionEvent actionEvent) {
-        textItemDataResults.clear();
-        tableViewResults.getColumns().clear();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(Translation.getInstance().getTranslation("deleteAllResults"));
+        alert.setHeaderText(Translation.getInstance().getTranslation("cannotRestoreDeleted"));
+        alert.setContentText(Translation.getInstance().getTranslation("confirmationMessage"));
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK){
+            textItemDataResults.clear();
+            tableViewResults.getColumns().clear();
+        }
     }
 }
