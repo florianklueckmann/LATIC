@@ -45,6 +45,7 @@ public class PrimaryViewModel implements Initializable {
     public MenuItem menuItemSave;
     public MenuItem menuItemClose;
     public ImageView logo;
+    public Button buttonDelete;
 
     private PrimaryModel primaryModel;
 
@@ -473,4 +474,17 @@ public class PrimaryViewModel implements Initializable {
         createColumns((CheckBoxTreeItem<Task>) treeView.getRoot());
     }
 
+    public void handleDeleteClicked(ActionEvent actionEvent) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(Translation.getInstance().getTranslation("deleteAllResults"));
+        alert.setHeaderText(Translation.getInstance().getTranslation("cannotRestoreDeleted"));
+        alert.setContentText(Translation.getInstance().getTranslation("confirmationMessage"));
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK){
+            textItemDataResults.clear();
+            tableViewResults.getColumns().clear();
+        }
+    }
 }
