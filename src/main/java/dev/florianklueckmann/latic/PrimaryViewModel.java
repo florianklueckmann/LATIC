@@ -1,11 +1,15 @@
 package dev.florianklueckmann.latic;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import dev.florianklueckmann.latic.Translation.Translation;
@@ -19,6 +23,11 @@ import javafx.fxml.FXML;
 
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -38,9 +47,10 @@ public class PrimaryViewModel implements Initializable {
 
     @FXML
 //    public Label labelLanguage;
-    public Menu menuFile;
+//    public Menu menuFile;
     public Menu menuHelp;
     public MenuItem menuItemDocumentation;
+    public MenuItem menuItemContact;
     public MenuItem menuItemOpen;
     public MenuItem menuItemSave;
     public MenuItem menuItemClose;
@@ -71,18 +81,22 @@ public class PrimaryViewModel implements Initializable {
 
     ObservableList<TextItemData> textItemDataResults;
 
+    CheckBoxTreeItem<Task> root;
+
     public ListProperty<Locale> languages = new SimpleListProperty<>();
 
     public void bindGuiElements() {
-        menuFile.textProperty().bind(Translation.getInstance().createStringBinding("file"));
+//        menuFile.textProperty().bind(Translation.getInstance().createStringBinding("file"));
         menuHelp.textProperty().bind(Translation.getInstance().createStringBinding("help"));
         menuItemDocumentation.textProperty().bind(Translation.getInstance().createStringBinding("documentation"));
-        menuItemOpen.textProperty().bind(Translation.getInstance().createStringBinding("open"));
-        menuItemSave.textProperty().bind(Translation.getInstance().createStringBinding("save"));
-        menuItemClose.textProperty().bind(Translation.getInstance().createStringBinding("close"));
+        menuItemContact.textProperty().bind(Translation.getInstance().createStringBinding("contact"));
+//        menuItemOpen.textProperty().bind(Translation.getInstance().createStringBinding("open"));
+//        menuItemSave.textProperty().bind(Translation.getInstance().createStringBinding("save"));
+//        menuItemClose.textProperty().bind(Translation.getInstance().createStringBinding("close"));
 //        labelLanguage.textProperty().bind(Translation.getInstance().createStringBinding("language"));
         buttonAnalyze.textProperty().bind(Translation.getInstance().createStringBinding("analyze"));
         buttonSaveFile.textProperty().bind(Translation.getInstance().createStringBinding("saveFile"));
+        buttonDelete.textProperty().bind(Translation.getInstance().createStringBinding("delete"));
 
         Label resultPlaceholder = new Label();
         resultPlaceholder.textProperty().bind(Translation.getInstance().createStringBinding("resultPlaceholder"));
@@ -224,11 +238,23 @@ public class PrimaryViewModel implements Initializable {
 
     }
 
-    private List<String[]> getTableData() {
-        var outList = new ArrayList<String[]>();
+    private List<List<String>> getTableData() {
+        var outList = new ArrayList<List<String>>();
 
+        ArrayList<String> headers = new ArrayList<>();
+
+//        tableViewResults.getColumns().forEach(c -> headers.add(c.getText()));
+//        outList.add(headers);
+
+
+        textItemDataResults.get(0).getIdValueMap().forEach((key, value) -> headers.add(Translation.getInstance().getTranslation(key)));
+        outList.add(headers);
         for (var textItemDataResult : textItemDataResults) {
-            outList.add(textItemDataResult.getValues());
+//            textItemDataResult.getIdValueMap()
+            ArrayList<String> list = new ArrayList<>();
+            textItemDataResult.getIdValueMap().forEach((key, value) -> list.add(value));
+            outList.add(list);
+//            outList.add(Arrays.asList(textItemDataResult.getValues().clone()));
         }
 
         return outList;
@@ -296,7 +322,6 @@ public class PrimaryViewModel implements Initializable {
 
     private void createCheckboxes() {
 
-
         generalTaskCheckBoxItems = FXCollections.observableArrayList(Arrays.stream(GeneralItemCharacteristics.values())
                 .map(textInformation -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(textInformation.getId()), textInformation.getId(), textInformation.getLevel()), null, true))
                 .collect(Collectors.toList()));
@@ -340,7 +365,7 @@ public class PrimaryViewModel implements Initializable {
         for (var item : taskCheckBoxItems) {
             addBoxToParent(boxes, item);
         }
-        var root = new CheckBoxTreeItem<Task>(new Task(TaskLevel.ROOT));
+        root = new CheckBoxTreeItem<Task>(new Task(TaskLevel.ROOT));
 
         structureBoxes(root, boxes);
         root.getChildren().sort(Comparator.comparing(taskTreeItem -> taskTreeItem.getValue().getLevel().getPriority()));
@@ -448,6 +473,7 @@ public class PrimaryViewModel implements Initializable {
                     column.textProperty().bind(Translation.getInstance().createStringBinding(child.getValue().getId()));
                     column.setId(child.getValue().getId());
                     column.setCellValueFactory(new PropertyValueFactory<>(child.getValue().getId()));
+//                    column.setPrefWidth(150.0);
                     tableViewResults.getColumns().add(column);
                 }
             } else {
@@ -464,6 +490,7 @@ public class PrimaryViewModel implements Initializable {
         column.textProperty().bind(Translation.getInstance().createStringBinding(itemCheckBox.getValue().getId()));
         column.setId(itemCheckBox.getValue().getId());
         column.setCellValueFactory(new PropertyValueFactory<>(itemCheckBox.getValue().getId()));
+        column.setPrefWidth(150.0);
         tableViewResults.getColumns().add(column);
     }
 
@@ -482,9 +509,59 @@ public class PrimaryViewModel implements Initializable {
         alert.setContentText(Translation.getInstance().getTranslation("confirmationMessage"));
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK){
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             textItemDataResults.clear();
             tableViewResults.getColumns().clear();
         }
     }
+
+    public void handleContactClicked(ActionEvent actionEvent) {
+        if (Desktop.isDesktopSupported()) {
+            new Thread(() -> {
+                try {
+                    Desktop.getDesktop().browse(new URI("mailto:nadine.cruz.neri@uni-hamburg.de?subject=LATIC"));
+                } catch (IOException | URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }).start();
+        }
+    }
+
+    List<String> headers = new ArrayList<>();
+
+    private void createHeaders(CheckBoxTreeItem<Task> root) {
+//        System.out.println("Current Parent :" + root.getValue());
+        var outList = new ArrayList<String>();
+        for (TreeItem<Task> child : root.getChildren()) {
+            if (child.getChildren().isEmpty()) {
+//                System.out.println(child.getValue());
+                //TODO Refactor into method
+                if (((CheckBoxTreeItem<Task>) child).selectedProperty().get()) {
+//                    System.out.println(child.getValue().getName());
+//                    TableColumn<TextItemData, ?> column = new TableColumn<>();
+//                    column.textProperty().bind(Translation.getInstance().createStringBinding(child.getValue().getId()));
+//                    column.setId(child.getValue().getId());
+//                    column.setCellValueFactory(new PropertyValueFactory<>(child.getValue().getId()));
+                    headers.add(child.getValue().getName());
+                }
+            } else {
+                createHeaders((CheckBoxTreeItem<Task>) child);
+            }
+        }
+    }
 }
+
+/*
+*         if( Desktop.isDesktopSupported() )
+        {
+            new Thread(() -> {
+                try {
+                    Desktop.getDesktop().browse( new URI( "mailto:3klueckm@informatik.uni-hamburg.de?subject=Hello%20World" ) );
+                } catch (IOException | URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }).start();
+        }
+*
+*
+* */

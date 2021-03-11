@@ -10,8 +10,8 @@ import java.util.stream.Stream;
 public class CsvBuilder {
     private static final String DEFAULT_SEPARATOR = ",";
 
-    private String convertToCSV(String[] data) {
-        return Stream.of(data)
+    private String convertToCSV(List<String> data) {
+        return data.stream()
                 .map(this::escapeSpecialCharacters)
                 .collect(Collectors.joining(DEFAULT_SEPARATOR));
     }
@@ -26,10 +26,10 @@ public class CsvBuilder {
     }
 
 
-    public File writeToFile(File file, List<String[]> dataLines) throws IOException {
+    public File writeToFile(File file, List<List<String>> dataLines) throws IOException {
         File csvOutputFile = new File(file.getPath());
         try (PrintWriter pw = new PrintWriter(file)) {
-            for (String[] data : dataLines) {
+            for (List<String> data : dataLines) {
                 String x = convertToCSV(data);
                 pw.println(x);
             }
