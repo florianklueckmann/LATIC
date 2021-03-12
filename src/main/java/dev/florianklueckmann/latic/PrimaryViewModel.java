@@ -549,6 +549,19 @@ public class PrimaryViewModel implements Initializable {
             }
         }
     }
+
+    public void handleDocumentationClicked(ActionEvent actionEvent) {
+        if (Desktop.isDesktopSupported()) {
+            new Thread(() -> {
+                try {
+                    File file = new File("src/main/resources/dev/florianklueckmann/latic/documentation.pdf");
+                    Desktop.getDesktop().browse(new URI(file.toURI().toString()));
+                } catch (IOException | URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }).start();
+        }
+    }
 }
 
 /*
