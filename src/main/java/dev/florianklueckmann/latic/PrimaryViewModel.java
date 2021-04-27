@@ -1,27 +1,23 @@
 package dev.florianklueckmann.latic;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import dev.florianklueckmann.latic.Translation.Translation;
-import dev.florianklueckmann.latic.services.*;
+import dev.florianklueckmann.latic.services.CsvBuilder;
+import dev.florianklueckmann.latic.services.NlpTextAnalyzer;
+import dev.florianklueckmann.latic.services.SimpleTextAnalyzer;
+import dev.florianklueckmann.latic.services.TextFormattingService;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.*;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -29,47 +25,34 @@ import javafx.stage.Window;
 import javafx.util.StringConverter;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.fxmisc.richtext.InlineCssTextArea;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PrimaryViewModel implements Initializable {
 
-    @FXML
-    public BorderPane mainPane;
-
-    @FXML
-//    public Label labelLanguage;
-    public Menu menuFile;
-    public Menu menuHelp;
-    public MenuItem menuItemDocumentation;
-    public MenuItem menuItemOpen;
-    public MenuItem menuItemSave;
-    public MenuItem menuItemClose;
-    public ImageView logo;
-    public Button buttonDelete;
+    @FXML private BorderPane mainPane;
+    @FXML private Menu menuFile;
+    @FXML private Menu menuHelp;
+    @FXML private MenuItem menuItemDocumentation;
+    @FXML private MenuItem menuItemOpen;
+    @FXML private MenuItem menuItemSave;
+    @FXML private MenuItem menuItemClose;
+    @FXML private ImageView logo;
+    @FXML private Button buttonDelete;
+    @FXML private TableView<TextItemData> tableViewResults;
+    @FXML private TextArea textAreaInput;
+    @FXML private ChoiceBox<Locale> choiceBoxLanguage;
+    @FXML private TreeView<Task> treeView;
+    @FXML private Button buttonAnalyze;
+    @FXML private Button buttonSaveFile;
 
     private PrimaryModel primaryModel;
 
-    @FXML
-    public TableView<TextItemData> tableViewResults;
-
-    @FXML
-    protected TextArea textAreaInput;
-
-    @FXML
-    protected InlineCssTextArea textAreaOutput;
-
-    @FXML
-    ChoiceBox<Locale> choiceBoxLanguage;
-
-    @FXML
-    TreeView<Task> treeView;
-
-    @FXML
-    Button buttonAnalyze;
-    @FXML
-    Button buttonSaveFile;
-
-    ObservableList<TextItemData> textItemDataResults;
+    private ObservableList<TextItemData> textItemDataResults;
 
     public ListProperty<Locale> languages = new SimpleListProperty<>();
 
@@ -93,7 +76,7 @@ public class PrimaryViewModel implements Initializable {
         languages.addAll(Translation.getInstance().getSupportedLocales());
 
         choiceBoxLanguage.setValue(Translation.getInstance().getLocale());
-        choiceBoxLanguage.setConverter(new StringConverter<Locale>() {
+        choiceBoxLanguage.setConverter(new StringConverter<>() {
             @Override
             public String toString(Locale locale) {
                 if (locale != null) {
@@ -134,18 +117,6 @@ public class PrimaryViewModel implements Initializable {
 
     public ListProperty<String> result = new SimpleListProperty<>();
 
-    public void setResults(String results) {
-        textAreaOutput.clear();
-//        textAreaOutput.append(results, "-fx-fill: black");
-        textAreaOutput.appendText(results);
-        textAreaOutput.appendText("\n");
-    }
-
-    public void addResultsToTextArea(String results) {
-        textAreaOutput.appendText(results);
-        textAreaOutput.appendText("\n");
-    }
-
     public List<String> getResults() {
         return result.get();
     }
@@ -176,7 +147,7 @@ public class PrimaryViewModel implements Initializable {
 
 
         initializeBindings();
-        initialzeFileChooser();
+        initializeFileChooser();
         setupTaskLevelStructure();
         initializeGui();
     }
@@ -192,7 +163,7 @@ public class PrimaryViewModel implements Initializable {
         TaskLevel.TEXT_READABILITY.setParent(TaskLevel.TEXT);
     }
 
-    private void initialzeFileChooser() {
+    private void initializeFileChooser() {
 
         boolean isMac = System.getProperty("os.name").contains("Mac");
         //.equals("Mac OS X");
@@ -205,7 +176,7 @@ public class PrimaryViewModel implements Initializable {
         else if (isWin)
             initialFilePath = System.getProperty("user.home");
         else
-            initialFilePath = System.getProperty("user.home");
+            initialFilePath = System.getProperty("user.home") + File.separator + "Documents";
 
 
         fileChooser.setInitialDirectory(new File(initialFilePath));
@@ -233,9 +204,12 @@ public class PrimaryViewModel implements Initializable {
         Window stage = mainPane.getScene().getWindow();
         CsvBuilder csvBuilder = new CsvBuilder();
         try {
-            File file = csvBuilder.writeToFile(fileChooser.showSaveDialog(stage), getTableData());
-            fileChooser.setInitialDirectory(file.getParentFile());
-        } catch (Exception e) {
+            File file = fileChooser.showSaveDialog(stage);
+            if (file != null) {
+                file = csvBuilder.writeToFile(file, getTableData());
+                fileChooser.setInitialDirectory(file.getParentFile());
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -253,38 +227,10 @@ public class PrimaryViewModel implements Initializable {
     private void addBoxToParent(List<CheckBoxTreeItem<Task>> rootBoxes, CheckBoxTreeItem<Task> subBox) {
         for (var rootBox : rootBoxes) {
             if (rootBox.getValue().getLevel().equals(subBox.getValue().getLevel())) {
-//                System.out.println(rootBox.getChildren().size());
                 rootBox.getChildren().add(subBox);
                 return;
             }
         }
-    }
-
-    private boolean mainCheckBoxItemTaskContainsSubTaskMainLevel(CheckBoxTreeItem<Task> main, CheckBoxTreeItem<Task> sub) {
-        return main.getValue()
-                .getLevel().toString()
-                .contains(getMainLevel(sub.getValue().getLevel()));
-    }
-
-    private String getSubLevel(TaskLevel taskLevel) {
-        return taskLevel.toString().substring(taskLevel.toString().indexOf("_") + 1);
-    }
-
-    private String getMainLevel(TaskLevel subTaskLevel) {
-        var index = subTaskLevel.toString().indexOf("_");
-        if (index >= 0)
-            return subTaskLevel.toString().substring(0, index);
-        else
-            return "ROOT";
-    }
-
-    private CheckBoxTreeItem<Task> getRoot(CheckBoxTreeItem<Task> item) {
-        CheckBoxTreeItem<Task> root = item;
-
-        while (item.getParent() != null) {
-            root = (CheckBoxTreeItem<Task>) item.getParent();
-        }
-        return root;
     }
 
     private void createCheckboxes() {
@@ -344,7 +290,7 @@ public class PrimaryViewModel implements Initializable {
         treeView.setShowRoot(false);
 
         // set the cell factory
-        treeView.setCellFactory(CheckBoxTreeCell.<Task>forTreeView());
+        treeView.setCellFactory(CheckBoxTreeCell.forTreeView());
     }
 
     private void structureBoxes(CheckBoxTreeItem<Task> node, List<CheckBoxTreeItem<Task>> boxes) {
@@ -404,20 +350,8 @@ public class PrimaryViewModel implements Initializable {
         //TODO Dont duplicate tasks in textTasks
         var currentItem = primaryModel.processTasks(textTasks, generalTasks, wordLevelTasks);
         textItemDataResults.add(currentItem);
-        //TODO: Add Option to Disable TextAreaOutput
-        if (false) {
-            printResultToTextArea(currentItem);
-        }
 
         tableViewResults.setItems(textItemDataResults);
-    }
-
-    private void printResultToTextArea(TextItemData textItemData, int... position) {
-        addResultsToTextArea(String.format("Item %s:", position.length == 1 ? position[0] : ""));
-        textItemData.getIdValueMap().forEach((key, value) -> addResultsToTextArea(
-                String.format("%s:\n%s",
-                        Translation.getInstance().getTranslation(key), value)));
-        addResultsToTextArea("--------");
     }
 
     private void log(Object o) {
@@ -425,18 +359,10 @@ public class PrimaryViewModel implements Initializable {
     }
 
     private void createColumns(CheckBoxTreeItem<Task> root) {
-//        System.out.println("Current Parent :" + root.getValue());
         for (TreeItem<Task> child : root.getChildren()) {
             if (child.getChildren().isEmpty()) {
-//                System.out.println(child.getValue());
-                //TODO Refactor into method
                 if (((CheckBoxTreeItem<Task>) child).selectedProperty().get()) {
-//                    System.out.println(child.getValue().getName());
-                    TableColumn<TextItemData, ?> column = new TableColumn<>();
-                    column.textProperty().bind(Translation.getInstance().createStringBinding(child.getValue().getId()));
-                    column.setId(child.getValue().getId());
-                    column.setCellValueFactory(new PropertyValueFactory<>(child.getValue().getId()));
-                    tableViewResults.getColumns().add(column);
+                    addTreeItemColumn(child);
                 }
             } else {
                 createColumns((CheckBoxTreeItem<Task>) child);
@@ -444,15 +370,17 @@ public class PrimaryViewModel implements Initializable {
         }
     }
 
+    private void addTreeItemColumn(TreeItem<Task> child) {
+        TableColumn<TextItemData, ?> column = new TableColumn<>();
+        column.textProperty().bind(Translation.getInstance().createStringBinding(child.getValue().getId()));
+        column.setId(child.getValue().getId());
+        column.setCellValueFactory(new PropertyValueFactory<>(child.getValue().getId()));
+        tableViewResults.getColumns().add(column);
+    }
+
     private void addItemColumn() {
         var itemCheckBox = new CheckBoxTreeItem<Task>(new Task("Text", "text", TaskLevel.ROOT), null, true);
-
-        //TODO refactor into method
-        TableColumn<TextItemData, ?> column = new TableColumn<>();
-        column.textProperty().bind(Translation.getInstance().createStringBinding(itemCheckBox.getValue().getId()));
-        column.setId(itemCheckBox.getValue().getId());
-        column.setCellValueFactory(new PropertyValueFactory<>(itemCheckBox.getValue().getId()));
-        tableViewResults.getColumns().add(column);
+        addTreeItemColumn(itemCheckBox);
     }
 
     private void initColumns() {
