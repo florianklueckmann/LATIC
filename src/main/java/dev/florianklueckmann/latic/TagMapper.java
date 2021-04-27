@@ -8,6 +8,8 @@ import edu.stanford.nlp.simple.Token;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
+
 public class TagMapper {
     private static final TagMapper tagMapper = new TagMapper();
     private final Map<String, String> tagsDE = new HashMap<>();
@@ -113,7 +115,7 @@ public class TagMapper {
                     .readFile(String.format("interjections_%s.txt", Translation.getInstance().getLanguageTag()));
         } else interjections = Collections.emptyList();
 
-        System.out.println(Translation.getInstance().getLocale() + " - " + interjections.size());
+        Logger.getLogger("TagMapper").debug(String.format("Locale: %s - Interjections: %d", Translation.getInstance().getLocale(), interjections.size()));
     }
 
 }
