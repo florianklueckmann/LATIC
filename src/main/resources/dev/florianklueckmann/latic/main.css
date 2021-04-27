@@ -79,6 +79,10 @@
     -fx-text-fill: black;
 }
 
+#mainLogo {
+    -fx-image: url("./latic_text_white_60px.png");
+}
+
 #menuBox {
     -fx-pref-height: 60px;
     -fx-background-image: url("./latic-header.png");
