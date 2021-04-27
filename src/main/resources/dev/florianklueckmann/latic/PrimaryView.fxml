@@ -33,10 +33,7 @@
                <Button fx:id="buttonAnalyze" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#AnalyzeText" styleClass="btn-white" text="%analyze" />
                <Button fx:id="buttonSaveFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveClicked" styleClass="btn-white" text="%saveFile" />
                <Button fx:id="buttonDelete" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDeleteClicked" styleClass="btn-white" text="%delete" />
-   <!--            <JFXButton fx:id="buttonAnalyze" onAction="#AnalyzeText" ripplerFill="WHITE" styleClass="btn-primary" text="%analyze" textFill="WHITE" />-->
-   <!--            <JFXButton fx:id="buttonSaveFile" onAction="#handleSaveClicked" ripplerFill="WHITE" styleClass="btn-primary" text="%saveFile" textFill="WHITE" />-->
            </HBox>
-           <!--                <InlineCssTextArea fx:id="textAreaOutput" prefHeight="200.0" prefWidth="561.0" wrapText="true" VBox.vgrow="ALWAYS" />-->
        </GridPane>
    </center>
    <top>
@@ -71,11 +68,6 @@
                               </Menu>
                           </menus>
                       </MenuBar>
-<!--                      <Label fx:id="labelLanguage" text="%language">-->
-<!--                     <padding>-->
-<!--                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />-->
-<!--                     </padding>-->
-<!--                  </Label>-->
                   </children>
               </HBox>
             <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1">
