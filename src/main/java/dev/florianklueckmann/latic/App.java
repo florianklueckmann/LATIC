@@ -1,17 +1,14 @@
 package dev.florianklueckmann.latic;
 
-import com.sun.javafx.css.StyleManager;
 import dev.florianklueckmann.latic.Translation.Translation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.text.Font;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -29,19 +26,19 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("PrimaryView"), 1000, 600);
+
+        prepareStage(stage);
+        stage.show();
+
         Logger.getLogger("App").debug(String.format("JavaFX runtime: %s", System.getProperty("javafx.runtime.version")));
         Logger.getLogger("App").debug(String.format("Java runtime: %s", System.getProperty("java.runtime.version")));
-        scene.getStylesheets().add("./dev/florianklueckmann/latic/main.css");
-        stage.setScene(scene);
-        stage.show();
     }
 
     public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
     }
 
-    public static Parent loadFXML(String fxml) throws IOException {
+    private static Parent loadFXML(String fxml) throws IOException {
         try {
             bundle = ResourceBundle.getBundle("dev.florianklueckmann.latic.messages", Translation.getInstance().getLocale());
         }
@@ -50,8 +47,19 @@ public class App extends Application {
         }
 
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"), bundle);
-//        fxmlLoader.setResources(ResourceBundle.getBundle("messages", Locale.ENGLISH));
+
         return fxmlLoader.load();
+    }
+
+    private static void prepareStage(Stage stage) throws IOException {
+        scene = new Scene(loadFXML("PrimaryView"), 1000, 600);
+        scene.getStylesheets().add("/dev/florianklueckmann/latic/main.css");
+
+        var imageResourceStream = App.class.getResourceAsStream("latic-square-256.png");
+        if (imageResourceStream != null) {
+            stage.getIcons().add(new Image(imageResourceStream));
+        }
+        stage.setScene(scene);
     }
 
     public static void main(String[] args) {
