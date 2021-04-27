@@ -87,13 +87,6 @@ public class PrimaryViewModel implements Initializable {
         Label resultPlaceholder = new Label();
         resultPlaceholder.textProperty().bind(Translation.getInstance().createStringBinding("resultPlaceholder"));
         tableViewResults.setPlaceholder(resultPlaceholder);
-
-        try {
-            logo.setImage(new Image(new FileInputStream("src/main/resources/dev/florianklueckmann/latic/latic_text_white_60px.png")));
-        } catch (FileNotFoundException e) {
-            logo.setVisible(false);
-            e.printStackTrace();
-        }
     }
 
     public void setLanguages() {
@@ -381,11 +374,6 @@ public class PrimaryViewModel implements Initializable {
         Translation.getInstance().setLocale(choiceBoxLanguage.getValue());
         TagMapper.getInstance().loadInterjections();
         createCheckboxes();
-    }
-
-    @FXML
-    private void switchToSecondary() throws IOException {
-        App.setRoot("SecondaryView");
     }
 
     public void AnalyzeText(ActionEvent actionEvent) {
