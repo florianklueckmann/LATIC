@@ -7,22 +7,17 @@ import javafx.collections.ObservableList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
 
     public NlpTextAnalyzer(TextFormattingService textFormatter) {
         super(textFormatter);
     }
+
     public String textAndPosTags() {
         StringBuilder sb = new StringBuilder();
-        //TODO if ListOfWordsToReplaceTags.contains(word) replace words tag with whatever. Maybe use a mapper?
-        System.out.println(doc.sentences().get(0).tokens().get(0).word());
-        System.out.println(doc.sentences().get(0).tokens().get(0).tag());
         doc.sentences().forEach(sentence -> sb.append(sentence).append("\n").append(replaceTags(sentence.tokens())).append("\n"));
-        System.out.println(sb.toString());
         return sb.toString();
     }
 
@@ -32,7 +27,6 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
 
     public String posTagsPerSentence() {
         StringBuilder sb = new StringBuilder();
-        System.out.println(doc.sentences().get(0));
         doc.sentences().forEach(sentence -> sb.append(sentence).append("\n").append(sentence.parse().taggedLabeledYield()).append("\n"));
         return sb.toString();
     }
@@ -59,15 +53,8 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
 
                     setter.invoke(textItemData, String.valueOf(nlpMethod.invoke(this)));
 
-                } catch (NoSuchMethodException e) {
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
-//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
                 }
             }
         }

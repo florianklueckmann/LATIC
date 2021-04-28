@@ -1,11 +1,9 @@
 package dev.florianklueckmann.latic.services;
 
-import dev.florianklueckmann.latic.LinguisticFeature;
 import dev.florianklueckmann.latic.Task;
 import dev.florianklueckmann.latic.TextItemData;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import static java.lang.Math.toIntExact;
@@ -17,7 +15,6 @@ import java.util.stream.Collectors;
 public class SimpleTextAnalyzer implements TextAnalyzer {
 
     Document doc;
-    //ArrayList<CharSequence> paragraphs;
     ArrayList<String> puncts;
     TextFormattingService textFormattingService;
 
@@ -27,7 +24,6 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public Document getDoc() {
-        //TODO Maybe use List<Sentence>?
         return doc;
     }
 
@@ -38,9 +34,6 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public void processTasks(TextItemData textItemData, ObservableList<Task> tasks) {
         setDoc(doc);
-
-        ObservableList<LinguisticFeature> featureList = FXCollections.observableArrayList();
-        List<String> errorList = new ArrayList<>();
 
         for (var task : tasks) {
             if (task.selectedProperty().get()) {
@@ -66,28 +59,8 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
                         setter = textItemData.getClass().getMethod(setterName, String.class);
                         setter.invoke(textItemData, String.valueOf(simpleTextAnalyzerMethod.invoke(this)));
                     }
-
-//                    if (task.getId().toLowerCase().contains("average")
-//                            || task.getId().toLowerCase().contains("score")
-//                            || task.getId().toLowerCase().equals("lexicaldiversity")) {
-//                        setter = textItemData.getClass().getMethod(setterName, double.class);
-//                        setter.invoke(textItemData, (double) simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer));
-//                    } else if (task.getId().toLowerCase().contains("count")) {
-//                        setter = textItemData.getClass().getMethod(setterName, int.class);
-//                        setter.invoke(textItemData, (int) simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer));
-//                    } else {
-//                        setter = textItemData.getClass().getMethod(setterName, String.class);
-//                        setter.invoke(textItemData, String.valueOf(simpleTextAnalyzerMethod.invoke(simpleTextAnalyzer)));
-//                    }
-                } catch (NoSuchMethodException e) {
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
-//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "NoSuchMethodException"));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "IllegalAccessException"));
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-//                    featureList.add(new StringLinguisticFeature(task.getName(), task.getId(), "InvocationTargetException"));
                 }
             }
         }
@@ -106,13 +79,10 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public double averageWordLengthCharacters() {
-        //TODO: Decide how to handle abbreviations (for example ca.)
         return (double) textCountCharactersWithoutPunctuation() / (double) wordCount();
     }
 
     public int sentenceCount() {
-        //TODO Make sure to handle abbreviations in the middle of a sentence, like "There are a lot of people here e.g. me"
-        //CoreNLP would split this into 3 sentences.
         return toIntExact(doc.sentences().stream().filter(sentence -> sentence.length() > 1).count());
     }
 
@@ -132,12 +102,10 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public double averageSentenceLengthWords() {
-        //TODO Maybe for every sentence?
         return (double) wordCount() / (double) sentenceCount();
     }
 
     protected int textCountCharactersWithoutPunctuation() {
-        //TODO We dont need this. GetCharCountWithWhiteSpace and WithoutWhiteSpace
         var textCharCount = 0;
         for (Sentence sent : doc.sentences()) {
             for (var word : textFormattingService.getWordsWithoutPunctuations(sent)) {

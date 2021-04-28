@@ -10,7 +10,6 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
     private int conjunctions = 0;
     private int determiner = 0;
     private int existentialThere = 0;
-//    private int foreignWords = 0;
     private int interjections = 0;
     private int listItemMarkers = 0;
     private int modals = 0;
@@ -51,11 +50,6 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
             existentialThere++;
             return;
         }
-
-//        if (tag.contains("FW")) {
-//            foreignWords++;
-//            return;
-//        }
 
         if (tag.contains("IN")) {
             prepositionOrSubordinatingConjunction++;
@@ -133,19 +127,7 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
                 verbsThirdSingularPresent++;
             return;
         }
-        if (
-                tag.equals("PUNCT")
-//                tag.equals(".") ||
-//                tag.equals(",") ||
-//                tag.equals(":") ||
-//                tag.equals("\"") ||
-//                tag.equals("-RRB-") ||
-//                tag.equals("-LRB-") ||
-//                tag.equals("``") ||
-//                tag.equals("''") ||
-//                tag.equals("HYPH") ||
-//                tag.equals("NFP")
-        ) {
+        if (tag.equals("PUNCT")) {
             punctuations++;
             return;
         }
@@ -159,7 +141,6 @@ public class EnglishWordClassService extends BaseWordClassService implements Wor
                 new IntegerLinguisticFeature("Conjunctions", "conjunctions", conjunctions),
                 new IntegerLinguisticFeature("Determiner", "determiner", determiner),
                 new IntegerLinguisticFeature("Existential there", "existentialThere", existentialThere),
-//                new IntegerLinguisticFeature("Foreign words", "foreignWords", foreignWords),
                 new IntegerLinguisticFeature("Interjections", "interjections", interjections),
                 new IntegerLinguisticFeature("List item markers", "listItemMarkers", listItemMarkers),
                 new IntegerLinguisticFeature("Modal", "modals", modals),
