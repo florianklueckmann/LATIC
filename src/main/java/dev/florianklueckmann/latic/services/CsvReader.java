@@ -16,7 +16,6 @@ public class CsvReader {
 
 
     public List<String> readFile(String fileName) {
-        System.out.println(fileName);
         List<String> lines = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File(Objects.requireNonNull(
                 App.class.getResource(fileName), "fileName must not be null").getPath()))) {
