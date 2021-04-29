@@ -1,9 +1,9 @@
 package dev.florianklueckmann.latic;
 
 /**
- * This class is used as a workaround to start the application in an IDE
+ * This class is used as a workaround to start the application.
  */
-public class GUIStarter {
+public class AppLauncher {
 
     public static void main(final String[] args) {
         App.main(args);
