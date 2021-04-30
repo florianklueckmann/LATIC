@@ -191,8 +191,21 @@ public class PrimaryViewModel implements Initializable {
     private List<String[]> getTableData() {
         var outList = new ArrayList<String[]>();
 
-        for (var textItemDataResult : textItemDataResults) {
-            outList.add(textItemDataResult.getValues());
+        var headerRowText = new ArrayList<String>();
+        var headerRowIds = new ArrayList<String>();
+        tableViewResults.getColumns()
+                .forEach(textItemDataTableColumn -> {
+                    headerRowText.add(textItemDataTableColumn.getText());
+                    headerRowIds.add(textItemDataTableColumn.getId());
+                });
+
+        outList.add(headerRowText.toArray(String[]::new));
+
+        for (var testItemDataResult : textItemDataResults) {
+            var values = new ArrayList<String>();
+            var map = testItemDataResult.getIdValueMap();
+            headerRowIds.forEach(id -> values.add(map.get(id)));
+            outList.add(values.toArray(String[]::new));
         }
 
         return outList;
