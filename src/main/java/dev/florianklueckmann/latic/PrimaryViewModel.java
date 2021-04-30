@@ -1,10 +1,14 @@
 package dev.florianklueckmann.latic;
 
-import dev.florianklueckmann.latic.Translation.Translation;
-import dev.florianklueckmann.latic.services.CsvBuilder;
-import dev.florianklueckmann.latic.services.NlpTextAnalyzer;
-import dev.florianklueckmann.latic.services.SimpleTextAnalyzer;
-import dev.florianklueckmann.latic.services.TextFormattingService;
+import dev.florianklueckmann.latic.translation.Translation;
+import dev.florianklueckmann.latic.helper.TagMapper;
+import dev.florianklueckmann.latic.item.*;
+import dev.florianklueckmann.latic.helper.CsvBuilder;
+import dev.florianklueckmann.latic.text_analyzer.NlpTextAnalyzer;
+import dev.florianklueckmann.latic.text_analyzer.SimpleTextAnalyzer;
+import dev.florianklueckmann.latic.word_class_service.TextFormattingService;
+import dev.florianklueckmann.latic.task.Task;
+import dev.florianklueckmann.latic.task.TaskLevel;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;

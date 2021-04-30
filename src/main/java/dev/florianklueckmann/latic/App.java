@@ -1,6 +1,6 @@
 package dev.florianklueckmann.latic;
 
-import dev.florianklueckmann.latic.Translation.Translation;
+import dev.florianklueckmann.latic.translation.Translation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -64,6 +64,17 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+}
+
+/**
+ * This class is used as a workaround to start the application.
+ */
+class AppLauncher {
+
+    public static void main(final String[] args) {
+        App.main(args);
     }
 
 }
