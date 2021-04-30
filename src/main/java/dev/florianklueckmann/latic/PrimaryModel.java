@@ -1,7 +1,15 @@
 package dev.florianklueckmann.latic;
 
-import dev.florianklueckmann.latic.Translation.Translation;
-import dev.florianklueckmann.latic.services.*;
+import dev.florianklueckmann.latic.translation.Translation;
+import dev.florianklueckmann.latic.item.EnglishTextItemData;
+import dev.florianklueckmann.latic.item.GermanTextItemData;
+import dev.florianklueckmann.latic.item.TextItemData;
+import dev.florianklueckmann.latic.linguistic_feature.IntegerLinguisticFeature;
+import dev.florianklueckmann.latic.linguistic_feature.LinguisticFeature;
+import dev.florianklueckmann.latic.word_class_service.*;
+import dev.florianklueckmann.latic.task.Task;
+import dev.florianklueckmann.latic.text_analyzer.NlpTextAnalyzer;
+import dev.florianklueckmann.latic.text_analyzer.SimpleTextAnalyzer;
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.simple.Document;
 import javafx.collections.FXCollections;
