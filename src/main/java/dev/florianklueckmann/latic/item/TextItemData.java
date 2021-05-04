@@ -126,7 +126,7 @@ public abstract class TextItemData {
         valueMap.put("sentenceCount",String.valueOf(getSentenceCount()));
         valueMap.put("averageSentenceLengthCharacters",String.valueOf(getAverageSentenceLengthCharacters()));
         valueMap.put("averageSentenceLengthCharactersWithoutWhitespaces",String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()));
-        valueMap.put("averageSentenceLengthWords",String.valueOf(getLexicalDiversity()));
+        valueMap.put("averageSentenceLengthWords",String.valueOf(getAverageSentenceLengthWords()));
         valueMap.put("lexicalDiversity",String.valueOf(getLexicalDiversity()));
         valueMap.put("lixReadabilityScore",String.valueOf(getLixReadabilityScore()));
 
