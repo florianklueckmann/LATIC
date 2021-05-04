@@ -12,7 +12,7 @@ public class RoundedDoubleProperty extends SimpleDoubleProperty {
         if(raw == Double.POSITIVE_INFINITY || raw == Double.NEGATIVE_INFINITY || Double.isNaN(raw))
             return 0;
         else
-            return BigDecimal.valueOf(super.get()).setScale(3, RoundingMode.HALF_UP).doubleValue();
+            return BigDecimal.valueOf(super.get()).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     public double getNonRounded() {
