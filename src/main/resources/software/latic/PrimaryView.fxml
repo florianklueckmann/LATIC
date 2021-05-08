@@ -16,7 +16,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="software.latic.PrimaryViewModel">
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="software.latic.PrimaryViewModel">
    <center>
        <GridPane BorderPane.alignment="CENTER">
            <columnConstraints>
@@ -54,16 +55,10 @@
                      </HBox.margin></ImageView>
                       <MenuBar id="menuBar">
                           <menus>
-                              <Menu fx:id="menuFile" mnemonicParsing="false" styleClass="main-item" text="%file">
-                                  <items>
-                                      <MenuItem fx:id="menuItemOpen" mnemonicParsing="false" text="%open" />
-                                      <MenuItem fx:id="menuItemSave" mnemonicParsing="false" text="%save" />
-                                      <MenuItem fx:id="menuItemClose" mnemonicParsing="false" text="%close" />
-                                  </items>
-                              </Menu>
                               <Menu fx:id="menuHelp" mnemonicParsing="false" text="%help">
                                   <items>
-                                      <MenuItem fx:id="menuItemDocumentation" mnemonicParsing="false" text="%documentation" />
+                                      <MenuItem fx:id="menuItemDocumentation" mnemonicParsing="false" text="%documentation" onAction="#handleDocumentationClicked" />
+                                      <MenuItem fx:id="menuItemContact" mnemonicParsing="false" text="%contact" onAction="#handleContactClicked" />
                                   </items>
                               </Menu>
                           </menus>
