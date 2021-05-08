@@ -1,9 +1,13 @@
 package software.latic;
 
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import software.latic.item.*;
 import software.latic.translation.Translation;
 import software.latic.helper.TagMapper;
-import software.latic.item.*;
 import software.latic.helper.CsvBuilder;
 import software.latic.text_analyzer.NlpTextAnalyzer;
 import software.latic.text_analyzer.SimpleTextAnalyzer;
@@ -17,36 +21,34 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class PrimaryViewModel implements Initializable {
 
     @FXML private BorderPane mainPane;
-    @FXML private Menu menuFile;
     @FXML private Menu menuHelp;
     @FXML private MenuItem menuItemDocumentation;
-    @FXML private MenuItem menuItemOpen;
-    @FXML private MenuItem menuItemSave;
-    @FXML private MenuItem menuItemClose;
-    @FXML private ImageView logo;
+    @FXML private MenuItem menuItemContact;
     @FXML private Button buttonDelete;
     @FXML private TableView<TextItemData> tableViewResults;
     @FXML private TextArea textAreaInput;
@@ -59,22 +61,22 @@ public class PrimaryViewModel implements Initializable {
 
     private ObservableList<TextItemData> textItemDataResults;
 
-    public ListProperty<Locale> languages = new SimpleListProperty<>();
+    private final ListProperty<Locale> languages = new SimpleListProperty<>();
 
     public void bindGuiElements() {
-        menuFile.textProperty().bind(Translation.getInstance().createStringBinding("file"));
         menuHelp.textProperty().bind(Translation.getInstance().createStringBinding("help"));
         menuItemDocumentation.textProperty().bind(Translation.getInstance().createStringBinding("documentation"));
-        menuItemOpen.textProperty().bind(Translation.getInstance().createStringBinding("open"));
-        menuItemSave.textProperty().bind(Translation.getInstance().createStringBinding("save"));
-        menuItemClose.textProperty().bind(Translation.getInstance().createStringBinding("close"));
-//        labelLanguage.textProperty().bind(Translation.getInstance().createStringBinding("language"));
+        menuItemContact.textProperty().bind(Translation.getInstance().createStringBinding("contact"));
+
         buttonAnalyze.textProperty().bind(Translation.getInstance().createStringBinding("analyze"));
         buttonSaveFile.textProperty().bind(Translation.getInstance().createStringBinding("saveFile"));
+        buttonDelete.textProperty().bind(Translation.getInstance().createStringBinding("delete"));
 
         Label resultPlaceholder = new Label();
         resultPlaceholder.textProperty().bind(Translation.getInstance().createStringBinding("resultPlaceholder"));
         tableViewResults.setPlaceholder(resultPlaceholder);
+
+        choiceBoxLanguage.disableProperty().bind(Bindings.isNotEmpty(textItemDataResults));
     }
 
     public void setLanguages() {
@@ -173,7 +175,6 @@ public class PrimaryViewModel implements Initializable {
         boolean isMac = System.getProperty("os.name").contains("Mac");
         //.equals("Mac OS X");
         boolean isWin = System.getProperty("os.name").contains("Win");
-        boolean isOther = !isMac && !isWin;
 
         String initialFilePath;
         if (isMac)
@@ -218,7 +219,7 @@ public class PrimaryViewModel implements Initializable {
     }
 
     @FXML
-    private void handleSaveClicked(ActionEvent event) {
+    private void handleSaveClicked() {
         Window stage = mainPane.getScene().getWindow();
         CsvBuilder csvBuilder = new CsvBuilder();
         try {
@@ -307,7 +308,6 @@ public class PrimaryViewModel implements Initializable {
         treeView.setRoot(root);
         treeView.setShowRoot(false);
 
-        // set the cell factory
         treeView.setCellFactory(CheckBoxTreeCell.forTreeView());
     }
 
@@ -315,7 +315,7 @@ public class PrimaryViewModel implements Initializable {
         for (var item : boxes) {
             if (item.getValue().getLevel().getParent() == node.getValue().getLevel()) {
                 node.getChildren().add(item);
-                if (item != null && !item.isLeaf()) {
+                if (!item.isLeaf()) {
                     structureBoxes(item, boxes);
                     item.getChildren().sort(Comparator.comparing(taskTreeItem -> taskTreeItem.getValue().getName()));
                 }
@@ -334,14 +334,15 @@ public class PrimaryViewModel implements Initializable {
 
     public void changeLanguage() {
         primaryModel.setLanguage(choiceBoxLanguage.getValue());
-        //TODO Cleaner solution
         Translation.getInstance().setLocale(choiceBoxLanguage.getValue());
         TagMapper.getInstance().loadInterjections();
         createCheckboxes();
     }
 
-    public void AnalyzeText(ActionEvent actionEvent) {
-        initColumns();
+    public void AnalyzeText() {
+        if (tableViewResults.getColumns().isEmpty()) {
+            initColumns();
+        }
 
         var generalTasks = FXCollections.observableArrayList(
                 generalTaskCheckBoxItems.stream()
@@ -364,16 +365,10 @@ public class PrimaryViewModel implements Initializable {
         primaryModel.setParagraphs(textAreaInput.getParagraphs());
         primaryModel.initializeDocument();
 
-        //TODO Only Anylyze Selected Items
-        //TODO Dont duplicate tasks in textTasks
         var currentItem = primaryModel.processTasks(textTasks, generalTasks, wordLevelTasks);
         textItemDataResults.add(currentItem);
 
         tableViewResults.setItems(textItemDataResults);
-    }
-
-    private void log(Object o) {
-        Logger.getLogger("PrimaryViewModel").log(Level.DEBUG, o);
     }
 
     private void createColumns(CheckBoxTreeItem<Task> root) {
@@ -408,7 +403,7 @@ public class PrimaryViewModel implements Initializable {
         createColumns((CheckBoxTreeItem<Task>) treeView.getRoot());
     }
 
-    public void handleDeleteClicked(ActionEvent actionEvent) {
+    public void handleDeleteClicked() {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(Translation.getInstance().getTranslation("deleteAllResults"));
@@ -416,9 +411,45 @@ public class PrimaryViewModel implements Initializable {
         alert.setContentText(Translation.getInstance().getTranslation("confirmationMessage"));
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK){
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             textItemDataResults.clear();
             tableViewResults.getColumns().clear();
+        }
+    }
+
+    public void handleDocumentationClicked() {
+        if (Desktop.isDesktopSupported()) {
+            new Thread(() -> {
+                try {
+                    var tempOutput = Files.createTempFile("latic-documentation", ".pdf");
+                    tempOutput.toFile().deleteOnExit();
+
+                    Files.copy(Objects.requireNonNull(
+                            App.class.getResourceAsStream(String.format("documentation_%s.pdf", Translation.getInstance().getLanguageTag())),
+                            "Documentation is not available"),
+                            tempOutput, StandardCopyOption.REPLACE_EXISTING);
+
+                    File userManual = new File(tempOutput.toFile().getPath());
+                    if (userManual.exists()) {
+                        Desktop.getDesktop().open(userManual);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }, "Documentation-Thread").start();
+        }
+    }
+
+    public void handleContactClicked() {
+        if (Desktop.isDesktopSupported()) {
+            new Thread(() -> {
+                try {
+                    Desktop.getDesktop().browse(new URI("mailto:hello@latic.software?subject=LATIC"));
+                } catch (IOException | URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }, "E-Mail-Thread").start();
         }
     }
 }
