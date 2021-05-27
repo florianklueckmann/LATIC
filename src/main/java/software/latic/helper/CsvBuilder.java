@@ -25,6 +25,17 @@ public class CsvBuilder {
         return escapedData;
     }
 
+    public File writeCsvForExcel(File file, List<String[]> dataLines) throws IOException {
+        File csvOutputFile = new File(file.getPath());
+        try (PrintWriter pw = new PrintWriter(file)) {
+            pw.println(String.format("sep=%s", DEFAULT_SEPARATOR));
+            for (String[] data : dataLines) {
+                String x = convertToCSV(data);
+                pw.println(x);
+            }
+        }
+        return csvOutputFile;
+    }
 
     public File writeToFile(File file, List<String[]> dataLines) throws IOException {
         File csvOutputFile = new File(file.getPath());
