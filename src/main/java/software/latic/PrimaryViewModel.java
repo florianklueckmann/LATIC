@@ -190,7 +190,8 @@ public class PrimaryViewModel implements Initializable {
         fileChooser.setInitialFileName("table");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Text file", "*.txt"),
-                new FileChooser.ExtensionFilter("CSV table file", "*.csv"));
+                new FileChooser.ExtensionFilter("CSV table file", "*.csv"),
+                new FileChooser.ExtensionFilter("CSV table file for excel", "*.csv"));
 
     }
 
@@ -225,7 +226,9 @@ public class PrimaryViewModel implements Initializable {
         try {
             File file = fileChooser.showSaveDialog(stage);
             if (file != null) {
-                file = csvBuilder.writeToFile(file, getTableData());
+                file = fileChooser.getSelectedExtensionFilter().getDescription().contains("excel")
+                        ? csvBuilder.writeCsvForExcel(file, getTableData())
+                        : csvBuilder.writeToFile(file, getTableData());
                 fileChooser.setInitialDirectory(file.getParentFile());
             }
         } catch (IOException e) {
