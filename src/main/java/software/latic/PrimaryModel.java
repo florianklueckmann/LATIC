@@ -195,4 +195,11 @@ public class PrimaryModel {
 
         return textItemData;
     }
+
+    protected List<String[]> syllableTest(List<CharSequence> sentences) {
+        this.setParagraphs(sentences);
+        this.initializeDocument();
+        simpleTextAnalyzer.setDoc(this.getDoc());
+        return simpleTextAnalyzer.syllableTest(sentences);
+    }
 }

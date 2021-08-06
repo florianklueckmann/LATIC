@@ -1,6 +1,7 @@
 package software.latic.text_analyzer;
 
 import software.latic.item.TextItemData;
+import software.latic.translation.Translation;
 import software.latic.word_class_service.TextFormattingService;
 import software.latic.task.Task;
 import edu.stanford.nlp.simple.Document;
@@ -18,6 +19,10 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     Document doc;
     ArrayList<String> puncts;
     TextFormattingService textFormattingService;
+
+    Character[] vocals = {'a', 'e', 'i', 'o', 'u', 'y', 'ä', 'ö', 'ü'};
+    String[] pseudoVocals = {"ei", "au", "ie", "eu", "äu"};
+    String[] pseudoConsonants = {"qu"};
 
     public SimpleTextAnalyzer(TextFormattingService textFormatter) {
         this.textFormattingService = textFormatter;
@@ -150,5 +155,50 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public double lixReadabilityScore() {
         return averageSentenceLengthWords() + longWordRatePercent();
+    }
+
+    public List<String[]> syllableTest(List<CharSequence> sentences) {
+        ArrayList<String[]> outList = new ArrayList<>();
+        outList.add("Word syllableCount".split(" "));
+
+
+        for (var sentence : doc.sentences()) {
+            System.out.println(sentence);
+            sentence.words().forEach(word -> outList.add(String.format("%s %s", word.replace(",", "\",\""), syllablesPerWord(word)).split(" ")));
+        }
+
+        return outList;
+    }
+
+    public int syllablesPerWord(String word) {
+//        if (!Translation.getInstance().getLocale().toLanguageTag().equalsIgnoreCase("DE")) {
+//            return 0;
+//        }
+
+        System.out.println(word);
+        var syllableCount = 0;
+        var outWord = word.toLowerCase(Locale.ROOT);
+
+        outWord = outWord.replaceAll("sch[bcdfghjklmnpqrstvwxyz]", "1");
+
+        for (var pseudoConsonant : pseudoConsonants) {
+            outWord = outWord.replace(pseudoConsonant, "1");
+        }
+        for (var pseudoVocal : pseudoVocals) {
+            outWord = outWord.replace(pseudoVocal, "0");
+        }
+        for (var vocal : vocals) {
+            outWord = outWord.replace(vocal, '0');
+        }
+        outWord = outWord.replaceAll("[bcdfghjklmnpqrstvwxyzß]", "1");
+
+        for (var character : outWord.toCharArray()) {
+            if (character == '0') {
+                syllableCount++;
+            }
+        }
+
+//        System.out.println((correctSyllableCount == syllableCount ? "TRUE - " : "FALSE - ") + word + ": " + outWord + " - Syllables: " + syllableCount);
+        return syllableCount;
     }
 }

@@ -56,6 +56,7 @@ public class PrimaryViewModel implements Initializable {
     @FXML private TreeView<Task> treeView;
     @FXML private Button buttonAnalyze;
     @FXML private Button buttonSaveFile;
+    @FXML private Button buttonSyllableTest;
 
     private PrimaryModel primaryModel;
 
@@ -418,6 +419,25 @@ public class PrimaryViewModel implements Initializable {
             textItemDataResults.clear();
             tableViewResults.getColumns().clear();
         }
+    }
+
+    public void handleSyllableTestClicked() {
+        var syllableResult = primaryModel.syllableTest(textAreaInput.getParagraphs());
+
+        Window stage = mainPane.getScene().getWindow();
+        CsvBuilder csvBuilder = new CsvBuilder();
+        try {
+            File file = fileChooser.showSaveDialog(stage);
+            if (file != null) {
+                file = fileChooser.getSelectedExtensionFilter().getDescription().contains("excel")
+                        ? csvBuilder.writeCsvForExcel(file, syllableResult)
+                        : csvBuilder.writeToFile(file, syllableResult);
+                fileChooser.setInitialDirectory(file.getParentFile());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void handleDocumentationClicked() {

@@ -34,6 +34,7 @@
                <Button fx:id="buttonAnalyze" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#AnalyzeText" styleClass="btn-white" text="%analyze" />
                <Button fx:id="buttonSaveFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveClicked" styleClass="btn-white" text="%saveFile" />
                <Button fx:id="buttonDelete" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDeleteClicked" styleClass="btn-white" text="%delete" />
+               <Button fx:id="buttonSyllableTest" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSyllableTestClicked" styleClass="btn-white" text="Syllable test" />
            </HBox>
        </GridPane>
    </center>
