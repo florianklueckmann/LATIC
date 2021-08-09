@@ -8,15 +8,18 @@ public class TestItem {
     double avgSentenceLengthWords;
     double avgWordLengthChar;
     double avgSentLengthChar;
+    double avgSentLengthSyll;
 
 
-    public TestItem(String text, int wordCount, int sentenceCount, double avgSentenceLengthWords, double avgWordLengthChar, double avgSentLengthChar) {
+    public TestItem(String text, int wordCount, int sentenceCount, double avgSentenceLengthWords,
+                    double avgWordLengthChar, double avgSentLengthChar, double avgSentLengthSyll) {
         this.text = text;
         this.wordCount = wordCount;
         this.sentenceCount = sentenceCount;
         this.avgSentenceLengthWords = avgSentenceLengthWords;
         this.avgWordLengthChar = avgWordLengthChar;
         this.avgSentLengthChar = avgSentLengthChar;
+        this.avgSentLengthSyll = avgSentLengthSyll;
     }
 
     public String getText() {
@@ -34,6 +37,7 @@ public class TestItem {
     public double getAvgSentenceLengthWords() {
         return avgSentenceLengthWords;
     }
+    public double getAverageSentenceLengthSyllables() {return avgSentLengthSyll;}
 
     public double getAvgWordLengthChar() {
         return avgWordLengthChar;

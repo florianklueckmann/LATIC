@@ -2,11 +2,11 @@ package software.latic;
 
 import software.latic.item.GermanTextItemData;
 import software.latic.item.TextItemData;
+import software.latic.syllables.GermanSyllables;
 import software.latic.translation.Translation;
 import software.latic.item.EnglishTextItemData;
 import software.latic.linguistic_feature.IntegerLinguisticFeature;
 import software.latic.linguistic_feature.LinguisticFeature;
-import software.latic.word_class_service.*;
 import software.latic.task.Task;
 import software.latic.text_analyzer.NlpTextAnalyzer;
 import software.latic.text_analyzer.SimpleTextAnalyzer;
@@ -26,6 +26,7 @@ import software.latic.word_class_service.WordClassService;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class PrimaryModel {
@@ -122,8 +123,12 @@ public class PrimaryModel {
         return featureMap;
     }
 
-    protected int getAverageSentenceLengthSyllables() {
-        return 0;
+    protected double getAverageSentenceLengthSyllables() {
+        var sentenceCount = doc.sentences().size();
+        AtomicInteger syllableCount = new AtomicInteger();
+        doc.sentences().forEach(sentence -> sentence.words().forEach(word -> syllableCount.addAndGet(GermanSyllables.getInstance().syllablesPerWord(word))));
+
+        return (double) syllableCount.get() / sentenceCount;
     }
 
     protected List<String> sentencesAndPosTags() {

@@ -1,6 +1,8 @@
 package software.latic.text_analyzer;
 
 import software.latic.item.TextItemData;
+import software.latic.syllables.GermanSyllables;
+import software.latic.syllables.SyllableProvider;
 import software.latic.word_class_service.TextFormattingService;
 import software.latic.task.Task;
 import edu.stanford.nlp.simple.Document;
@@ -11,6 +13,7 @@ import static java.lang.Math.toIntExact;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class SimpleTextAnalyzer implements TextAnalyzer {
@@ -104,6 +107,13 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public double averageSentenceLengthWords() {
         return (double) wordCount() / (double) sentenceCount();
+    }
+
+    public double averageSentenceLengthSyllables() {
+       return (double) doc.sentences().stream()
+               .mapToInt(sent -> sent.words().stream()
+               .mapToInt(word -> SyllableProvider.getInstance().syllablesPerWord(word)).sum())
+               .sum() / sentenceCount();
     }
 
     public int textCountCharactersWithoutPunctuation() {
