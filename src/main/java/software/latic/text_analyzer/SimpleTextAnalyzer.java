@@ -12,6 +12,7 @@ import static java.lang.Math.toIntExact;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SimpleTextAnalyzer implements TextAnalyzer {
@@ -171,34 +172,33 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public int syllablesPerWord(String word) {
-//        if (!Translation.getInstance().getLocale().toLanguageTag().equalsIgnoreCase("DE")) {
-//            return 0;
-//        }
+        String vocals = "[aeiouyäöüéáà]";
+        String pseudoVocals = "ei|au|ie|eu|äu|aa|oo|ee";
+        String pseudoConsonants = "qu";
+        String specialOneSyllable = "eau|oire|sance";
+        String specialTwoSyllables = "ouille|tiell|ziell";
+        String bePrefixTwoSyllables = "be(eng|end|eid|ehr|eil|erb|erd|ein)";
 
-        System.out.println(word);
+        //TODO syllablesPerToken to adjust syllables based on wordClass
+        //TODO function for each replacment for better readability?
         var syllableCount = 0;
-        var outWord = word.toLowerCase(Locale.ROOT);
 
-        outWord = outWord.replaceAll("sch[bcdfghjklmnpqrstvwxyz]", "1");
+        var codedChars = word.toLowerCase(Locale.ROOT)
+                .replaceAll(bePrefixTwoSyllables, "00")
+                .replaceAll(specialTwoSyllables, "00")
+                .replaceAll(specialOneSyllable, "0")
+                .replaceAll("sch[bcdfghjklmnpqrstvwxyz]", "1")
+                .replaceAll(pseudoConsonants, "1")
+                .replaceAll(pseudoVocals, "0")
+                .replaceAll(vocals, "0")
+                .replaceAll("[bcdfghjklmnpqrstvwxyzß]", "1")
+                .toCharArray();
 
-        for (var pseudoConsonant : pseudoConsonants) {
-            outWord = outWord.replace(pseudoConsonant, "1");
-        }
-        for (var pseudoVocal : pseudoVocals) {
-            outWord = outWord.replace(pseudoVocal, "0");
-        }
-        for (var vocal : vocals) {
-            outWord = outWord.replace(vocal, '0');
-        }
-        outWord = outWord.replaceAll("[bcdfghjklmnpqrstvwxyzß]", "1");
-
-        for (var character : outWord.toCharArray()) {
+        for (var character : codedChars) {
             if (character == '0') {
                 syllableCount++;
             }
         }
-
-//        System.out.println((correctSyllableCount == syllableCount ? "TRUE - " : "FALSE - ") + word + ": " + outWord + " - Syllables: " + syllableCount);
         return syllableCount;
     }
 }
