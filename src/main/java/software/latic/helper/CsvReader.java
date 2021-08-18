@@ -2,10 +2,8 @@ package software.latic.helper;
 
 import software.latic.App;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CsvReader {
     private static final CsvReader csvReader = new CsvReader();
@@ -24,5 +22,11 @@ public class CsvReader {
         }
 
         return lines;
+    }
+
+    public Map<String, String> convertCsvToMap(String fileName, String separator) {
+        return readFile(fileName).stream()
+                .map(dataLine -> dataLine.split(separator))
+                .collect(Collectors.toMap(word -> word[0], replacement -> replacement[1]));
     }
 }

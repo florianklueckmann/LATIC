@@ -1,6 +1,8 @@
 package software.latic.syllables;
 
+import software.latic.helper.CsvReader;
 import java.util.Locale;
+import java.util.Map;
 
 public class GermanSyllables implements Syllables {
 
@@ -9,19 +11,22 @@ public class GermanSyllables implements Syllables {
         return germanSyllables;
     }
 
+    private final Map<String, String> specialWords = CsvReader.getInstance()
+            .convertCsvToMap("syllables/syllables_de.csv", ",");
+
     String vocals = "[aeiouyäöüéáà]";
     String pseudoVocals = "ei|au|ie|eu|äu|aa|oo|ee";
     String pseudoConsonants = "qu";
     String specialOneSyllable = "eau|oire|sance";
     String specialTwoSyllables = "ouille|tiell|ziell";
-    String bePrefixTwoSyllables = "(be)eng|end|eid|ehr|eil|erb|erd|ein";
+    String bePrefixTwoSyllables = "(be)(eng|end|eid|ehr|eil|erb|erd|ein)";
 
     //TODO syllablesPerToken to adjust syllables based on wordClass
     //TODO function for each replacment for better readability?
     public int syllablesPerWord(String word) {
         var syllableCount = 0;
 
-        var codedChars = word.toLowerCase(Locale.ROOT)
+        var codedChars = replaceSpecialWords(word.toLowerCase(Locale.ROOT))
                 .replaceAll(bePrefixTwoSyllables, "00")
                 .replaceAll(specialTwoSyllables, "00")
                 .replaceAll(specialOneSyllable, "0")
@@ -38,5 +43,15 @@ public class GermanSyllables implements Syllables {
             }
         }
         return syllableCount;
+    }
+
+    private String replaceSpecialWords(String word) {
+        for (var regex : specialWords.keySet()) {
+            if (!word.matches("[a-zäöüß]")) {
+                return word;
+            }
+            word = word.replaceAll(regex, specialWords.get(regex));
+        }
+        return word;
     }
 }
