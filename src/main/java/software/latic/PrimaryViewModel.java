@@ -1,11 +1,13 @@
 package software.latic;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import software.latic.item.*;
+import software.latic.syllables.SyllableProvider;
 import software.latic.translation.Translation;
 import software.latic.helper.TagMapper;
 import software.latic.helper.CsvBuilder;
@@ -45,6 +47,7 @@ import java.util.stream.Collectors;
 
 public class PrimaryViewModel implements Initializable {
 
+    @FXML private MenuItem menuItemSyllablesPerWordToCsv;
     @FXML private BorderPane mainPane;
     @FXML private Menu menuHelp;
     @FXML private MenuItem menuItemDocumentation;
@@ -142,6 +145,8 @@ public class PrimaryViewModel implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        System.out.println("INIT");
 
         var textFormatter = new TextFormattingService();
         var simpleTextAnalyzer = new SimpleTextAnalyzer(textFormatter);
@@ -453,6 +458,26 @@ public class PrimaryViewModel implements Initializable {
                     e1.printStackTrace();
                 }
             }, "E-Mail-Thread").start();
+        }
+    }
+
+    public void handleSyllablesPerWordToCsv() {
+        primaryModel.setParagraphs(textAreaInput.getParagraphs());
+        primaryModel.initializeDocument();
+        var syllableResult = primaryModel.syllableTest();
+
+        Window stage = mainPane.getScene().getWindow();
+        CsvBuilder csvBuilder = new CsvBuilder();
+        try {
+            File file = fileChooser.showSaveDialog(stage);
+            if (file != null) {
+                file = fileChooser.getSelectedExtensionFilter().getDescription().contains("excel")
+                        ? csvBuilder.writeCsvForExcel(file, syllableResult)
+                        : csvBuilder.writeToFile(file, syllableResult);
+                fileChooser.setInitialDirectory(file.getParentFile());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -47,9 +47,11 @@ public class GermanSyllables implements Syllables {
 
     private String replaceSpecialWords(String word) {
         for (var regex : specialWords.keySet()) {
-            if (!word.matches("[a-zäöüß]")) {
-                return word;
-            }
+            System.out.println(word + " - " + regex);
+            //TODO Fix
+//                        if (!word.matches("[a-zäöüß]")) {
+//                            return word;
+//                        }
             word = word.replaceAll(regex, specialWords.get(regex));
         }
         return word;

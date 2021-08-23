@@ -63,8 +63,6 @@ class GermanSyllablesTest {
             "Schafe", 2
     );
 
-    @BeforeAll
-
     @BeforeEach
     void setUp() {
     }
