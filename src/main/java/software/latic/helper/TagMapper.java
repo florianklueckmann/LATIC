@@ -27,7 +27,9 @@ public class TagMapper {
     );
     private final Map<Locale, Map<String, String>> localeTags = Map.ofEntries(
             new AbstractMap.SimpleEntry<>(SupportedLocales.ENGLISH.getLocale(), tagsEN),
-            new AbstractMap.SimpleEntry<>(SupportedLocales.GERMAN.getLocale(), tagsDE)
+            new AbstractMap.SimpleEntry<>(SupportedLocales.GERMAN.getLocale(), tagsDE),
+            new AbstractMap.SimpleEntry<>(SupportedLocales.SPANISH.getLocale(), tagsDE),
+            new AbstractMap.SimpleEntry<>(SupportedLocales.FRENCH.getLocale(), tagsDE)
     );
     private final Map<String, String> fixedTagsEn = Map.ofEntries(
             new AbstractMap.SimpleEntry<>("%", "SYM"),
@@ -54,7 +56,9 @@ public class TagMapper {
     );
     private final Map<Locale, Map<String, String>> localeFixedTagMaps = Map.ofEntries(
             new AbstractMap.SimpleEntry<>(SupportedLocales.ENGLISH.getLocale(), fixedTagsEn),
-            new AbstractMap.SimpleEntry<>(SupportedLocales.GERMAN.getLocale(), fixedTagsDe)
+            new AbstractMap.SimpleEntry<>(SupportedLocales.GERMAN.getLocale(), fixedTagsDe),
+            new AbstractMap.SimpleEntry<>(SupportedLocales.SPANISH.getLocale(), fixedTagsDe),
+            new AbstractMap.SimpleEntry<>(SupportedLocales.FRENCH.getLocale(), fixedTagsDe)
     );
     private Map<String, String> tagMap;
     private Map<String, String> fixedTagMap;
