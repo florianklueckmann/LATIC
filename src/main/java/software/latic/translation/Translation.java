@@ -38,8 +38,11 @@ public class Translation {
 
     public List<Locale> getSupportedLocales() {
         return Arrays.asList(
-                Locale.ENGLISH,
-                Locale.GERMAN);
+                SupportedLocales.ENGLISH.getLocale(),
+                SupportedLocales.GERMAN.getLocale(),
+                SupportedLocales.SPANISH.getLocale(),
+                SupportedLocales.FRENCH.getLocale()
+        );
     }
 
     public String getTranslation(final String key){
