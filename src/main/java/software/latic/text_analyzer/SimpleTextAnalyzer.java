@@ -21,7 +21,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public SimpleTextAnalyzer(TextFormattingService textFormatter) {
         this.textFormattingService = textFormatter;
-        this.puncts = new ArrayList<>(Arrays.asList(".", ",", "?", "!", "(", ")", ":", ";", "'", "\"", "„", "“"));
+        this.puncts = new ArrayList<>(Arrays.asList(".", ",", "?", "!", "(", ")", ":", ";", "'", "\"", "„", "“", "-"));
     }
 
     public Document getDoc() {
