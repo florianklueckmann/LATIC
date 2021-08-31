@@ -57,13 +57,11 @@ class GermanSyllablesTest {
             "Durchfahrt", 2,
             "dranbleiben", 3,
             "bleiben", 2,
-            "Pizzeriaumbau", 6,
+            "Routinemäßig", 5,
             "Beamter", 3,
             "Ideal", 3,
             "Schafe", 2
     );
-
-    @BeforeAll
 
     @BeforeEach
     void setUp() {
@@ -75,8 +73,8 @@ class GermanSyllablesTest {
 
     @Test
     void syllablesPerWord() {
-        for (var word : words.keySet()) {
-            Assertions.assertEquals(words.get(word), syllables.syllablesPerWord(word));
+        for (var word : wordsWithSyllableCount4.keySet()) {
+            Assertions.assertEquals(wordsWithSyllableCount4.get(word), syllables.syllablesPerWord(word));
         }
     }
 }

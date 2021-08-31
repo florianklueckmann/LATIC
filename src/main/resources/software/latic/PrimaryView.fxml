@@ -61,6 +61,11 @@
                                       <MenuItem fx:id="menuItemContact" mnemonicParsing="false" text="%contact" onAction="#handleContactClicked" />
                                   </items>
                               </Menu>
+                              <Menu fx:id="menuDebug" mnemonicParsing="false" text="Debug">
+                                  <items>
+                                      <MenuItem fx:id="menuItemSyllablesPerWordToCsv" mnemonicParsing="false" text="%syllablesPerWordToCsv" onAction="#handleSyllablesPerWordToCsv" />
+                                  </items>
+                              </Menu>
                           </menus>
                       </MenuBar>
                   </children>

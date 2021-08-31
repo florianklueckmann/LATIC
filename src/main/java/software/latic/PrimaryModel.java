@@ -3,6 +3,7 @@ package software.latic;
 import software.latic.item.GermanTextItemData;
 import software.latic.item.TextItemData;
 import software.latic.syllables.GermanSyllables;
+import software.latic.syllables.SyllableProvider;
 import software.latic.translation.Translation;
 import software.latic.item.EnglishTextItemData;
 import software.latic.linguistic_feature.IntegerLinguisticFeature;
@@ -199,5 +200,19 @@ public class PrimaryModel {
         processLanguageTasks(textItemData, languageTasks);
 
         return textItemData;
+    }
+
+    public List<String[]> syllableTest() {
+//        simpleTextAnalyzer.setDoc(doc);
+        ArrayList<String[]> outList = new ArrayList<>();
+        outList.add("Word syllableCount".split(" "));
+
+
+        for (var sentence : doc.sentences()) {
+            System.out.println(sentence);
+            sentence.words().forEach(word -> outList.add(String.format("%s %s", word.replace(",", "\",\""), SyllableProvider.getInstance().syllablesPerWord(word)).split(" ")));
+        }
+
+        return outList;
     }
 }
