@@ -8,6 +8,7 @@ package software.latic.syllables;
 
 import software.latic.helper.CsvReader;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -56,6 +57,8 @@ public class EnglishSyllables implements Syllables {
             .convertCsvToMap("syllables/syllables_en.csv", ",");
 
     public int syllablesPerWord(String word) {
+        word = word.toLowerCase(Locale.ROOT);
+
         var count = 0;
 
         if (word.length() == 0) {
