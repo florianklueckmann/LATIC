@@ -15,7 +15,7 @@ public class GermanSyllables implements Syllables {
             .convertCsvToMap("syllables/syllables_de.csv", ",");
 
     String vocals = "[aeiouyäöüéáà]";
-    String pseudoVocals = "ei|au|ie|eu|äu|aa|oo|ee";
+    String pseudoVocals = "ei|au|ie|eu|äu|aa|oo|ee|ée";
     String pseudoConsonants = "qu";
     String specialOneSyllable = "eau|oire|sance";
     String specialTwoSyllables = "ouille|tiell|ziell";
