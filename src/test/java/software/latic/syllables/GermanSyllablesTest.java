@@ -74,7 +74,7 @@ class GermanSyllablesTest {
     @Test
     void syllablesPerWord() {
         for (var word : wordsWithSyllableCount4.keySet()) {
-            Assertions.assertEquals(wordsWithSyllableCount4.get(word), syllables.syllablesPerWord(word));
+            Assertions.assertEquals(wordsWithSyllableCount4.get(word), syllables.syllablesPerWord(word), word);
         }
     }
 }
