@@ -2,7 +2,6 @@ package software.latic;
 
 import software.latic.item.GermanTextItemData;
 import software.latic.item.TextItemData;
-import software.latic.syllables.GermanSyllables;
 import software.latic.syllables.SyllableProvider;
 import software.latic.translation.Translation;
 import software.latic.item.EnglishTextItemData;
@@ -122,20 +121,6 @@ public class PrimaryModel {
         }
 
         return featureMap;
-    }
-
-    protected double getAverageSentenceLengthSyllables() {
-        var sentenceCount = doc.sentences().size();
-        AtomicInteger syllableCount = new AtomicInteger();
-        doc.sentences().forEach(sentence -> sentence.words().forEach(word -> syllableCount.addAndGet(GermanSyllables.getInstance().syllablesPerWord(word))));
-
-        return (double) syllableCount.get() / sentenceCount;
-    }
-
-    protected List<String> sentencesAndPosTags() {
-        List<String> results = new ArrayList<>();
-        doc.sentences().forEach(sentence -> results.add(sentence + "\n" + sentence.posTags()));
-        return results;
     }
 
     private void processLanguageTasks(TextItemData textItemData, ObservableList<Task> languageTasks) {
