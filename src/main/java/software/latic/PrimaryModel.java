@@ -2,11 +2,11 @@ package software.latic;
 
 import software.latic.item.GermanTextItemData;
 import software.latic.item.TextItemData;
+import software.latic.syllables.SyllableProvider;
 import software.latic.translation.Translation;
 import software.latic.item.EnglishTextItemData;
 import software.latic.linguistic_feature.IntegerLinguisticFeature;
 import software.latic.linguistic_feature.LinguisticFeature;
-import software.latic.word_class_service.*;
 import software.latic.task.Task;
 import software.latic.text_analyzer.NlpTextAnalyzer;
 import software.latic.text_analyzer.SimpleTextAnalyzer;
@@ -122,16 +122,6 @@ public class PrimaryModel {
         return featureMap;
     }
 
-    protected int getAverageSentenceLengthSyllables() {
-        return 0;
-    }
-
-    protected List<String> sentencesAndPosTags() {
-        List<String> results = new ArrayList<>();
-        doc.sentences().forEach(sentence -> results.add(sentence + "\n" + sentence.posTags()));
-        return results;
-    }
-
     private void processLanguageTasks(TextItemData textItemData, ObservableList<Task> languageTasks) {
         for (var task : languageTasks) {
             if (task.selectedProperty().get()) {
@@ -194,5 +184,19 @@ public class PrimaryModel {
         processLanguageTasks(textItemData, languageTasks);
 
         return textItemData;
+    }
+
+    public List<String[]> syllableTest() {
+//        simpleTextAnalyzer.setDoc(doc);
+        ArrayList<String[]> outList = new ArrayList<>();
+        outList.add("Word syllableCount".split(" "));
+
+
+        for (var sentence : doc.sentences()) {
+            System.out.println(sentence);
+            sentence.words().forEach(word -> outList.add(String.format("%s %s", word.replace(",", "\",\""), SyllableProvider.getInstance().syllablesPerWord(word)).split(" ")));
+        }
+
+        return outList;
     }
 }

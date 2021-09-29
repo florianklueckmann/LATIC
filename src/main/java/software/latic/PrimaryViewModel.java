@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import org.apache.log4j.Level;
 import software.latic.item.*;
 import software.latic.translation.Translation;
 import software.latic.helper.TagMapper;
@@ -45,8 +46,10 @@ import java.util.stream.Collectors;
 
 public class PrimaryViewModel implements Initializable {
 
+    @FXML private MenuItem menuItemSyllablesPerWordToCsv;
     @FXML private BorderPane mainPane;
     @FXML private Menu menuHelp;
+    @FXML private Menu menuDebug;
     @FXML private MenuItem menuItemDocumentation;
     @FXML private MenuItem menuItemContact;
     @FXML private Button buttonDelete;
@@ -142,7 +145,6 @@ public class PrimaryViewModel implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         var textFormatter = new TextFormattingService();
         var simpleTextAnalyzer = new SimpleTextAnalyzer(textFormatter);
         var nlp = new NlpTextAnalyzer(textFormatter);
@@ -244,6 +246,9 @@ public class PrimaryViewModel implements Initializable {
     private void initializeGui() {
         setLanguages();
         bindGuiElements();
+        if (App.loggingLevel.isGreaterOrEqual(Level.WARN)) {
+            menuDebug.setVisible(false);
+        }
     }
 
     private void addBoxToParent(List<CheckBoxTreeItem<Task>> rootBoxes, CheckBoxTreeItem<Task> subBox) {
@@ -453,6 +458,26 @@ public class PrimaryViewModel implements Initializable {
                     e1.printStackTrace();
                 }
             }, "E-Mail-Thread").start();
+        }
+    }
+
+    public void handleSyllablesPerWordToCsv() {
+        primaryModel.setParagraphs(textAreaInput.getParagraphs());
+        primaryModel.initializeDocument();
+        var syllableResult = primaryModel.syllableTest();
+
+        Window stage = mainPane.getScene().getWindow();
+        CsvBuilder csvBuilder = new CsvBuilder();
+        try {
+            File file = fileChooser.showSaveDialog(stage);
+            if (file != null) {
+                file = fileChooser.getSelectedExtensionFilter().getDescription().contains("excel")
+                        ? csvBuilder.writeCsvForExcel(file, syllableResult)
+                        : csvBuilder.writeToFile(file, syllableResult);
+                fileChooser.setInitialDirectory(file.getParentFile());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

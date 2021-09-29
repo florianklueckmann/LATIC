@@ -5,12 +5,10 @@ import software.latic.text_analyzer.SimpleTextAnalyzer;
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.simple.Document;
 import org.junit.jupiter.api.*;
+import software.latic.translation.Translation;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 class SimpleTextAnalyzerTest {
 
@@ -23,7 +21,8 @@ class SimpleTextAnalyzerTest {
                     "1 Tag.\n" +
                     "3 Monate.\n" +
                     "1 Jahr.",
-            21, 6, 3.5, 3.90, 13.66);
+            21, 6, 27, 3.5, 3.90,
+            13.66, 4.5, 1.28);
 
     private final List<CharSequence> paragraphs = new ArrayList<>(
             Arrays.asList(
@@ -46,6 +45,8 @@ class SimpleTextAnalyzerTest {
             e.printStackTrace();
         }
 
+        Translation.getInstance().setLocale(Locale.GERMAN);
+
         Document doc = new Document(props, deItemEarthAndSun.getText());
         simpleTextAnalyzer = new SimpleTextAnalyzer(new TextFormattingService());
         simpleTextAnalyzer.setDoc(doc);
@@ -58,6 +59,11 @@ class SimpleTextAnalyzerTest {
     @Test
     void getWordCount() {
         Assertions.assertEquals(deItemEarthAndSun.getWordCount(), simpleTextAnalyzer.wordCount());
+    }
+
+    @Test
+    void getSyllableCount() {
+        Assertions.assertEquals(deItemEarthAndSun.getSyllableCount(), simpleTextAnalyzer.syllableCount());
     }
 
     @Test
@@ -83,6 +89,16 @@ class SimpleTextAnalyzerTest {
     @Test
     void getAverageSentenceLengthWords() {
         Assertions.assertEquals(deItemEarthAndSun.getAvgSentenceLengthWords(), simpleTextAnalyzer.averageSentenceLengthWords(), 0.01);
+    }
+
+    @Test
+    void averageSentenceLengthSyllables() {
+        Assertions.assertEquals(deItemEarthAndSun.getAverageSentenceLengthSyllables(), simpleTextAnalyzer.averageSentenceLengthSyllables(), 0.01);
+    }
+
+    @Test
+    void averageWordLengthSyllables() {
+        Assertions.assertEquals(deItemEarthAndSun.getAvgWordLengthSyll(), simpleTextAnalyzer.averageWordLengthSyllables(), 0.01);
     }
 
     @Test

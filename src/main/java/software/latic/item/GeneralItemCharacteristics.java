@@ -5,11 +5,14 @@ import software.latic.task.TaskLevel;
 public enum GeneralItemCharacteristics implements ItemCharacteristics {
 
     WORD_COUNT("wordCount", TaskLevel.TEXT),
-    AVERAGE_WORD_LENGTH_CHAR("averageWordLengthCharacters", TaskLevel.WORD),
     SENTENCE_COUNT("sentenceCount", TaskLevel.SENTENCE),
+    SYLLABLE_COUNT("syllableCount", TaskLevel.TEXT),
+    AVERAGE_WORD_LENGTH_CHAR("averageWordLengthCharacters", TaskLevel.WORD),
+    AVERAGE_WORD_LENGTH_SYLLABLES("averageWordLengthSyllables", TaskLevel.WORD),
     AVERAGE_SENTENCE_LENGTH_CHARACTERS("averageSentenceLengthCharacters", TaskLevel.SENTENCE_LENGTH),
     AVERAGE_SENTENCE_LENGTH_CHARACTERS_WITHOUT_WHITESPACES("averageSentenceLengthCharactersWithoutWhitespaces", TaskLevel.SENTENCE_LENGTH),
     AVERAGE_SENTENCE_LENGTH_WORDS("averageSentenceLengthWords", TaskLevel.SENTENCE_LENGTH),
+    AVERAGE_SENTENCE_LENGTH_SYLLABLES("averageSentenceLengthSyllables", TaskLevel.SENTENCE_LENGTH),
     LEXICAL_DIVERSITY("lexicalDiversity", TaskLevel.TEXT),
     LIX_SCORE("lixReadabilityScore", TaskLevel.TEXT_READABILITY);
 

@@ -1,6 +1,7 @@
 package software.latic.text_analyzer;
 
 import software.latic.item.TextItemData;
+import software.latic.syllables.SyllableProvider;
 import software.latic.word_class_service.TextFormattingService;
 import software.latic.task.Task;
 import edu.stanford.nlp.simple.Document;
@@ -71,20 +72,24 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
         return puncts.contains(word);
     }
 
-    private int sentenceWordCount(Sentence sentence) {
-        return toIntExact(sentence.words().stream().filter(w -> !isPunctuation(w)).count());
-    }
-
     public int wordCount() {
         return doc.sentences().stream().mapToInt(this::sentenceWordCount).sum();
     }
 
-    public double averageWordLengthCharacters() {
-        return (double) textCountCharactersWithoutPunctuation() / (double) wordCount();
-    }
-
     public int sentenceCount() {
         return toIntExact(doc.sentences().stream().filter(sentence -> sentence.length() > 1).count());
+    }
+
+    public int syllableCount() {
+        return SyllableProvider.getInstance().syllablesPerWord(doc.text());
+    }
+
+    private int sentenceWordCount(Sentence sentence) {
+        return toIntExact(sentence.words().stream().filter(w -> !isPunctuation(w)).count());
+    }
+
+    public double averageWordLengthCharacters() {
+        return (double) textCountCharactersWithoutPunctuation() / (double) wordCount();
     }
 
     public int sentenceLengthWithoutWhitespaces(Sentence sentence) {
@@ -104,6 +109,20 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public double averageSentenceLengthWords() {
         return (double) wordCount() / (double) sentenceCount();
+    }
+
+    public double averageSentenceLengthSyllables() {
+       return (double) doc.sentences().stream()
+               .mapToInt(sent -> sent.words().stream()
+               .mapToInt(word -> SyllableProvider.getInstance().syllablesPerWord(word)).sum())
+               .sum() / sentenceCount();
+    }
+
+    public double averageWordLengthSyllables() {
+        return (double) doc.sentences().stream()
+                .mapToInt(sent -> sent.words().stream()
+                        .mapToInt(word -> SyllableProvider.getInstance().syllablesPerWord(word)).sum())
+                .sum() / wordCount();
     }
 
     public int textCountCharactersWithoutPunctuation() {
