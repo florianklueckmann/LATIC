@@ -6,8 +6,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import org.apache.log4j.Level;
 import software.latic.item.*;
-import software.latic.syllables.SyllableProvider;
 import software.latic.translation.Translation;
 import software.latic.helper.TagMapper;
 import software.latic.helper.CsvBuilder;
@@ -50,6 +50,7 @@ public class PrimaryViewModel implements Initializable {
     @FXML private MenuItem menuItemSyllablesPerWordToCsv;
     @FXML private BorderPane mainPane;
     @FXML private Menu menuHelp;
+    @FXML private Menu menuDebug;
     @FXML private MenuItem menuItemDocumentation;
     @FXML private MenuItem menuItemContact;
     @FXML private Button buttonDelete;
@@ -145,9 +146,6 @@ public class PrimaryViewModel implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        System.out.println("INIT");
-
         var textFormatter = new TextFormattingService();
         var simpleTextAnalyzer = new SimpleTextAnalyzer(textFormatter);
         var nlp = new NlpTextAnalyzer(textFormatter);
@@ -249,6 +247,9 @@ public class PrimaryViewModel implements Initializable {
     private void initializeGui() {
         setLanguages();
         bindGuiElements();
+        if (App.loggingLevel.isGreaterOrEqual(Level.WARN)) {
+            menuDebug.setVisible(false);
+        }
     }
 
     private void addBoxToParent(List<CheckBoxTreeItem<Task>> rootBoxes, CheckBoxTreeItem<Task> subBox) {
