@@ -23,8 +23,7 @@ barriere,10110010
 bayer,1001
 bayreuth,101011
 ^beat$,101
-bien,101
-biene_$,1010
+bien$,1001
 bleaching,11011011
 blues,1101
 board,1011
@@ -234,7 +233,7 @@ spray,110
 stakeholder,1101101101
 statement,11011011
 stream,11101
-studie,110100
+studie$,110100
 suit,101
 suite,101
 taille,10110
