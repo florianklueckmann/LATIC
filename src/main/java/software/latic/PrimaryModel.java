@@ -26,7 +26,6 @@ import software.latic.word_class_service.WordClassService;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class PrimaryModel {
