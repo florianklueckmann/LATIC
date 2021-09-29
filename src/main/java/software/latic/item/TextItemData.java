@@ -12,13 +12,16 @@ public abstract class TextItemData {
     final StringProperty text;
     StringProperty textAndPosTags;
     IntegerProperty wordCount;
-    DoubleProperty averageWordLengthCharacters;
     IntegerProperty sentenceCount;
+    IntegerProperty syllableCount;
+    DoubleProperty averageWordLengthCharacters;
+    DoubleProperty averageWordLengthSyllables;
     DoubleProperty averageSentenceLengthCharacters;
     DoubleProperty averageSentenceLengthCharactersWithoutWhitespaces;
     DoubleProperty averageSentenceLengthWords;
     DoubleProperty lexicalDiversity;
     DoubleProperty lixReadabilityScore;
+    DoubleProperty averageSentenceLengthSyllables;
 
 //    IntegerProperty advers;
 //    IntegerProperty determiner;
@@ -94,11 +97,14 @@ public abstract class TextItemData {
         this.text = new SimpleStringProperty(text);
         this.textAndPosTags = new SimpleStringProperty();
         this.wordCount = new SimpleIntegerProperty();
-        this.averageWordLengthCharacters = new RoundedDoubleProperty();
         this.sentenceCount = new SimpleIntegerProperty();
+        this.syllableCount = new SimpleIntegerProperty();
+        this.averageWordLengthCharacters = new RoundedDoubleProperty();
+        this.averageWordLengthSyllables = new RoundedDoubleProperty();
         this.averageSentenceLengthCharacters = new RoundedDoubleProperty();
         this.averageSentenceLengthCharactersWithoutWhitespaces = new RoundedDoubleProperty();
         this.averageSentenceLengthWords = new RoundedDoubleProperty();
+        this.averageSentenceLengthSyllables = new RoundedDoubleProperty();
         this.lexicalDiversity = new RoundedDoubleProperty();
         this.lixReadabilityScore = new RoundedDoubleProperty();
     }
@@ -127,6 +133,7 @@ public abstract class TextItemData {
         valueMap.put("averageSentenceLengthCharacters",String.valueOf(getAverageSentenceLengthCharacters()));
         valueMap.put("averageSentenceLengthCharactersWithoutWhitespaces",String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()));
         valueMap.put("averageSentenceLengthWords",String.valueOf(getAverageSentenceLengthWords()));
+        valueMap.put("averageSentenceLengthSyllables",String.valueOf(getAverageSentenceLengthWords()));
         valueMap.put("lexicalDiversity",String.valueOf(getLexicalDiversity()));
         valueMap.put("lixReadabilityScore",String.valueOf(getLixReadabilityScore()));
 
@@ -229,5 +236,41 @@ public abstract class TextItemData {
 
     public DoubleProperty averageSentenceLengthCharactersWithoutWhitespacesProperty() {
         return averageSentenceLengthCharactersWithoutWhitespaces;
+    }
+
+    public double getAverageSentenceLengthSyllables() {
+        return averageSentenceLengthSyllables.get();
+    }
+
+    public DoubleProperty averageSentenceLengthSyllablesProperty() {
+        return averageSentenceLengthSyllables;
+    }
+
+    public void setAverageSentenceLengthSyllables(double averageSentenceLengthSyllables) {
+        this.averageSentenceLengthSyllables.set(averageSentenceLengthSyllables);
+    }
+
+    public double getAverageWordLengthSyllables() {
+        return averageWordLengthSyllables.get();
+    }
+
+    public DoubleProperty averageWordLengthSyllablesProperty() {
+        return averageWordLengthSyllables;
+    }
+
+    public void setAverageWordLengthSyllables(double averageWordLengthSyllables) {
+        this.averageWordLengthSyllables.set(averageWordLengthSyllables);
+    }
+
+    public int getSyllableCount() {
+        return syllableCount.get();
+    }
+
+    public IntegerProperty syllableCountProperty() {
+        return syllableCount;
+    }
+
+    public void setSyllableCount(int syllableCount) {
+        this.syllableCount.set(syllableCount);
     }
 }

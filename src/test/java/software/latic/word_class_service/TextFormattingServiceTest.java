@@ -23,7 +23,8 @@ class TextFormattingServiceTest {
 
     private TestItem deItemEarthAndSun = new TestItem(
             "Wie lange dauert diese Umlaufzeit ca.?",
-            6, 1, 6, 123, 123);
+            6, 1, 11, 6,
+            123, 123, 4.3, 1.8);
 
     @BeforeEach
     void setUp() {
