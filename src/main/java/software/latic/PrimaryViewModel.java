@@ -72,6 +72,9 @@ public class PrimaryViewModel implements Initializable {
         menuItemContact.textProperty().bind(Translation.getInstance().createStringBinding("contact"));
 
         buttonAnalyze.textProperty().bind(Translation.getInstance().createStringBinding("analyze"));
+        buttonAnalyze.disableProperty().bind(Bindings.createBooleanBinding(
+                () -> textAreaInput.getText().isBlank(), textAreaInput.textProperty())
+        );
         buttonSaveFile.textProperty().bind(Translation.getInstance().createStringBinding("saveFile"));
         buttonDelete.textProperty().bind(Translation.getInstance().createStringBinding("delete"));
 
