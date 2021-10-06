@@ -164,6 +164,7 @@ public class PrimaryViewModel implements Initializable {
     private void setupTaskLevelStructure() {
         TaskLevel.ROOT.setParent(TaskLevel.ROOT);
         TaskLevel.WORD.setParent(TaskLevel.ROOT);
+        TaskLevel.WORD_LENGTH.setParent(TaskLevel.WORD);
         TaskLevel.WORD_CLASS.setParent(TaskLevel.WORD);
         TaskLevel.WORD_CLASS_VERBS.setParent(TaskLevel.WORD_CLASS);
         TaskLevel.SENTENCE.setParent(TaskLevel.ROOT);
@@ -276,6 +277,11 @@ public class PrimaryViewModel implements Initializable {
                 .collect(Collectors.toList()));
 
         if (choiceBoxLanguage.getValue().equals(Locale.ENGLISH)) {
+            generalTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
+                    Arrays.stream(EnglishGeneralItemCharacteristics.values())
+                            .map(englishGeneralItemCharacteristic -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(englishGeneralItemCharacteristic.getId()), englishGeneralItemCharacteristic.getId(), englishGeneralItemCharacteristic.getLevel()), null, true))
+                            .collect(Collectors.toList())
+            ));
             languageSpecificTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
                     Arrays.stream(EnglishItemCharacteristics.values())
                             .map(englishItemCharacteristic -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(englishItemCharacteristic.getId()), englishItemCharacteristic.getId(), englishItemCharacteristic.getLevel()), null, true))
@@ -284,6 +290,11 @@ public class PrimaryViewModel implements Initializable {
         }
 
         if (choiceBoxLanguage.getValue().equals(Locale.GERMAN)) {
+            generalTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
+                    Arrays.stream(GermanGeneralItemCharacteristics.values())
+                            .map(germanGeneralItemCharacteristic -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(germanGeneralItemCharacteristic.getId()), germanGeneralItemCharacteristic.getId(), germanGeneralItemCharacteristic.getLevel()), null, true))
+                            .collect(Collectors.toList())
+            ));
             languageSpecificTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
                     Arrays.stream(GermanItemCharacteristics.values())
                             .map(germanItemCharacteristic -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(germanItemCharacteristic.getId()), germanItemCharacteristic.getId(), germanItemCharacteristic.getLevel()), null, true))
