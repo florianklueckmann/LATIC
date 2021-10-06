@@ -164,6 +164,7 @@ public class PrimaryViewModel implements Initializable {
     private void setupTaskLevelStructure() {
         TaskLevel.ROOT.setParent(TaskLevel.ROOT);
         TaskLevel.WORD.setParent(TaskLevel.ROOT);
+        TaskLevel.WORD_LENGTH.setParent(TaskLevel.WORD);
         TaskLevel.WORD_CLASS.setParent(TaskLevel.WORD);
         TaskLevel.WORD_CLASS_VERBS.setParent(TaskLevel.WORD_CLASS);
         TaskLevel.SENTENCE.setParent(TaskLevel.ROOT);
