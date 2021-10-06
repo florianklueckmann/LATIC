@@ -1,5 +1,6 @@
 package software.latic.item;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableMap;
@@ -38,6 +39,13 @@ public class EnglishTextItemData extends TextItemData
     IntegerProperty prepositionOrSubordinatingConjunction;
     IntegerProperty to;
 
+    DoubleProperty fleschIndexEnglish;
+    DoubleProperty fleschKincaid;
+    DoubleProperty gunningFox;
+    DoubleProperty automatedReadabilityIndex;
+    DoubleProperty colemanLiau;
+    DoubleProperty SMOG;
+
     public EnglishTextItemData(String text)
     {
         super(text);
@@ -64,6 +72,13 @@ public class EnglishTextItemData extends TextItemData
         this.possessiveEndings = new SimpleIntegerProperty();
         this.prepositionOrSubordinatingConjunction = new SimpleIntegerProperty();
         this.to = new SimpleIntegerProperty();
+
+        this.fleschIndexEnglish = new RoundedDoubleProperty();
+        this.fleschKincaid = new RoundedDoubleProperty();
+        this.gunningFox = new RoundedDoubleProperty();
+        this.automatedReadabilityIndex = new RoundedDoubleProperty();
+        this.colemanLiau = new RoundedDoubleProperty();
+        this.SMOG = new RoundedDoubleProperty();
     }
 
     public String[] getValues() {
@@ -131,6 +146,13 @@ public class EnglishTextItemData extends TextItemData
         valueMap.put("possessiveEndings",String.valueOf(getPossessiveEndings()));
         valueMap.put("to",String.valueOf(getTo()));
         valueMap.put("unknown",String.valueOf(getUnknown()));
+
+        valueMap.put("fleschIndexEnglish",String.valueOf(getFleschIndexEnglish()));
+        valueMap.put("fleschKincaid",String.valueOf(getFleschKincaid()));
+        valueMap.put("gunningFox",String.valueOf(getGunningFox()));
+        valueMap.put("automatedReadabilityIndex",String.valueOf(getAutomatedReadabilityIndex()));
+        valueMap.put("colemanLiau",String.valueOf(getColemanLiau()));
+        valueMap.put("SMOG",String.valueOf(getSMOG()));
 
         return valueMap;
     }
@@ -520,5 +542,77 @@ public class EnglishTextItemData extends TextItemData
 
     public void setVerbsThirdSingularPresent(int verbsThirdSingularPresent) {
         this.verbsThirdSingularPresent.set(verbsThirdSingularPresent);
+    }
+
+    public double getFleschIndexEnglish() {
+        return fleschIndexEnglish.get();
+    }
+
+    public DoubleProperty fleschIndexEnglishProperty() {
+        return fleschIndexEnglish;
+    }
+
+    public void setFleschIndexEnglish(double fleschIndex) {
+        this.fleschIndexEnglish.set(fleschIndex);
+    }
+
+    public double getFleschKincaid() {
+        return fleschKincaid.get();
+    }
+
+    public DoubleProperty fleschKincaidProperty() {
+        return fleschKincaid;
+    }
+
+    public void setFleschKincaid(double fleschKincaid) {
+        this.fleschKincaid.set(fleschKincaid);
+    }
+
+    public double getGunningFox() {
+        return gunningFox.get();
+    }
+
+    public DoubleProperty gunningFoxProperty() {
+        return gunningFox;
+    }
+
+    public void setGunningFox(double gunningFox) {
+        this.gunningFox.set(gunningFox);
+    }
+
+    public double getAutomatedReadabilityIndex() {
+        return automatedReadabilityIndex.get();
+    }
+
+    public DoubleProperty automatedReadabilityIndexProperty() {
+        return automatedReadabilityIndex;
+    }
+
+    public void setAutomatedReadabilityIndex(double automatedReadabilityIndex) {
+        this.automatedReadabilityIndex.set(automatedReadabilityIndex);
+    }
+
+    public double getColemanLiau() {
+        return colemanLiau.get();
+    }
+
+    public DoubleProperty colemanLiauProperty() {
+        return colemanLiau;
+    }
+
+    public void setColemanLiau(double colemanLiau) {
+        this.colemanLiau.set(colemanLiau);
+    }
+
+    public double getSMOG() {
+        return SMOG.get();
+    }
+
+    public DoubleProperty SMOGProperty() {
+        return SMOG;
+    }
+
+    public void setSMOG(double SMOG) {
+        this.SMOG.set(SMOG);
     }
 }

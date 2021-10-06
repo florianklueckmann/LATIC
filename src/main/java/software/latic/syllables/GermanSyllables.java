@@ -4,7 +4,7 @@ import software.latic.helper.CsvReader;
 import java.util.Locale;
 import java.util.Map;
 
-public class GermanSyllables implements Syllables {
+public class GermanSyllables extends BaseSyllables implements Syllables {
 
     private static final GermanSyllables germanSyllables = new GermanSyllables();
     public static Syllables getInstance() {
