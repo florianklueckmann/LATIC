@@ -5,6 +5,7 @@ import java.util.Objects;
 public enum TaskLevel {
     ROOT(0),
     WORD(1),
+    WORD_LENGTH,
     WORD_CLASS,
     WORD_CLASS_VERBS,
     SENTENCE(2),

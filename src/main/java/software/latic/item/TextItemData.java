@@ -128,8 +128,10 @@ public abstract class TextItemData {
         valueMap.put("text",getText());
         valueMap.put("textAndPosTags",getTextAndPosTags());
         valueMap.put("wordCount",String.valueOf(getWordCount()));
-        valueMap.put("averageWordLengthCharacters",String.valueOf(getAverageWordLengthCharacters()));
         valueMap.put("sentenceCount",String.valueOf(getSentenceCount()));
+        valueMap.put("syllableCount",String.valueOf(getSyllableCount()));
+        valueMap.put("averageWordLengthCharacters",String.valueOf(getAverageWordLengthCharacters()));
+        valueMap.put("averageWordLengthSyllables",String.valueOf(getAverageWordLengthSyllables()));
         valueMap.put("averageSentenceLengthCharacters",String.valueOf(getAverageSentenceLengthCharacters()));
         valueMap.put("averageSentenceLengthCharactersWithoutWhitespaces",String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()));
         valueMap.put("averageSentenceLengthWords",String.valueOf(getAverageSentenceLengthWords()));

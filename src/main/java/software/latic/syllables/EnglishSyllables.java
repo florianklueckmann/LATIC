@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class EnglishSyllables implements Syllables {
+public class EnglishSyllables extends BaseSyllables implements Syllables {
 
     private static final EnglishSyllables englishSyllables = new EnglishSyllables();
 

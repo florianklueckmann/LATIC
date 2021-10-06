@@ -1,5 +1,6 @@
 package software.latic.item;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableMap;
@@ -27,6 +28,10 @@ public class GermanTextItemData extends TextItemData {
     IntegerProperty punctuation;
     IntegerProperty unknown;
 
+    DoubleProperty fleschIndexGerman;
+    DoubleProperty wienerSachtextformel;
+    DoubleProperty gSMOG;
+
 
     public GermanTextItemData(String text) {
 
@@ -52,6 +57,10 @@ public class GermanTextItemData extends TextItemData {
         this.conjunctions = new SimpleIntegerProperty();
         this.coordinatingConjunctions = new SimpleIntegerProperty();
         this.subordinatingConjunctions = new SimpleIntegerProperty();
+
+        this.fleschIndexGerman = new RoundedDoubleProperty();
+        this.wienerSachtextformel = new RoundedDoubleProperty();
+        this.gSMOG = new RoundedDoubleProperty();
     }
 
     @Override
@@ -104,6 +113,10 @@ public class GermanTextItemData extends TextItemData {
         valueMap.put("verbs",String.valueOf(getVerbs()));
         valueMap.put("punctuation",String.valueOf(getPunctuation()));
         valueMap.put("unknown",String.valueOf(getUnknown()));
+
+        valueMap.put("fleschIndexGerman",String.valueOf(getFleschIndexGerman()));
+        valueMap.put("wienerSachtextformel",String.valueOf(getWienerSachtextformel()));
+        valueMap.put("gSMOG",String.valueOf(getGSMOG()));
 
         return valueMap;
     }
@@ -322,5 +335,41 @@ public class GermanTextItemData extends TextItemData {
 
     public void setAdjectives(int adjectives) {
         this.adjectives.set(adjectives);
+    }
+
+    public double getFleschIndexGerman() {
+        return fleschIndexGerman.get();
+    }
+
+    public DoubleProperty fleschIndexGermanProperty() {
+        return fleschIndexGerman;
+    }
+
+    public void setFleschIndexGerman(double fleschIndex) {
+        this.fleschIndexGerman.set(fleschIndex);
+    }
+
+    public double getWienerSachtextformel() {
+        return wienerSachtextformel.get();
+    }
+
+    public DoubleProperty wienerSachtextformelProperty() {
+        return wienerSachtextformel;
+    }
+
+    public void setWienerSachtextformel(double wienerSachtextformel) {
+        this.wienerSachtextformel.set(wienerSachtextformel);
+    }
+
+    public double getGSMOG() {
+        return gSMOG.get();
+    }
+
+    public DoubleProperty gSMOGProperty() {
+        return gSMOG;
+    }
+
+    public void setGSMOG(double gSMOG) {
+        this.gSMOG.set(gSMOG);
     }
 }

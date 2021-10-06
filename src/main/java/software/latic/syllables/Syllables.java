@@ -1,5 +1,7 @@
 package software.latic.syllables;
 
+import edu.stanford.nlp.simple.Document;
+
 public interface Syllables {
     Syllables syllables = null;
     static Syllables getInstance() {
@@ -7,4 +9,8 @@ public interface Syllables {
     }
 
     int syllablesPerWord(String word);
+    int syllablesInDocument(Document doc);
+
+    int getWordsWithMoreThanTwoSyllables();
+    int getWordsWithMoreThanThreeSyllables();
 }

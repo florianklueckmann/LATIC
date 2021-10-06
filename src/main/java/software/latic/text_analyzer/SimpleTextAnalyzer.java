@@ -2,6 +2,7 @@ package software.latic.text_analyzer;
 
 import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
+import software.latic.task.TaskLevel;
 import software.latic.word_class_service.TextFormattingService;
 import software.latic.task.Task;
 import edu.stanford.nlp.simple.Document;
@@ -51,7 +52,8 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
                     if (task.getId().toLowerCase().contains("average")
                             || task.getId().toLowerCase().contains("score")
-                            || task.getId().toLowerCase().equals("lexicaldiversity")) {
+                            || task.getId().toLowerCase().equals("lexicaldiversity")
+                            || task.getLevel().equals(TaskLevel.TEXT_READABILITY)) {
                         setter = textItemData.getClass().getMethod(setterName, double.class);
                         setter.invoke(textItemData, (double) simpleTextAnalyzerMethod.invoke(this));
                     } else if (task.getId().toLowerCase().contains("count")) {
@@ -81,7 +83,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public int syllableCount() {
-        return SyllableProvider.getInstance().syllablesPerWord(doc.text());
+        return SyllableProvider.getInstance().syllablesInDocument(doc);
     }
 
     private int sentenceWordCount(Sentence sentence) {
@@ -149,6 +151,18 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
         return uniqueWords;
     }
 
+    public int wordsWithMoreThanTwoSyllables() {
+        return SyllableProvider.getInstance().getWordsWithMoreThanTwoSyllables();
+    }
+
+    public int wordsWithMoreThanThreeSyllables() {
+        return SyllableProvider.getInstance().getWordsWithMoreThanThreeSyllables();
+    }
+
+    public double wordsWithMoreThanTwoSyllablesPercent() {
+        return (double) wordsWithMoreThanTwoSyllables() / wordCount();
+    }
+
     public double lexicalDiversity() {
         return (double) uniqueWords().size() / (double) wordCount();
     }
@@ -170,4 +184,24 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     public double lixReadabilityScore() {
         return averageSentenceLengthWords() + longWordRatePercent();
     }
+
+    //German indices
+    public double fleschIndexGerman() { return 180 - averageSentenceLengthWords() - (58.5 * averageWordLengthSyllables()); }
+
+    public double wienerSachtextformel() { return 0.2656 * averageSentenceLengthWords() + 0.2744 * wordsWithMoreThanTwoSyllablesPercent() - 1.693; }
+
+    public double gSMOG() { return Math.sqrt((wordsWithMoreThanThreeSyllables() * 39)/ averageSentenceLengthWords()) - 2; }
+
+    //English indices
+    public double fleschIndexEnglish() { return 206.835 - (1.015 * averageSentenceLengthWords()) - (84.6 * averageWordLengthSyllables()); }
+
+    public double fleschKincaid() { return 0.39 * (double) (wordCount() / sentenceCount()) + 11.8 * (double) (syllableCount() / wordCount()) - 11.59; }
+
+    public double gunningFox() { return 0.4 * ( (double) (wordCount() / sentenceCount()) + (double) (wordsWithMoreThanTwoSyllables() / wordCount())); }
+
+    public double automatedReadabilityIndex () { return 4.71 * (double) (textCountCharactersWithoutPunctuation() /  wordCount()) + 0.5 * (double) (wordCount() / sentenceCount()) - 21.43; }
+
+    public double colemanLiau () { return 0.0588 * ((double) (textCountCharactersWithoutPunctuation() / wordCount()) * 100 ) - 0.296 * ((double) (sentenceCount() / wordCount()) * 100 ) - 15.8; }
+
+    public double SMOG () { return 1.043 * Math.sqrt(30 * (double) (wordsWithMoreThanTwoSyllables() / sentenceCount()) + 3.1291); }
 }
