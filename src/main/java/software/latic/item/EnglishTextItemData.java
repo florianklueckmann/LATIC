@@ -41,7 +41,7 @@ public class EnglishTextItemData extends TextItemData
 
     DoubleProperty fleschIndexEnglish;
     DoubleProperty fleschKincaid;
-    DoubleProperty gunningFox;
+    DoubleProperty gunningFog;
     DoubleProperty automatedReadabilityIndex;
     DoubleProperty colemanLiau;
     DoubleProperty SMOG;
@@ -75,7 +75,7 @@ public class EnglishTextItemData extends TextItemData
 
         this.fleschIndexEnglish = new RoundedDoubleProperty();
         this.fleschKincaid = new RoundedDoubleProperty();
-        this.gunningFox = new RoundedDoubleProperty();
+        this.gunningFog = new RoundedDoubleProperty();
         this.automatedReadabilityIndex = new RoundedDoubleProperty();
         this.colemanLiau = new RoundedDoubleProperty();
         this.SMOG = new RoundedDoubleProperty();
@@ -149,7 +149,7 @@ public class EnglishTextItemData extends TextItemData
 
         valueMap.put("fleschIndexEnglish",String.valueOf(getFleschIndexEnglish()));
         valueMap.put("fleschKincaid",String.valueOf(getFleschKincaid()));
-        valueMap.put("gunningFox",String.valueOf(getGunningFox()));
+        valueMap.put("gunningFog",String.valueOf(getGunningFog()));
         valueMap.put("automatedReadabilityIndex",String.valueOf(getAutomatedReadabilityIndex()));
         valueMap.put("colemanLiau",String.valueOf(getColemanLiau()));
         valueMap.put("SMOG",String.valueOf(getSMOG()));
@@ -568,16 +568,16 @@ public class EnglishTextItemData extends TextItemData
         this.fleschKincaid.set(fleschKincaid);
     }
 
-    public double getGunningFox() {
-        return gunningFox.get();
+    public double getGunningFog() {
+        return gunningFog.get();
     }
 
-    public DoubleProperty gunningFoxProperty() {
-        return gunningFox;
+    public DoubleProperty gunningFogProperty() {
+        return gunningFog;
     }
 
-    public void setGunningFox(double gunningFox) {
-        this.gunningFox.set(gunningFox);
+    public void setGunningFog(double gunningFog) {
+        this.gunningFog.set(gunningFog);
     }
 
     public double getAutomatedReadabilityIndex() {
