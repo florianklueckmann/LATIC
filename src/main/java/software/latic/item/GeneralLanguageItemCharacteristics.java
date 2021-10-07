@@ -9,7 +9,7 @@ public enum GeneralLanguageItemCharacteristics implements ItemCharacteristics {
     ADVERBS("adverbs", TaskLevel.WORD_CLASS),
     DETERMINER("determiner", TaskLevel.WORD_CLASS),
     INTERJECTIONS("interjections", TaskLevel.WORD_CLASS),
-    MODAL("modals", TaskLevel.WORD_CLASS),
+    MODAL("modals", TaskLevel.WORD_CLASS_VERBS),
     NOUNS("nouns", TaskLevel.WORD_CLASS),
     NUMBERS("numbers", TaskLevel.WORD),
     PARTICLES("particles", TaskLevel.WORD_CLASS),
