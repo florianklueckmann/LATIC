@@ -151,4 +151,50 @@ class SimpleTextAnalyzerTest {
         Assertions.assertEquals(13.0238, simpleTextAnalyzer.lixReadabilityScore(), 0.01);
     }
 
+
+    @Test
+    void fleschIndexGerman() {
+        Assertions.assertEquals(13.0238, simpleTextAnalyzer.fleschIndexGerman(), 0.01);
+    }
+
+    @Test
+    void wienerSachtextformel() {
+        Assertions.assertEquals(13.0238, simpleTextAnalyzer.wienerSachtextformel(), 0.01);
+    }
+
+    @Test
+    void gSMOG() {
+        Assertions.assertEquals(13.0238, simpleTextAnalyzer.gSMOG(), 0.01);
+    }
+
+    @Test
+    void fleschIndexEnglish() {
+        Assertions.assertEquals(13.0238, simpleTextAnalyzer.fleschIndexEnglish(), 0.01);
+    }
+
+    @Test
+    void fleschKincaid() {
+        Assertions.assertEquals(13.0238, simpleTextAnalyzer.fleschKincaid(), 0.01);
+    }
+
+    @Test
+    void gunningFog() {
+        Assertions.assertEquals(13.0238, simpleTextAnalyzer.gunningFog(), 0.01);
+    }
+
+    @Test
+    void automatedReadabilityIndex() {
+        Assertions.assertEquals(13.0238, simpleTextAnalyzer.automatedReadabilityIndex(), 0.01);
+    }
+
+    @Test
+    void colemanLiau() {
+        Assertions.assertEquals(13.0238, simpleTextAnalyzer.colemanLiau(), 0.01);
+    }
+
+    @Test
+    void SMOG() {
+        Assertions.assertEquals(13.0238, simpleTextAnalyzer.SMOG(), 0.01);
+    }
+
 }

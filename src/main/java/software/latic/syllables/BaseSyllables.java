@@ -13,11 +13,13 @@ public abstract class BaseSyllables implements Syllables {
     @Override
     public int syllablesInDocument(Document doc) {
         var docSyllableCount = 0;
+        wordsWithMoreThanTwoSyllables = 0;
+        wordsWithMoreThanThreeSyllables = 0;
         var sentences = doc.sentences();
         List<String> words = FXCollections.observableArrayList();
 
         for (var sentence : sentences) {
-            words.addAll(sentence.words());
+            words.addAll(sentence.words().stream().filter(word -> !word.matches("\\W")).toList());
         }
 
         for (var word : words) {

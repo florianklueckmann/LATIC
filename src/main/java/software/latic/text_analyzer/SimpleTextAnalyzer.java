@@ -121,10 +121,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public double averageWordLengthSyllables() {
-        return (double) doc.sentences().stream()
-                .mapToInt(sent -> sent.words().stream()
-                        .mapToInt(word -> SyllableProvider.getInstance().syllablesPerWord(word)).sum())
-                .sum() / wordCount();
+        return (double) syllableCount() / wordCount();
     }
 
     public int textCountCharactersWithoutPunctuation() {
@@ -160,7 +157,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public double wordsWithMoreThanTwoSyllablesPercent() {
-        return (double) wordsWithMoreThanTwoSyllables() / wordCount();
+        return ((double) wordsWithMoreThanTwoSyllables() / wordCount() * 100);
     }
 
     public double lexicalDiversity() {
@@ -186,22 +183,32 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     //German indices
-    public double fleschIndexGerman() { return 180 - averageSentenceLengthWords() - (58.5 * averageWordLengthSyllables()); }
+    public double fleschIndexGerman() {
+        return 180 - averageSentenceLengthWords() - (58.5 * averageWordLengthSyllables());
+    }
 
-    public double wienerSachtextformel() { return 0.2656 * averageSentenceLengthWords() + 0.2744 * wordsWithMoreThanTwoSyllablesPercent() - 1.693; }
+    public double wienerSachtextformel() {
+        return 0.2656 * averageSentenceLengthWords() + 0.2744 * wordsWithMoreThanTwoSyllablesPercent() - 1.693;
+    }
 
-    public double gSMOG() { return Math.sqrt((wordsWithMoreThanThreeSyllables() * 39)/ averageSentenceLengthWords()) - 2; }
+    public double gSMOG() {
+        return Math.sqrt( (double) (wordsWithMoreThanThreeSyllables() * 30) / sentenceCount()) - 2;
+    }
 
     //English indices
-    public double fleschIndexEnglish() { return 206.835 - (1.015 * averageSentenceLengthWords()) - (84.6 * averageWordLengthSyllables()); }
+    public double fleschIndexEnglish() {
+        return 206.835 - (1.015 * averageSentenceLengthWords()) - (84.6 * averageWordLengthSyllables());
+    }
 
     public double fleschKincaid() { return 0.39 * (double) (wordCount() / sentenceCount()) + 11.8 * (double) (syllableCount() / wordCount()) - 11.59; }
 
-    public double gunningFox() { return 0.4 * ( (double) (wordCount() / sentenceCount()) + (double) (wordsWithMoreThanTwoSyllables() / wordCount())); }
+    public double gunningFog() { return 0.4 * ( (double) (wordCount() / sentenceCount()) + (double) (wordsWithMoreThanTwoSyllables() / wordCount())); }
 
-    public double automatedReadabilityIndex () { return 4.71 * (double) (textCountCharactersWithoutPunctuation() /  wordCount()) + 0.5 * (double) (wordCount() / sentenceCount()) - 21.43; }
+    public double automatedReadabilityIndex () {
+        return 4.71 * textCountCharactersWithoutPunctuation() /  wordCount() + 0.5 *wordCount() / sentenceCount() - 21.43;
+    }
 
-    public double colemanLiau () { return 0.0588 * ((double) (textCountCharactersWithoutPunctuation() / wordCount()) * 100 ) - 0.296 * ((double) (sentenceCount() / wordCount()) * 100 ) - 15.8; }
+    public double colemanLiau () { return 0.0588 * ( (double) textCountCharactersWithoutPunctuation() / (double) wordCount() * 100 ) - 0.296 * ( (double)sentenceCount() / (double) wordCount() * 100 ) - 15.8; }
 
-    public double SMOG () { return 1.043 * Math.sqrt(30 * (double) (wordsWithMoreThanTwoSyllables() / sentenceCount()) + 3.1291); }
+    public double SMOG () { return 1.043 * Math.sqrt(30 *  (double) wordsWithMoreThanTwoSyllables() / (double) sentenceCount() + 3.1291); }
 }
