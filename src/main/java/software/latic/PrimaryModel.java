@@ -1,5 +1,7 @@
 package software.latic;
 
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import software.latic.item.GermanTextItemData;
 import software.latic.item.TextItemData;
 import software.latic.translation.SupportedLocales;
@@ -36,6 +38,7 @@ public class PrimaryModel {
     SimpleTextAnalyzer simpleTextAnalyzer;
     TextFormattingService textFormattingService;
     NlpTextAnalyzer nlp;
+    StanfordCoreNLP pipeline;
 
     public List<CharSequence> getParagraphs() {
         return paragraphs;
@@ -66,13 +69,21 @@ public class PrimaryModel {
 
     //TODO: Throw Exception if paragraphs not set?
     public void initializeDocument() {
-        this.doc = new Document(props, this.paragraphs.stream()
-                .map(charSequence -> charSequence.toString().trim())
-                .collect(Collectors.joining(" ")));
-    }
 
-    public void initializeDocument(String text) {
-        this.doc = new Document(props, text);
+        var text = this.paragraphs.stream()
+                .map(charSequence -> charSequence.toString().trim())
+                .collect(Collectors.joining(" "));
+
+        if (Translation.getInstance().getLocale().equals(SupportedLocales.FRENCH.getLocale())) {
+            props.setProperty("annotators", "tokenize, ssplit, pos");
+            pipeline = new StanfordCoreNLP(props);
+            Annotation annotation = new Annotation(text);
+            pipeline.annotate(annotation);
+            this.doc = new Document(annotation);
+        } else {
+            this.doc = new Document(props, text);
+        }
+
     }
 
     public Locale getLanguage() {
