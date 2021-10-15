@@ -271,6 +271,12 @@ public class PrimaryViewModel implements Initializable {
                 .map(textInformation -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(textInformation.getId()), textInformation.getId(), textInformation.getLevel()), null, true))
                 .collect(Collectors.toList()));
 
+        if (Translation.getInstance().canAnalyzeSyllablesForLocale()) {
+            generalTaskCheckBoxItems.addAll(FXCollections.observableArrayList(Arrays.stream(SyllableItemCharacteristics.values())
+                    .map(textInformation -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(textInformation.getId()), textInformation.getId(), textInformation.getLevel()), null, true))
+                    .collect(Collectors.toList())));
+        }
+
         textTaskCheckBoxItems = FXCollections.observableArrayList(Arrays.stream(TextInformationItemCharacteristics.values())
                 .map(textInformationItemCharacteristics -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(textInformationItemCharacteristics.getId()), textInformationItemCharacteristics.getId(), textInformationItemCharacteristics.getLevel()), null, true))
                 .collect(Collectors.toList()));

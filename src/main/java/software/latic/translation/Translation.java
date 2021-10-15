@@ -45,6 +45,11 @@ public class Translation {
         );
     }
 
+    public boolean canAnalyzeSyllablesForLocale() {
+        return getLocale().equals(SupportedLocales.ENGLISH.getLocale())
+                || getLocale().equals(SupportedLocales.GERMAN.getLocale());
+    }
+
     public String getTranslation(final String key){
         ResourceBundle bundle = ResourceBundle.getBundle("software.latic.messages", getLocale());
         try {
