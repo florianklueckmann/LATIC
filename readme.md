@@ -1,28 +1,29 @@
-# LATIC - Linguistic Analysis Tool for Item Characteristics
+# LATIC - Linguistic Analyzer for Text and Item Characteristics
 
-LATIC is a free and open source desktop application that allows you to analyze and count item characteristics
-in English and German items or rather texts. The [Stanford CoreNLP 4.2.1](https://github.com/stanfordnlp/CoreNLP)
+LATIC is a free and open source desktop application that allows you to analyze and count text and item characteristics
+in English, French, German and Spanish texts or items. The [Stanford CoreNLP 4.3.0](https://github.com/stanfordnlp/CoreNLP)
 is used to tag parts of speech and allows LATIC to provide very accurate results.
 You can find our evaluation in the documentation.
 
-### Available Item Characteristics
+### Available Text and Item Characteristics
 
-* Analysis at the word level 
+* **Analysis at the word level** 
     * Parts of speech (e.g. adjectives, interjections, nouns, ...)
-    * Word length
-* Analysis at the sentence level
+    * Word length (characters, syllables)
+* **Analysis at the sentence level**
     * Number of sentences
-    * Sentence length (with or without spaces)
-* Analysis at the text level
-    * Readability indices (as of now: LIX)
+    * Sentence length (characters with or without spaces, syllables, words)
+* **Analysis at the text level**
+    * Readability indices (e.g. Flesch, LIX)
     * Lexical diversity/type-token ratio
     * Word count
+    * Syllable count
 
-A detailed description of the item characteristics and instructions on how to use LATIC are provided in the documentation.
+A detailed description of the text and item characteristics and instructions on how to use LATIC are provided in the documentation.
 
 ### Contribution
 
-The Standford CoreNLP supports many other languages, and we'd love to add them to LATIC.
+The Standford CoreNLP supports many other languages (e.g. Arabic, Italian, Hungarian), and we'd love to add them to LATIC.
 However, this requires the support of people who speak one of these languages at a very good level. 
 If you'd like to implement one of the remaining languages with us, please [let us know](mailto:hello@latic.software)!
 
