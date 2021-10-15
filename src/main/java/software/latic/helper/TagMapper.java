@@ -122,7 +122,7 @@ public class TagMapper {
 
     private SimpleToken replaceInterjection(SimpleToken token) {
         if (interjections.stream().anyMatch(s -> s.equalsIgnoreCase(token.word()))) {
-            token.setTag(Translation.getInstance().getLanguageTag().equalsIgnoreCase("de") ? "INTJ" : "UH");
+            token.setTag(Translation.getInstance().getLocale().equals(SupportedLocales.ENGLISH.getLocale()) ? "UH" : "INTJ");
         }
         return token;
     }
