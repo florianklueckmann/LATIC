@@ -72,6 +72,9 @@ public class PrimaryViewModel implements Initializable {
         menuItemContact.textProperty().bind(Translation.getInstance().createStringBinding("contact"));
 
         buttonAnalyze.textProperty().bind(Translation.getInstance().createStringBinding("analyze"));
+        buttonAnalyze.disableProperty().bind(Bindings.createBooleanBinding(
+                () -> textAreaInput.getText().isBlank(), textAreaInput.textProperty())
+        );
         buttonSaveFile.textProperty().bind(Translation.getInstance().createStringBinding("saveFile"));
         buttonDelete.textProperty().bind(Translation.getInstance().createStringBinding("delete"));
 
@@ -268,6 +271,12 @@ public class PrimaryViewModel implements Initializable {
                 .map(textInformation -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(textInformation.getId()), textInformation.getId(), textInformation.getLevel()), null, true))
                 .collect(Collectors.toList()));
 
+        if (Translation.getInstance().canAnalyzeSyllablesForLocale()) {
+            generalTaskCheckBoxItems.addAll(FXCollections.observableArrayList(Arrays.stream(SyllableItemCharacteristics.values())
+                    .map(textInformation -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(textInformation.getId()), textInformation.getId(), textInformation.getLevel()), null, true))
+                    .collect(Collectors.toList())));
+        }
+
         textTaskCheckBoxItems = FXCollections.observableArrayList(Arrays.stream(TextInformationItemCharacteristics.values())
                 .map(textInformationItemCharacteristics -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(textInformationItemCharacteristics.getId()), textInformationItemCharacteristics.getId(), textInformationItemCharacteristics.getLevel()), null, true))
                 .collect(Collectors.toList()));
@@ -407,6 +416,7 @@ public class PrimaryViewModel implements Initializable {
         column.textProperty().bind(Translation.getInstance().createStringBinding(child.getValue().getId()));
         column.setId(child.getValue().getId());
         column.setCellValueFactory(new PropertyValueFactory<>(child.getValue().getId()));
+        column.setPrefWidth(150.0);
         tableViewResults.getColumns().add(column);
     }
 

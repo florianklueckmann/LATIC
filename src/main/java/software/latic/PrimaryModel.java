@@ -1,7 +1,10 @@
 package software.latic;
 
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import software.latic.item.GermanTextItemData;
 import software.latic.item.TextItemData;
+import software.latic.translation.SupportedLocales;
 import software.latic.syllables.SyllableProvider;
 import software.latic.translation.Translation;
 import software.latic.item.EnglishTextItemData;
@@ -35,6 +38,7 @@ public class PrimaryModel {
     SimpleTextAnalyzer simpleTextAnalyzer;
     TextFormattingService textFormattingService;
     NlpTextAnalyzer nlp;
+    StanfordCoreNLP pipeline;
 
     public List<CharSequence> getParagraphs() {
         return paragraphs;
@@ -65,13 +69,21 @@ public class PrimaryModel {
 
     //TODO: Throw Exception if paragraphs not set?
     public void initializeDocument() {
-        this.doc = new Document(props, this.paragraphs.stream()
-                .map(charSequence -> charSequence.toString().trim())
-                .collect(Collectors.joining(" ")));
-    }
 
-    public void initializeDocument(String text) {
-        this.doc = new Document(props, text);
+        var text = this.paragraphs.stream()
+                .map(charSequence -> charSequence.toString().trim())
+                .collect(Collectors.joining(" "));
+
+        if (Translation.getInstance().getLocale().equals(SupportedLocales.FRENCH.getLocale())) {
+            props.setProperty("annotators", "tokenize, ssplit, pos");
+            pipeline = new StanfordCoreNLP(props);
+            Annotation annotation = new Annotation(text);
+            pipeline.annotate(annotation);
+            this.doc = new Document(annotation);
+        } else {
+            this.doc = new Document(props, text);
+        }
+
     }
 
     public Locale getLanguage() {
@@ -82,6 +94,7 @@ public class PrimaryModel {
             this.language = language;
             if (!language.getLanguage().equalsIgnoreCase("en")) {
                 try {
+                    System.out.println("--- getDisplayLanguage: " + language.getDisplayLanguage(Locale.ENGLISH).toLowerCase(Locale.ROOT));
                     props.load(IOUtils.readerFromString("StanfordCoreNLP-" + language.getDisplayLanguage(Locale.ENGLISH).toLowerCase(Locale.ROOT) + ".properties"));
                 } catch (IOException e) {
                     //TODO: Error Handling
@@ -109,10 +122,10 @@ public class PrimaryModel {
         WordClassService wordClassCounter;
 
         //TODO
-        if (language.equals(Locale.GERMAN))
-            wordClassCounter = new GermanWordClassService();
-        else
+        if (language.equals(Locale.ENGLISH))
             wordClassCounter = new EnglishWordClassService();
+        else
+            wordClassCounter = new GermanWordClassService();
 
         for (var linguisticFeature : wordClassCounter.analyzeWordClasses(doc.sentences())) {
             if (languageSpecificTasks.stream().anyMatch(task -> task.getId().equals(linguisticFeature.getId()) && task.selectedProperty().get()))
@@ -174,7 +187,7 @@ public class PrimaryModel {
 
         TextItemData textItemData;
 
-        if (language.equals(Locale.GERMAN))
+        if (language.equals(Locale.GERMAN) || language.equals(Locale.FRENCH) || language.equals(SupportedLocales.SPANISH.getLocale()))
             textItemData = new GermanTextItemData(doc.text());
         else
             textItemData = new EnglishTextItemData(doc.text());

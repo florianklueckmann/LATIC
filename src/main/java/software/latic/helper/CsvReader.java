@@ -1,5 +1,6 @@
 package software.latic.helper;
 
+import org.apache.log4j.Logger;
 import software.latic.App;
 
 import java.util.*;
@@ -15,10 +16,12 @@ public class CsvReader {
     public List<String> readFile(String fileName) {
         List<String> lines = new ArrayList<>();
         try (Scanner scanner = new Scanner(Objects.requireNonNull(
-                App.class.getResourceAsStream(fileName), "fileName must not be null"))) {
+                App.class.getResourceAsStream(fileName), String.format("readFile(%s): Unable to find file.", fileName)))) {
             while (scanner.hasNextLine()) {
                 lines.add(scanner.nextLine());
             }
+        } catch (NullPointerException e) {
+            Logger.getLogger("CsvReader").warn(e.getMessage());
         }
 
         return lines;

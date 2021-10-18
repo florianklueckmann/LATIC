@@ -4,7 +4,7 @@
 
     <groupId>software.latic</groupId>
     <artifactId>latic</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>LATIC</name>
@@ -15,7 +15,7 @@
         <maven.compiler.target>16</maven.compiler.target>
         <maven.compiler.release>16</maven.compiler.release>
         <javafx.version>[15,16)</javafx.version>
-        <corenlp.version>4.2.1</corenlp.version>
+        <corenlp.version>[4.3,4.4)</corenlp.version>
     </properties>
 
     <dependencies>
@@ -77,6 +77,18 @@
             <artifactId>stanford-corenlp</artifactId>
             <version>${corenlp.version}</version>
             <classifier>models-german</classifier>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>${corenlp.version}</version>
+            <classifier>models-spanish</classifier>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>${corenlp.version}</version>
+            <classifier>models-french</classifier>
         </dependency>
 
         <!--Logger for CoreNLP-->

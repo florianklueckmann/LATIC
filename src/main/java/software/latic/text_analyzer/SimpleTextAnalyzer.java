@@ -79,7 +79,8 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public int sentenceCount() {
-        return toIntExact(doc.sentences().stream().filter(sentence -> sentence.length() > 1).count());
+        int sentenceCount = toIntExact(doc.sentences().stream().filter(sentence -> sentence.length() > 1).count());
+        return sentenceCount > 0 ? sentenceCount : 1;
     }
 
     public int syllableCount() {
