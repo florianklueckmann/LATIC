@@ -65,7 +65,9 @@ public class KnownTags {
 
     private final Map<Locale, HashSet<String>> tagsMap = Map.ofEntries(
             new AbstractMap.SimpleEntry<>(SupportedLocales.ENGLISH.getLocale(), knownTagsEN),
-            new AbstractMap.SimpleEntry<>(SupportedLocales.GERMAN.getLocale(), knownTagsDE)
+            new AbstractMap.SimpleEntry<>(SupportedLocales.GERMAN.getLocale(), knownTagsDE),
+            new AbstractMap.SimpleEntry<>(SupportedLocales.SPANISH.getLocale(), knownTagsDE),
+            new AbstractMap.SimpleEntry<>(SupportedLocales.FRENCH.getLocale(), knownTagsDE)
     );
 
     private HashSet<String> getTagSet() {

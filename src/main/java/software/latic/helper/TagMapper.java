@@ -6,6 +6,7 @@ import edu.stanford.nlp.simple.Token;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 
@@ -27,7 +28,9 @@ public class TagMapper {
     );
     private final Map<Locale, Map<String, String>> localeTags = Map.ofEntries(
             new AbstractMap.SimpleEntry<>(SupportedLocales.ENGLISH.getLocale(), tagsEN),
-            new AbstractMap.SimpleEntry<>(SupportedLocales.GERMAN.getLocale(), tagsDE)
+            new AbstractMap.SimpleEntry<>(SupportedLocales.GERMAN.getLocale(), tagsDE),
+            new AbstractMap.SimpleEntry<>(SupportedLocales.SPANISH.getLocale(), tagsDE),
+            new AbstractMap.SimpleEntry<>(SupportedLocales.FRENCH.getLocale(), tagsDE)
     );
     private final Map<String, String> fixedTagsEn = Map.ofEntries(
             new AbstractMap.SimpleEntry<>("%", "SYM"),
@@ -52,9 +55,25 @@ public class TagMapper {
             new AbstractMap.SimpleEntry<>(">", "SYM"),
             new AbstractMap.SimpleEntry<>("^", "SYM")
     );
+
+    private final Map<String, String> additionalTagsEs = Map.ofEntries(
+            new AbstractMap.SimpleEntry<>("(", "PUNCT"),
+            new AbstractMap.SimpleEntry<>(")", "PUNCT"),
+            new AbstractMap.SimpleEntry<>("{", "PUNCT"),
+            new AbstractMap.SimpleEntry<>("}", "PUNCT"),
+            new AbstractMap.SimpleEntry<>("[", "PUNCT"),
+            new AbstractMap.SimpleEntry<>("]", "PUNCT"),
+            new AbstractMap.SimpleEntry<>("@", "SYM")
+    );
+
+    private final Map<String, String> fixedTagsEs = Stream.concat(fixedTagsDe.entrySet().stream(), additionalTagsEs
+            .entrySet().stream()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
     private final Map<Locale, Map<String, String>> localeFixedTagMaps = Map.ofEntries(
             new AbstractMap.SimpleEntry<>(SupportedLocales.ENGLISH.getLocale(), fixedTagsEn),
-            new AbstractMap.SimpleEntry<>(SupportedLocales.GERMAN.getLocale(), fixedTagsDe)
+            new AbstractMap.SimpleEntry<>(SupportedLocales.GERMAN.getLocale(), fixedTagsDe),
+            new AbstractMap.SimpleEntry<>(SupportedLocales.SPANISH.getLocale(), fixedTagsEs),
+            new AbstractMap.SimpleEntry<>(SupportedLocales.FRENCH.getLocale(), fixedTagsDe)
     );
     private Map<String, String> tagMap;
     private Map<String, String> fixedTagMap;
@@ -103,13 +122,13 @@ public class TagMapper {
 
     private SimpleToken replaceInterjection(SimpleToken token) {
         if (interjections.stream().anyMatch(s -> s.equalsIgnoreCase(token.word()))) {
-            token.setTag(Translation.getInstance().getLanguageTag().equalsIgnoreCase("de") ? "INTJ" : "UH");
+            token.setTag(Translation.getInstance().getLocale().equals(SupportedLocales.ENGLISH.getLocale()) ? "UH" : "INTJ");
         }
         return token;
     }
 
     public void loadInterjections() {
-        if (Translation.getInstance().getLocale().equals(Locale.GERMAN)) {
+        if (!Translation.getInstance().getLocale().equals(Locale.ENGLISH)) {
             interjections = CsvReader.getInstance()
                     .readFile(String.format("interjections_%s.txt", Translation.getInstance().getLanguageTag()));
         } else interjections = Collections.emptyList();
