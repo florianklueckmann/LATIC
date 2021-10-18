@@ -416,6 +416,7 @@ public class PrimaryViewModel implements Initializable {
         column.textProperty().bind(Translation.getInstance().createStringBinding(child.getValue().getId()));
         column.setId(child.getValue().getId());
         column.setCellValueFactory(new PropertyValueFactory<>(child.getValue().getId()));
+        column.setPrefWidth(150.0);
         tableViewResults.getColumns().add(column);
     }
 
