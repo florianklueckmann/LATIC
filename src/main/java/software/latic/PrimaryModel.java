@@ -94,7 +94,6 @@ public class PrimaryModel {
             this.language = language;
             if (!language.getLanguage().equalsIgnoreCase("en")) {
                 try {
-                    System.out.println("--- getDisplayLanguage: " + language.getDisplayLanguage(Locale.ENGLISH).toLowerCase(Locale.ROOT));
                     props.load(IOUtils.readerFromString("StanfordCoreNLP-" + language.getDisplayLanguage(Locale.ENGLISH).toLowerCase(Locale.ROOT) + ".properties"));
                 } catch (IOException e) {
                     //TODO: Error Handling
