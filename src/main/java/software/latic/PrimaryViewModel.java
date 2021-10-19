@@ -454,7 +454,7 @@ public class PrimaryViewModel implements Initializable {
                     tempOutput.toFile().deleteOnExit();
 
                     Files.copy(Objects.requireNonNull(
-                            App.class.getResourceAsStream(String.format("documentation_%s.pdf", Translation.getInstance().getLanguageTag())),
+                            App.class.getResourceAsStream(Translation.getInstance().getDocumentationFileName()),
                             "Documentation is not available"),
                             tempOutput, StandardCopyOption.REPLACE_EXISTING);
 
