@@ -68,4 +68,12 @@ public class Translation {
     public String getLanguageTag() {
         return getLocale().toLanguageTag().toLowerCase(Locale.ROOT);
     }
+
+    public String getDocumentationFileName() {
+        if (getLocale() == SupportedLocales.GERMAN.getLocale()) {
+            return "documentation_de.pdf";
+        } else {
+            return "documentation_en.pdf";
+        }
+    }
 }
