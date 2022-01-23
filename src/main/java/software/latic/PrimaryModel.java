@@ -51,9 +51,10 @@ public class PrimaryModel {
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(App.loggingLevel);
         props = new Properties();
+        this.setLanguage(Translation.getInstance().getLocale());
     }
 
-    public void initializeDocument(List<CharSequence> paragraphs) {
+    public PrimaryModel initializeDocument(List<CharSequence> paragraphs) {
         var text = paragraphs.stream()
                 .map(charSequence -> charSequence.toString().trim())
                 .collect(Collectors.joining(" "));
@@ -68,13 +69,14 @@ public class PrimaryModel {
             this.doc = new Document(props, text);
         }
 
+        return this;
     }
 
     public Locale getLanguage() {
         return language;
     }
 
-    public void setLanguage(Locale language) {
+    private void setLanguage(Locale language) {
             this.language = language;
             if (!language.getLanguage().equalsIgnoreCase("en")) {
                 try {
