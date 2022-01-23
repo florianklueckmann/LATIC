@@ -148,11 +148,7 @@ public class PrimaryViewModel implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        var textFormatter = new TextFormattingService();
-        var simpleTextAnalyzer = new SimpleTextAnalyzer(textFormatter);
-        var nlp = new NlpTextAnalyzer(textFormatter);
-
-        primaryModel = new PrimaryModel(simpleTextAnalyzer, textFormatter, nlp);
+        primaryModel = new PrimaryModel();
 
         textItemDataResults = FXCollections.observableArrayList();
         taskCheckBoxItems = FXCollections.observableArrayList();

@@ -35,9 +35,9 @@ public class PrimaryModel {
 
     private Locale language = Translation.getInstance().getLocale(); //TODO: Maybe use ENUM
     private Properties props;
-    SimpleTextAnalyzer simpleTextAnalyzer;
-    TextFormattingService textFormattingService;
-    NlpTextAnalyzer nlp;
+    SimpleTextAnalyzer simpleTextAnalyzer = SimpleTextAnalyzer.getInstance();
+    TextFormattingService textFormattingService = TextFormattingService.getInstance();
+    NlpTextAnalyzer nlp = NlpTextAnalyzer.getInstance();
     StanfordCoreNLP pipeline;
 
     public Document getDoc() {
@@ -47,14 +47,10 @@ public class PrimaryModel {
     Document doc;
 
 
-    public PrimaryModel(SimpleTextAnalyzer simpleTextAnalyzer, TextFormattingService textFormattingService, NlpTextAnalyzer nlp) {
+    public PrimaryModel() {
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(App.loggingLevel);
         props = new Properties();
-
-        this.simpleTextAnalyzer = simpleTextAnalyzer;
-        this.textFormattingService = textFormattingService;
-        this.nlp = nlp;
     }
 
     public void initializeDocument(List<CharSequence> paragraphs) {

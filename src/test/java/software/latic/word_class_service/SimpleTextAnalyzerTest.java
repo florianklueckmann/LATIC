@@ -48,7 +48,7 @@ class SimpleTextAnalyzerTest {
         Translation.getInstance().setLocale(Locale.GERMAN);
 
         Document doc = new Document(props, deItemEarthAndSun.getText());
-        simpleTextAnalyzer = new SimpleTextAnalyzer(new TextFormattingService());
+        simpleTextAnalyzer = SimpleTextAnalyzer.getInstance();
         simpleTextAnalyzer.setDoc(doc);
     }
 
