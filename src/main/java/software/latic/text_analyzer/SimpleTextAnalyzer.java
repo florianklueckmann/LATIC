@@ -20,6 +20,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     Document doc;
     ArrayList<String> puncts;
     TextFormattingService textFormattingService;
+    int syllableCount = 0;
 
     public SimpleTextAnalyzer(TextFormattingService textFormatter) {
         this.textFormattingService = textFormatter;
@@ -32,6 +33,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public void setDoc(Document doc) {
         this.doc = doc;
+        this.syllableCount = 0;
     }
 
 
@@ -84,7 +86,10 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public int syllableCount() {
-        return SyllableProvider.getInstance().syllablesInDocument(doc);
+        if (syllableCount == 0) {
+            syllableCount = SyllableProvider.getInstance().syllablesInDocument(doc);
+        }
+        return syllableCount;
     }
 
     private int sentenceWordCount(Sentence sentence) {
