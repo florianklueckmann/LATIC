@@ -30,6 +30,7 @@ public class App extends Application {
         prepareStage(stage);
         stage.show();
 
+        Logger.getRootLogger().setLevel(loggingLevel);
         Logger.getLogger("App").debug(String.format("JavaFX runtime: %s", System.getProperty("javafx.runtime.version")));
         Logger.getLogger("App").debug(String.format("Java runtime: %s", System.getProperty("java.runtime.version")));
     }
