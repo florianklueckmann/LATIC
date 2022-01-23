@@ -40,16 +40,6 @@ public class PrimaryModel {
     NlpTextAnalyzer nlp;
     StanfordCoreNLP pipeline;
 
-    public List<CharSequence> getParagraphs() {
-        return paragraphs;
-    }
-
-    public void setParagraphs(List<CharSequence> paragraphs) {
-        this.paragraphs = paragraphs;
-    }
-
-    List<CharSequence> paragraphs;
-
     public Document getDoc() {
         return doc;
     }
@@ -67,10 +57,8 @@ public class PrimaryModel {
         this.nlp = nlp;
     }
 
-    //TODO: Throw Exception if paragraphs not set?
-    public void initializeDocument() {
-
-        var text = this.paragraphs.stream()
+    public void initializeDocument(List<CharSequence> paragraphs) {
+        var text = paragraphs.stream()
                 .map(charSequence -> charSequence.toString().trim())
                 .collect(Collectors.joining(" "));
 

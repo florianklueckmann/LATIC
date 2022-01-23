@@ -390,8 +390,7 @@ public class PrimaryViewModel implements Initializable {
                         .collect(Collectors.toList())
         );
 
-        primaryModel.setParagraphs(textAreaInput.getParagraphs());
-        primaryModel.initializeDocument();
+        primaryModel.initializeDocument(textAreaInput.getParagraphs());
 
         var currentItem = primaryModel.processTasks(textTasks, generalTasks, wordLevelTasks);
         textItemDataResults.add(currentItem);
@@ -483,8 +482,7 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void handleSyllablesPerWordToCsv() {
-        primaryModel.setParagraphs(textAreaInput.getParagraphs());
-        primaryModel.initializeDocument();
+        primaryModel.initializeDocument(textAreaInput.getParagraphs());
         var syllableResult = primaryModel.syllableTest();
 
         Window stage = mainPane.getScene().getWindow();
