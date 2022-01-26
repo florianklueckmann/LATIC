@@ -60,8 +60,6 @@ public class PrimaryViewModel implements Initializable {
     @FXML private Button buttonAnalyze;
     @FXML private Button buttonSaveFile;
 
-    private PrimaryModel primaryModel;
-
     private ObservableList<TextItemData> textItemDataResults;
 
     private final ListProperty<Locale> languages = new SimpleListProperty<>();
@@ -148,12 +146,6 @@ public class PrimaryViewModel implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        var textFormatter = new TextFormattingService();
-        var simpleTextAnalyzer = new SimpleTextAnalyzer(textFormatter);
-        var nlp = new NlpTextAnalyzer(textFormatter);
-
-        primaryModel = new PrimaryModel(simpleTextAnalyzer, textFormatter, nlp);
-
         textItemDataResults = FXCollections.observableArrayList();
         taskCheckBoxItems = FXCollections.observableArrayList();
 
@@ -361,7 +353,6 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void changeLanguage() {
-        primaryModel.setLanguage(choiceBoxLanguage.getValue());
         Translation.getInstance().setLocale(choiceBoxLanguage.getValue());
         TagMapper.getInstance().loadInterjections();
         createCheckboxes();
@@ -390,10 +381,10 @@ public class PrimaryViewModel implements Initializable {
                         .collect(Collectors.toList())
         );
 
-        primaryModel.setParagraphs(textAreaInput.getParagraphs());
-        primaryModel.initializeDocument();
+        var currentItem = new PrimaryModel()
+                .initializeDocument(textAreaInput.getParagraphs())
+                .processTasks(textTasks, generalTasks, wordLevelTasks);
 
-        var currentItem = primaryModel.processTasks(textTasks, generalTasks, wordLevelTasks);
         textItemDataResults.add(currentItem);
 
         tableViewResults.setItems(textItemDataResults);
@@ -483,9 +474,7 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void handleSyllablesPerWordToCsv() {
-        primaryModel.setParagraphs(textAreaInput.getParagraphs());
-        primaryModel.initializeDocument();
-        var syllableResult = primaryModel.syllableTest();
+        var syllableResult = new PrimaryModel().initializeDocument(textAreaInput.getParagraphs()).syllableTest();
 
         Window stage = mainPane.getScene().getWindow();
         CsvBuilder csvBuilder = new CsvBuilder();

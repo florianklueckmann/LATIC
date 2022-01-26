@@ -14,9 +14,8 @@ public abstract class BaseTextAnalyzer implements TextAnalyzer {
         this.doc = doc;
     }
 
-    TextFormattingService textFormattingService;
+    TextFormattingService textFormattingService = TextFormattingService.getInstance();
 
-    public BaseTextAnalyzer(TextFormattingService textFormatter) {
-        this.textFormattingService = textFormatter;
+    public BaseTextAnalyzer() {
     }
 }

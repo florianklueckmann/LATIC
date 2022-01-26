@@ -17,13 +17,18 @@ import java.util.stream.Collectors;
 
 public class SimpleTextAnalyzer implements TextAnalyzer {
 
-    Document doc;
-    ArrayList<String> puncts;
-    TextFormattingService textFormattingService;
+    public static final SimpleTextAnalyzer instance = new SimpleTextAnalyzer();
 
-    public SimpleTextAnalyzer(TextFormattingService textFormatter) {
-        this.textFormattingService = textFormatter;
-        this.puncts = new ArrayList<>(Arrays.asList(".", ",", "?", "!", "(", ")", ":", ";", "'", "\"", "„", "“", "-"));
+    public static SimpleTextAnalyzer getInstance() {
+        return instance;
+    }
+
+    Document doc;
+    TextFormattingService textFormattingService = TextFormattingService.getInstance();
+    int syllableCount = 0;
+
+    private SimpleTextAnalyzer() {
+
     }
 
     public Document getDoc() {
@@ -32,6 +37,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public void setDoc(Document doc) {
         this.doc = doc;
+        this.syllableCount = 0;
     }
 
 
@@ -71,7 +77,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     protected boolean isPunctuation(String word) {
-        return puncts.contains(word);
+        return textFormattingService.punctuationMarks.contains(word);
     }
 
     public int wordCount() {
@@ -84,7 +90,10 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public int syllableCount() {
-        return SyllableProvider.getInstance().syllablesInDocument(doc);
+        if (syllableCount == 0) {
+            syllableCount = SyllableProvider.getInstance().syllablesInDocument(doc);
+        }
+        return syllableCount;
     }
 
     private int sentenceWordCount(Sentence sentence) {
