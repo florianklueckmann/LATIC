@@ -18,9 +18,6 @@ import edu.stanford.nlp.simple.Document;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import software.latic.word_class_service.EnglishWordClassService;
 import software.latic.word_class_service.GermanWordClassService;
 import software.latic.word_class_service.TextFormattingService;
@@ -48,8 +45,6 @@ public class PrimaryModel {
 
 
     public PrimaryModel() {
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(App.loggingLevel);
         props = new Properties();
         this.setLanguage(Translation.getInstance().getLocale());
     }
@@ -157,10 +152,6 @@ public class PrimaryModel {
 
     protected String appendResultLine(String label, String result) {
         return label + ": " + result + "\n";
-    }
-
-    private void log(Object o) {
-        Logger.getLogger("PrimaryModel").log(Level.WARN, o);
     }
 
     protected TextItemData processTasks(ObservableList<Task> textTasks, ObservableList<Task> generalTasks, ObservableList<Task> languageTasks) {

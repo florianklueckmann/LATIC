@@ -1,7 +1,8 @@
 package software.latic.helper;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
 import software.latic.App;
+import software.latic.Logging;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class CsvReader {
                 lines.add(scanner.nextLine());
             }
         } catch (NullPointerException e) {
-            Logger.getLogger("CsvReader").warn(e.getMessage());
+            Logging.getInstance().warn("CsvReader", e.getMessage());
         }
 
         return lines;
