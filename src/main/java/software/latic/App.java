@@ -1,5 +1,6 @@
 package software.latic;
 
+import org.apache.log4j.BasicConfigurator;
 import software.latic.translation.Translation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -26,12 +27,11 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
         prepareStage(stage);
         stage.show();
 
-        Logger.getLogger("App").debug(String.format("JavaFX runtime: %s", System.getProperty("javafx.runtime.version")));
-        Logger.getLogger("App").debug(String.format("Java runtime: %s", System.getProperty("java.runtime.version")));
+        Logging.getInstance().debug("App", String.format("JavaFX runtime: %s", System.getProperty("javafx.runtime.version")));
+        Logging.getInstance().debug("App", String.format("Java runtime: %s", System.getProperty("java.runtime.version")));
     }
 
     public static void setRoot(String fxml) throws IOException {

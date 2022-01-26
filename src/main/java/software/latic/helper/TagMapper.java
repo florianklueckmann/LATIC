@@ -1,5 +1,6 @@
 package software.latic.helper;
 
+import software.latic.Logging;
 import software.latic.translation.SupportedLocales;
 import software.latic.translation.Translation;
 import edu.stanford.nlp.simple.Token;
@@ -133,7 +134,7 @@ public class TagMapper {
                     .readFile(String.format("interjections_%s.txt", Translation.getInstance().getLanguageTag()));
         } else interjections = Collections.emptyList();
 
-        Logger.getLogger("TagMapper").debug(String.format("Locale: %s - Interjections: %d", Translation.getInstance().getLocale(), interjections.size()));
+        Logging.getInstance().debug("TagMapper", String.format("Locale: %s - Interjections: %d", Translation.getInstance().getLocale(), interjections.size()));
     }
 
 }

@@ -15,8 +15,13 @@ import java.util.List;
 
 public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
 
-    public NlpTextAnalyzer(TextFormattingService textFormatter) {
-        super(textFormatter);
+    public static final NlpTextAnalyzer instance = new NlpTextAnalyzer();
+
+    public static NlpTextAnalyzer getInstance() {
+        return instance;
+    }
+
+    private NlpTextAnalyzer() {
     }
 
     public String textAndPosTags() {

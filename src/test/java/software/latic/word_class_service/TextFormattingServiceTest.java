@@ -36,7 +36,7 @@ class TextFormattingServiceTest {
         }
 
         doc = new Document(props, deItemEarthAndSun.getText());
-        textFormattingService = new TextFormattingService();
+        textFormattingService = TextFormattingService.getInstance();
     }
 
     @AfterEach

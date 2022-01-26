@@ -18,9 +18,6 @@ import edu.stanford.nlp.simple.Document;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import software.latic.word_class_service.EnglishWordClassService;
 import software.latic.word_class_service.GermanWordClassService;
 import software.latic.word_class_service.TextFormattingService;
@@ -35,20 +32,10 @@ public class PrimaryModel {
 
     private Locale language = Translation.getInstance().getLocale(); //TODO: Maybe use ENUM
     private Properties props;
-    SimpleTextAnalyzer simpleTextAnalyzer;
-    TextFormattingService textFormattingService;
-    NlpTextAnalyzer nlp;
+    SimpleTextAnalyzer simpleTextAnalyzer = SimpleTextAnalyzer.getInstance();
+    TextFormattingService textFormattingService = TextFormattingService.getInstance();
+    NlpTextAnalyzer nlp = NlpTextAnalyzer.getInstance();
     StanfordCoreNLP pipeline;
-
-    public List<CharSequence> getParagraphs() {
-        return paragraphs;
-    }
-
-    public void setParagraphs(List<CharSequence> paragraphs) {
-        this.paragraphs = paragraphs;
-    }
-
-    List<CharSequence> paragraphs;
 
     public Document getDoc() {
         return doc;
@@ -57,20 +44,13 @@ public class PrimaryModel {
     Document doc;
 
 
-    public PrimaryModel(SimpleTextAnalyzer simpleTextAnalyzer, TextFormattingService textFormattingService, NlpTextAnalyzer nlp) {
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(App.loggingLevel);
+    public PrimaryModel() {
         props = new Properties();
-
-        this.simpleTextAnalyzer = simpleTextAnalyzer;
-        this.textFormattingService = textFormattingService;
-        this.nlp = nlp;
+        this.setLanguage(Translation.getInstance().getLocale());
     }
 
-    //TODO: Throw Exception if paragraphs not set?
-    public void initializeDocument() {
-
-        var text = this.paragraphs.stream()
+    public PrimaryModel initializeDocument(List<CharSequence> paragraphs) {
+        var text = paragraphs.stream()
                 .map(charSequence -> charSequence.toString().trim())
                 .collect(Collectors.joining(" "));
 
@@ -84,13 +64,14 @@ public class PrimaryModel {
             this.doc = new Document(props, text);
         }
 
+        return this;
     }
 
     public Locale getLanguage() {
         return language;
     }
 
-    public void setLanguage(Locale language) {
+    private void setLanguage(Locale language) {
             this.language = language;
             if (!language.getLanguage().equalsIgnoreCase("en")) {
                 try {
@@ -171,10 +152,6 @@ public class PrimaryModel {
 
     protected String appendResultLine(String label, String result) {
         return label + ": " + result + "\n";
-    }
-
-    private void log(Object o) {
-        Logger.getLogger("PrimaryModel").log(Level.WARN, o);
     }
 
     protected TextItemData processTasks(ObservableList<Task> textTasks, ObservableList<Task> generalTasks, ObservableList<Task> languageTasks) {

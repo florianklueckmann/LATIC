@@ -15,7 +15,7 @@
         <maven.compiler.target>16</maven.compiler.target>
         <maven.compiler.release>16</maven.compiler.release>
         <javafx.version>[15,16)</javafx.version>
-        <corenlp.version>[4.3,4.4)</corenlp.version>
+        <corenlp.version>4.4.0</corenlp.version>
     </properties>
 
     <dependencies>
@@ -94,8 +94,8 @@
         <!--Logger for CoreNLP-->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.30</version>
+            <artifactId>slf4j-reload4j</artifactId>
+            <version>1.7.35</version>
         </dependency>
 
         <!--Test Dependencies-->

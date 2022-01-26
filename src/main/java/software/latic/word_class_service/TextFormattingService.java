@@ -1,27 +1,32 @@
 package software.latic.word_class_service;
 
 import edu.stanford.nlp.simple.Sentence;
+import software.latic.translation.Translation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class TextFormattingService {
 
-    ArrayList<String> puncts;
-//    HashMap<String, String> abbrevDict;
+    private static final TextFormattingService instance = new TextFormattingService();
 
-    public TextFormattingService() {
-        this.puncts = new ArrayList<>(Arrays.asList(".", ",", "?", "!", "(", ")", ":", ";", "'", "\"", "\\", "/", "-", "_"));
-//        this.abbrevDict = new HashMap<>();
+    public static TextFormattingService getInstance() {
+        return instance;
     }
+
+    private TextFormattingService() {
+
+    }
+
+    public final ArrayList<String> punctuationMarks =
+            new ArrayList<>(Arrays.asList(".", ",", "?", "!", "(", ")", ":", ";", "'", "\"", "„", "“", "\\", "/", "-", "_"));
 
     public ArrayList<String> getWordsWithoutPunctuations(Sentence sentence) {
 
         ArrayList<String> wordsWithoutPunctuations = new ArrayList<>(sentence.words());
-        wordsWithoutPunctuations.removeAll(puncts);
+        wordsWithoutPunctuations.removeAll(punctuationMarks);
 
         return wordsWithoutPunctuations;
-
     }
 
 //INFO: We plan to handle abbreviations in a future release
