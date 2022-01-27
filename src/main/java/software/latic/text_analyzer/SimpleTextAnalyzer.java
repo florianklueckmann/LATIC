@@ -1,5 +1,6 @@
 package software.latic.text_analyzer;
 
+import software.latic.helper.TagMapper;
 import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
 import software.latic.task.TaskLevel;
@@ -97,7 +98,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     private int sentenceWordCount(Sentence sentence) {
-        return toIntExact(sentence.words().stream().filter(w -> !isPunctuation(w)).count());
+        return toIntExact(TagMapper.getInstance().replaceTags(sentence.tokens()).stream().filter(tag -> !tag.equals("PUNCT") && !tag.equals("POS")).count());
     }
 
     public double averageWordLengthCharacters() {
