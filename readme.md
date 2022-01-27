@@ -1,7 +1,7 @@
 # LATIC - Linguistic Analyzer for Text and Item Characteristics
 
 LATIC is a free and open source desktop application that allows you to analyze and count text and item characteristics
-in English, French, German and Spanish texts or items. The [Stanford CoreNLP 4.3.0](https://github.com/stanfordnlp/CoreNLP)
+in English, French, German and Spanish texts or items. The [Stanford CoreNLP 4.4.0](https://github.com/stanfordnlp/CoreNLP)
 is used to tag parts of speech and allows LATIC to provide very accurate results.
 You can find our evaluation in the documentation.
 
