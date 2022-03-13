@@ -1,6 +1,8 @@
 package software.latic.word_class_service;
 
 import software.latic.TestItem;
+import software.latic.syllables.SyllableProvider;
+import software.latic.syllables.Syllables;
 import software.latic.text_analyzer.SimpleTextAnalyzer;
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.simple.Document;
@@ -24,6 +26,10 @@ class SimpleTextAnalyzerTest {
             21, 6, 27, 3.5, 3.90,
             13.66, 4.5, 1.28);
 
+    private final String deItemTwo = "Es war einmal ein Junge. Er lebte mit seinen Eltern im Walde. Eines Tages beobachtete der Junge ein Eichhörnchen, das gerade eine Nuss vergrub. „Das Eichhörnchen macht sich bestimmt bereit für den Winterschlaf“, dachte der Junge.";
+
+    private final String enItemTwo = "Deoxyribonucleic acid is a molecule composed of two polynucleotide chains that coil around each other to form a double helix carrying genetic instructions for the development, functioning, growth and reproduction of all known organisms and many viruses. Deoxyribonucleic acid and ribonucleic acid are nucleic acids.";
+
     private final List<CharSequence> paragraphs = new ArrayList<>(
             Arrays.asList(
                     "Die Erde dreht sich um die Sonne. Wie lange dauert diese Umlaufzeit ca.?",
@@ -34,22 +40,32 @@ class SimpleTextAnalyzerTest {
 
     SimpleTextAnalyzer simpleTextAnalyzer;
 
-    @BeforeEach
-    void setUp() {
+    void setDocument(String locale, String text) {
         Properties props = new Properties();
 
-        try {
-            props.load(IOUtils.readerFromString("StanfordCoreNLP-german.properties"));
-        } catch (IOException e) {
-            //TODO: Error Handling
-            e.printStackTrace();
+        if (locale.equalsIgnoreCase("de")) {
+            try {
+                props.load(IOUtils.readerFromString("StanfordCoreNLP-german.properties"));
+            } catch (IOException e) {
+                //TODO: Error Handling
+                e.printStackTrace();
+            }
+
+            Translation.getInstance().setLocale(Locale.GERMAN);
+        } else {
+            Translation.getInstance().setLocale(Locale.ENGLISH);
         }
 
-        Translation.getInstance().setLocale(Locale.GERMAN);
 
-        Document doc = new Document(props, deItemEarthAndSun.getText());
+        Document doc = new Document(props, text);
         simpleTextAnalyzer = SimpleTextAnalyzer.getInstance();
         simpleTextAnalyzer.setDoc(doc);
+        SyllableProvider.getInstance().syllablesInDocument(doc);
+    }
+
+    @BeforeEach
+    void setUp() {
+        setDocument("de", deItemEarthAndSun.getText());
     }
 
     @AfterEach
@@ -154,47 +170,56 @@ class SimpleTextAnalyzerTest {
 
     @Test
     void fleschIndexGerman() {
-        Assertions.assertEquals(13.0238, simpleTextAnalyzer.fleschIndexGerman(), 0.01);
+        setDocument("de", deItemTwo);
+        Assertions.assertEquals(68.63, simpleTextAnalyzer.fleschIndexGerman(), 0.01);
     }
 
     @Test
     void wienerSachtextformel() {
-        Assertions.assertEquals(13.0238, simpleTextAnalyzer.wienerSachtextformel(), 0.01);
+        setDocument("de", deItemTwo);
+        Assertions.assertEquals(4.51, simpleTextAnalyzer.wienerSachtextformel(), 0.01);
     }
 
     @Test
     void gSMOG() {
-        Assertions.assertEquals(13.0238, simpleTextAnalyzer.gSMOG(), 0.01);
+        setDocument("de", deItemTwo);
+        Assertions.assertEquals(0.7386, simpleTextAnalyzer.gSMOG(), 0.01);
     }
 
     @Test
     void fleschIndexEnglish() {
-        Assertions.assertEquals(13.0238, simpleTextAnalyzer.fleschIndexEnglish(), 0.01);
+        setDocument("en", enItemTwo);
+        Assertions.assertEquals(-3.81, simpleTextAnalyzer.fleschIndexEnglish(), 0.01);
     }
 
     @Test
     void fleschKincaid() {
-        Assertions.assertEquals(13.0238, simpleTextAnalyzer.fleschKincaid(), 0.01);
+        setDocument("en", enItemTwo);
+        Assertions.assertEquals(19.41, simpleTextAnalyzer.fleschKincaid(), 0.01);
     }
 
     @Test
     void gunningFog() {
-        Assertions.assertEquals(13.0238, simpleTextAnalyzer.gunningFog(), 0.01);
+        setDocument("en", enItemTwo);
+        Assertions.assertEquals(9.124, simpleTextAnalyzer.gunningFog(), 0.01);
     }
 
     @Test
     void automatedReadabilityIndex() {
-        Assertions.assertEquals(13.0238, simpleTextAnalyzer.automatedReadabilityIndex(), 0.01);
+        setDocument("en", enItemTwo);
+        Assertions.assertEquals(17.77, simpleTextAnalyzer.automatedReadabilityIndex(), 0.01);
     }
 
     @Test
     void colemanLiau() {
-        Assertions.assertEquals(13.0238, simpleTextAnalyzer.colemanLiau(), 0.01);
+        setDocument("en", enItemTwo);
+        Assertions.assertEquals(17.77, simpleTextAnalyzer.colemanLiau(), 0.01);
     }
 
     @Test
     void SMOG() {
-        Assertions.assertEquals(13.0238, simpleTextAnalyzer.SMOG(), 0.01);
+        setDocument("en", enItemTwo);
+        Assertions.assertEquals(15.23, simpleTextAnalyzer.SMOG(), 0.01);
     }
 
 }
