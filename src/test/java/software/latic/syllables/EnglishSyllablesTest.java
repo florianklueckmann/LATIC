@@ -13,20 +13,6 @@ class EnglishSyllablesTest {
 
     Syllables syllables = EnglishSyllables.getInstance();
 
-    static Map<String, Integer> words = Map.of(
-//            "algorithms", 3,
-//            "announcement", 3,
-//            "apple", 2,
-//            "appliance", 3,
-//            "arrangement", 3,
-//            "appreciate", 4,
-//            "bundle", 2,
-//            "buy", 1,
-//            "buyer", 2,
-//            "cakes", 1
-            "amperage", 3
-    );
-
     private final Map<String, String> testWords = CsvReader.getInstance()
             .convertCsvToMap("syllables/syllables_test_en.csv", ",");
 
