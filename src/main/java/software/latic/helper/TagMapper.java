@@ -54,7 +54,9 @@ public class TagMapper {
             new AbstractMap.SimpleEntry<>("~", "SYM"),
             new AbstractMap.SimpleEntry<>("#", "SYM"),
             new AbstractMap.SimpleEntry<>(">", "SYM"),
-            new AbstractMap.SimpleEntry<>("^", "SYM")
+            new AbstractMap.SimpleEntry<>("^", "SYM"),
+            new AbstractMap.SimpleEntry<>("„", "PUNCT"),
+            new AbstractMap.SimpleEntry<>("“", "PUNCT")
     );
 
     private final Map<String, String> additionalTagsEs = Map.ofEntries(
