@@ -2,7 +2,6 @@ package software.latic.word_class_service;
 
 import software.latic.TestItem;
 import software.latic.syllables.SyllableProvider;
-import software.latic.syllables.Syllables;
 import software.latic.text_analyzer.SimpleTextAnalyzer;
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.simple.Document;
@@ -18,25 +17,18 @@ class SimpleTextAnalyzerTest {
     //TextFormattingService mockedTextFormattingService = mock(TextFormattingService.class);
 
     private final TestItem deItemEarthAndSun = new TestItem(
-            "Die Erde dreht sich um die Sonne. Wie lange dauert diese Umlaufzeit ca.?\n" +
-                    "12 Stunden.\n" +
-                    "1 Tag.\n" +
-                    "3 Monate.\n" +
-                    "1 Jahr.",
+            """
+                    Die Erde dreht sich um die Sonne. Wie lange dauert diese Umlaufzeit ca.?
+                    12 Stunden.
+                    1 Tag.
+                    3 Monate.
+                    1 Jahr.""",
             21, 6, 27, 3.5, 3.90,
             13.66, 4.5, 1.28);
 
     private final String deItemTwo = "Es war einmal ein Junge. Er lebte mit seinen Eltern im Walde. Eines Tages beobachtete der Junge ein Eichhörnchen, das gerade eine Nuss vergrub. „Das Eichhörnchen macht sich bestimmt bereit für den Winterschlaf“, dachte der Junge.";
 
-    private final String enItemTwo = "Deoxyribonucleic acid is a molecule composed of two polynucleotide chains that coil around each other to form a double helix carrying genetic instructions for the development, functioning, growth and reproduction of all known organisms and many viruses. Deoxyribonucleic acid and ribonucleic acid are nucleic acids.";
-
-    private final List<CharSequence> paragraphs = new ArrayList<>(
-            Arrays.asList(
-                    "Die Erde dreht sich um die Sonne. Wie lange dauert diese Umlaufzeit ca.?",
-                    "12 Stunden.",
-                    "1 Tag.",
-                    "3 Monate.",
-                    "1 Jahr."));
+    private final String enItemTwo = "At noon the tractor driver stopped sometimes near a tenant house and opened his lunch: sandwiches wrapped in waxed paper, white bread, pickle, cheese, Spam, a piece of pie branded like an engine part. He ate without relish. And tenants not yet moved away came out to see him, looked curiously while the goggles were taken off, and the rubber dust mask, leaving white circles around the eyes and a large white circle around nose and mouth. The exhaust of the tractor puttered on, for fuel is so cheap it is more efficient to leave the engine running than to heat the Diesel nose for a new start. Curious children crowded close, ragged children who ate their fried dough as they watched.";
 
     SimpleTextAnalyzer simpleTextAnalyzer;
 
@@ -189,37 +181,37 @@ class SimpleTextAnalyzerTest {
     @Test
     void fleschIndexEnglish() {
         setDocument("en", enItemTwo);
-        Assertions.assertEquals(-3.81, simpleTextAnalyzer.fleschIndexEnglish(), 0.01);
+        Assertions.assertEquals(70.397, simpleTextAnalyzer.fleschIndexEnglish(), 1);
     }
 
     @Test
     void fleschKincaid() {
         setDocument("en", enItemTwo);
-        Assertions.assertEquals(19.41, simpleTextAnalyzer.fleschKincaid(), 0.01);
+        Assertions.assertEquals(9.594, simpleTextAnalyzer.fleschKincaid(), 0.01);
     }
 
     @Test
     void gunningFog() {
         setDocument("en", enItemTwo);
-        Assertions.assertEquals(9.124, simpleTextAnalyzer.gunningFog(), 0.01);
+        Assertions.assertEquals(9.79, simpleTextAnalyzer.gunningFog(), 0.01);
     }
 
     @Test
     void automatedReadabilityIndex() {
         setDocument("en", enItemTwo);
-        Assertions.assertEquals(17.77, simpleTextAnalyzer.automatedReadabilityIndex(), 0.01);
+        Assertions.assertEquals(11.93, simpleTextAnalyzer.automatedReadabilityIndex(), 0.01);
     }
 
     @Test
     void colemanLiau() {
         setDocument("en", enItemTwo);
-        Assertions.assertEquals(17.77, simpleTextAnalyzer.colemanLiau(), 0.01);
+        Assertions.assertEquals(9.4, simpleTextAnalyzer.colemanLiau(), 0.01);
     }
 
     @Test
     void SMOG() {
         setDocument("en", enItemTwo);
-        Assertions.assertEquals(15.23, simpleTextAnalyzer.SMOG(), 0.01);
+        Assertions.assertEquals(5.43, simpleTextAnalyzer.SMOG(), 0.01);
     }
 
 }
