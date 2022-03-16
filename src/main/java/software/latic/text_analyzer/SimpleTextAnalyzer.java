@@ -215,7 +215,9 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
         return ((0.39 * wordCount()) / sentenceCount()) + ((11.8 * syllableCount()) / wordCount()) - 15.59;
     }
 
-    public double gunningFog() { return 0.4 * ( (double) (wordCount() / sentenceCount()) + (double) (wordsWithMoreThanTwoSyllables() / wordCount())); }
+    public double gunningFog() {
+        return 0.4 * wordCount() / sentenceCount() + (double) wordsWithMoreThanTwoSyllables() / wordCount();
+    }
 
     public double automatedReadabilityIndex () {
         return 4.71 * textCountCharactersWithoutPunctuation() /  wordCount() + 0.5 *wordCount() / sentenceCount() - 21.43;
