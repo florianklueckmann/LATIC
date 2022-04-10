@@ -1,0 +1,22 @@
+package software.latic.helper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+public class FileContentProvider {
+    public static List<String> getContent(String filename) throws IOException {
+        var type = filename.substring(filename.lastIndexOf('.'));
+
+        System.out.println(type);
+
+        return switch (type.toLowerCase(Locale.ROOT)) {
+            case ".pdf" -> PDFReader.getInstance().getContent(filename);
+            case ".docx" -> DocxReader.getInstance().getContent(filename);
+            case ".txt" -> TxtReader.getInstance().getContent(filename);
+
+            default -> new ArrayList<>();
+        };
+    }
+}
