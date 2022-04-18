@@ -98,6 +98,18 @@
             <version>1.7.35</version>
         </dependency>
 
+        <!-- Document import-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.25</version>
+        </dependency>
+
         <!--Test Dependencies-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

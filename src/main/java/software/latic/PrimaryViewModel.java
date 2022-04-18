@@ -5,14 +5,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
+import software.latic.helper.*;
 import software.latic.item.*;
 import software.latic.translation.Translation;
-import software.latic.helper.TagMapper;
-import software.latic.helper.CsvBuilder;
-import software.latic.text_analyzer.NlpTextAnalyzer;
-import software.latic.text_analyzer.SimpleTextAnalyzer;
-import software.latic.word_class_service.TextFormattingService;
 import software.latic.task.Task;
 import software.latic.task.TaskLevel;
 import javafx.beans.binding.Bindings;
@@ -46,6 +44,14 @@ import java.util.stream.Collectors;
 
 public class PrimaryViewModel implements Initializable {
 
+    @FXML private TextField filePathTextField;
+    @FXML private CheckBox analyzeHeadersCheckbox;
+    @FXML private CheckBox analyzeFootersCheckbox;
+    @FXML private Button buttonSelectFile;
+    @FXML private Tab fileTab;
+    @FXML private Tab textTab;
+    @FXML private TabPane tabPane;
+    @FXML private MenuItem menuItemImportTestFile;
     @FXML private MenuItem menuItemSyllablesPerWordToCsv;
     @FXML private BorderPane mainPane;
     @FXML private Menu menuHelp;
@@ -64,21 +70,35 @@ public class PrimaryViewModel implements Initializable {
 
     private final ListProperty<Locale> languages = new SimpleListProperty<>();
 
+    private ListProperty<CharSequence>  importedDocumentContent = new SimpleListProperty<>();
+
     public void bindGuiElements() {
         menuHelp.textProperty().bind(Translation.getInstance().createStringBinding("help"));
         menuItemDocumentation.textProperty().bind(Translation.getInstance().createStringBinding("documentation"));
         menuItemContact.textProperty().bind(Translation.getInstance().createStringBinding("contact"));
 
         buttonAnalyze.textProperty().bind(Translation.getInstance().createStringBinding("analyze"));
-        buttonAnalyze.disableProperty().bind(Bindings.createBooleanBinding(
-                () -> textAreaInput.getText().isBlank(), textAreaInput.textProperty())
-        );
+
+        buttonSelectFile.textProperty().bind(Translation.getInstance().createStringBinding("select"));
+
+        fileTab.textProperty().bind(Translation.getInstance().createStringBinding("file"));
+        textTab.textProperty().bind(Translation.getInstance().createStringBinding("text"));
+
+        analyzeHeadersCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("analyzeHeaders"));
+        analyzeFootersCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("analyzeFooters"));
+
         buttonSaveFile.textProperty().bind(Translation.getInstance().createStringBinding("saveFile"));
         buttonDelete.textProperty().bind(Translation.getInstance().createStringBinding("delete"));
 
         Label resultPlaceholder = new Label();
         resultPlaceholder.textProperty().bind(Translation.getInstance().createStringBinding("resultPlaceholder"));
         tableViewResults.setPlaceholder(resultPlaceholder);
+
+        var textInputBinding = Bindings.createBooleanBinding(
+                () -> textAreaInput.getText().isBlank(), textAreaInput.textProperty());
+        var fileImportBinding = Bindings.createBooleanBinding(
+                () -> importedDocumentContent.isEmpty(), importedDocumentContent);
+        buttonAnalyze.disableProperty().bind(textInputBinding.and(fileImportBinding));
 
         choiceBoxLanguage.disableProperty().bind(Bindings.isNotEmpty(textItemDataResults));
     }
@@ -91,7 +111,7 @@ public class PrimaryViewModel implements Initializable {
             @Override
             public String toString(Locale locale) {
                 if (locale != null) {
-                    return locale.getDisplayLanguage(locale);
+                    return StringUtils.capitalize(locale.getDisplayLanguage(locale));
                 }
                 return "";
             }
@@ -142,7 +162,8 @@ public class PrimaryViewModel implements Initializable {
 
     ObservableList<CheckBoxTreeItem<Task>> taskCheckBoxItems;
 
-    FileChooser fileChooser = new FileChooser();
+    FileChooser exportFileChooser = new FileChooser();
+    FileChooser importFileChooser = new FileChooser();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -183,13 +204,21 @@ public class PrimaryViewModel implements Initializable {
             initialFilePath = System.getProperty("user.home") + File.separator + "Documents";
 
 
-        fileChooser.setInitialDirectory(new File(initialFilePath));
-        fileChooser.setTitle("Save File");
-        fileChooser.setInitialFileName("table");
-        fileChooser.getExtensionFilters().addAll(
+        exportFileChooser.setInitialDirectory(new File(initialFilePath));
+        exportFileChooser.setTitle("Save File");
+        exportFileChooser.setInitialFileName("results");
+        exportFileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Text file", "*.txt"),
                 new FileChooser.ExtensionFilter("CSV table file", "*.csv"),
                 new FileChooser.ExtensionFilter("CSV table file for excel", "*.csv"));
+
+        importFileChooser.setInitialDirectory(new File(initialFilePath));
+        importFileChooser.setTitle("Import File");
+        importFileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Supported files (*.txt, *.docx, *.pdf)", "*.txt", "*.docx", "*.pdf"),
+                new FileChooser.ExtensionFilter("Text file", "*.txt"),
+                new FileChooser.ExtensionFilter("docx", "*.docx"),
+                new FileChooser.ExtensionFilter("pdf", "*.pdf"));
 
     }
 
@@ -222,12 +251,12 @@ public class PrimaryViewModel implements Initializable {
         Window stage = mainPane.getScene().getWindow();
         CsvBuilder csvBuilder = new CsvBuilder();
         try {
-            File file = fileChooser.showSaveDialog(stage);
+            File file = exportFileChooser.showSaveDialog(stage);
             if (file != null) {
-                file = fileChooser.getSelectedExtensionFilter().getDescription().contains("excel")
+                file = exportFileChooser.getSelectedExtensionFilter().getDescription().contains("excel")
                         ? csvBuilder.writeCsvForExcel(file, getTableData())
                         : csvBuilder.writeToFile(file, getTableData());
-                fileChooser.setInitialDirectory(file.getParentFile());
+                exportFileChooser.setInitialDirectory(file.getParentFile());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -381,13 +410,24 @@ public class PrimaryViewModel implements Initializable {
                         .collect(Collectors.toList())
         );
 
-        var currentItem = new PrimaryModel()
-                .initializeDocument(textAreaInput.getParagraphs())
-                .processTasks(textTasks, generalTasks, wordLevelTasks);
+        TextItemData currentItem = null;
 
-        textItemDataResults.add(currentItem);
+        if (fileTab.isSelected()) {
+            currentItem = new PrimaryModel()
+                    .initializeDocument(importedDocumentContent.getValue())
+                    .processTasks(textTasks, generalTasks, wordLevelTasks);
+        } else if (textTab.isSelected()) {
+            currentItem = new PrimaryModel()
+                    .initializeDocument(textAreaInput.getParagraphs())
+                    .processTasks(textTasks, generalTasks, wordLevelTasks);
 
-        tableViewResults.setItems(textItemDataResults);
+        }
+
+        if (currentItem != null) {
+            textItemDataResults.add(currentItem);
+
+            tableViewResults.setItems(textItemDataResults);
+        }
     }
 
     private void createColumns(CheckBoxTreeItem<Task> root) {
@@ -479,12 +519,30 @@ public class PrimaryViewModel implements Initializable {
         Window stage = mainPane.getScene().getWindow();
         CsvBuilder csvBuilder = new CsvBuilder();
         try {
-            File file = fileChooser.showSaveDialog(stage);
+            File file = exportFileChooser.showSaveDialog(stage);
             if (file != null) {
-                file = fileChooser.getSelectedExtensionFilter().getDescription().contains("excel")
+                file = exportFileChooser.getSelectedExtensionFilter().getDescription().contains("excel")
                         ? csvBuilder.writeCsvForExcel(file, syllableResult)
                         : csvBuilder.writeToFile(file, syllableResult);
-                fileChooser.setInitialDirectory(file.getParentFile());
+                exportFileChooser.setInitialDirectory(file.getParentFile());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //TODO Get Settings
+    public void handleButtonSelectFile() {
+        Window stage = mainPane.getScene().getWindow();
+        try {
+            File file = importFileChooser.showOpenDialog(stage);
+            if (file != null) {
+                ObservableList<CharSequence> content = FXCollections.observableList(FileContentProvider.getContent(file.getPath()));
+
+                importedDocumentContent.setValue(content);
+
+                importFileChooser.setInitialDirectory(file.getParentFile());
+                filePathTextField.setText(file.getPath());
             }
         } catch (IOException e) {
             e.printStackTrace();
