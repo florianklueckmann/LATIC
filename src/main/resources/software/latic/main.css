@@ -3,8 +3,8 @@
     -fx-font-family: "Lato";
 
     -primary: #a57676;
-    -primary-lighter: #b18282;
-    -primary-darker: derive(-primary, -12%);
+    -primary-lighter: derive(-primary, 16%);
+    -primary-darker: derive(-primary, -16%);
 
     -background: #f4f4f4;
 
@@ -48,8 +48,12 @@
     -fx-text-fill: white;
 }
 
-.check-box-tree-cell > .check-box > .box {
+.check-box > .box {
     -fx-background-color: -fx-shadow-highlight-color, -primary-lighter, -primary-lighter, -primary-lighter;
+}
+
+.check-box:selected > .box > .mark {
+    -fx-background-color: white;
 }
 
 .check-box-tree-cell > .check-box:selected > .box > .mark {
@@ -86,10 +90,6 @@
     -fx-background-color: -background;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
-}
-
-.table-row-cell:focused {
-    -fx-background-color: -primary-lighter;
 }
 
 .text-area, .text-area .content {
@@ -206,6 +206,7 @@
 #menuBox {
     -fx-pref-height: 60px;
     -fx-background-image: url("latic-header.png");
+    -fx-background-color: -primary-lighter;
     -fx-border-width: 0;
 }
 
@@ -217,6 +218,7 @@
 
 #bottomMenuBox {
     -fx-background-image: url("latic-header.png");
+    -fx-background-color: -primary-lighter;
 }
 
 /* Scrollbars */
