@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DocxReader implements FileReader {
     private static final DocxReader reader = new DocxReader();
@@ -18,12 +19,12 @@ public class DocxReader implements FileReader {
         return reader;
     }
 
-    public List<String> getContent(String fileName, Map<String, Boolean> options) throws IOException {
+    public List<CharSequence> getContent(String fileName, Map<String, Boolean> options) throws IOException {
         Path filePath = Paths.get(fileName);
 
         XWPFDocument document = new XWPFDocument(Files.newInputStream(filePath));
 
-        var content = new ArrayList<String>();
+        var content = new ArrayList<CharSequence>();
 
         if (options.getOrDefault("analyzeHeaders", false)) {
             content.addAll(getHeaders(document));
@@ -42,19 +43,19 @@ public class DocxReader implements FileReader {
 
     }
 
-    public List<String> getContent(String fileName) throws IOException {
+    public List<CharSequence> getContent(String fileName) throws IOException {
         var defaultOptions = Map.of("analyzeHeaders", false, "analyzeFooters", false);
 
         return getContent(fileName, defaultOptions);
     }
 
-    public List<String> getHeaders(XWPFDocument document) {
-        return document.getHeaderList().stream().map(XWPFHeaderFooter::getText).toList();
+    public List<CharSequence> getHeaders(XWPFDocument document) {
+        return document.getHeaderList().stream().map(XWPFHeaderFooter::getText).collect(Collectors.toList());
     }
-    public List<String> getParagraphs(XWPFDocument document) {
-        return document.getParagraphs().stream().map(XWPFParagraph::getText).toList();
+    public List<CharSequence> getParagraphs(XWPFDocument document) {
+        return document.getParagraphs().stream().map(XWPFParagraph::getText).collect(Collectors.toList());
     }
-    public List<String> getFooters(XWPFDocument document) {
-        return document.getFooterList().stream().map(XWPFHeaderFooter::getText).toList();
+    public List<CharSequence> getFooters(XWPFDocument document) {
+        return document.getFooterList().stream().map(XWPFHeaderFooter::getText).collect(Collectors.toList());
     }
 }

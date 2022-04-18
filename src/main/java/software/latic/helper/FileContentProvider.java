@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class FileContentProvider {
-    public static List<String> getContent(String filename) throws IOException {
+    public static List<CharSequence> getContent(String filename) throws IOException {
         var type = filename.substring(filename.lastIndexOf('.'));
 
         System.out.println(type);

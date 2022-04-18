@@ -12,7 +12,7 @@ public class PDFReader implements FileReader {
         return reader;
     }
 
-    public List<String> getContent(String fileName) throws IOException {
+    public List<CharSequence> getContent(String fileName) throws IOException {
         PDDocument document = PDDocument.load(new File(fileName));
 
         String text = "";

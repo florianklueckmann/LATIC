@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TxtReader implements FileReader {
     private static final TxtReader reader = new TxtReader();
@@ -11,9 +12,9 @@ public class TxtReader implements FileReader {
         return reader;
     }
     @Override
-    public List<String> getContent(String filePath) throws IOException {
+    public List<CharSequence> getContent(String filePath) throws IOException {
         try(var reader= Files.newBufferedReader(Paths.get(filePath))) {
-            return reader.lines().toList();
+            return reader.lines().collect(Collectors.toList());
         }
     }
 }
