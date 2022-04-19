@@ -89,8 +89,8 @@
                            </GridPane>
                            <VBox prefHeight="200.0" prefWidth="100.0" spacing="15.0" GridPane.rowIndex="1">
                               <children>
-                                 <CheckBox fx:id="analyzeHeadersCheckbox" mnemonicParsing="false" text="%analyzeHeaders" />
-                                 <CheckBox fx:id="analyzeFootersCheckbox" mnemonicParsing="false" text="%analyzeFooters" />
+                                 <CheckBox fx:id="analyzeHeadersCheckbox" mnemonicParsing="false" text="%analyzeHeaders" selected="true" />
+                                 <CheckBox fx:id="analyzeFootersCheckbox" mnemonicParsing="false" text="%analyzeFooters" selected="true" />
                               </children>
                               <padding>
                                  <Insets top="15.0" />

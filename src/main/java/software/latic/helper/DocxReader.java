@@ -3,6 +3,7 @@ package software.latic.helper;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFHeaderFooter;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import software.latic.PrimaryViewModel;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -101,6 +101,13 @@ public class PrimaryViewModel implements Initializable {
         buttonAnalyze.disableProperty().bind(textInputBinding.and(fileImportBinding));
 
         choiceBoxLanguage.disableProperty().bind(Bindings.isNotEmpty(textItemDataResults));
+
+        var isDocxFileBinding = Bindings.createBooleanBinding(
+                () -> !FileContentProvider.getFileTypeExtension(filePathTextField.getText()).equalsIgnoreCase("docx"),
+                filePathTextField.textProperty()
+        );
+        analyzeHeadersCheckbox.disableProperty().bind(isDocxFileBinding);
+        analyzeFootersCheckbox.disableProperty().bind(isDocxFileBinding);
     }
 
     public void setLanguages() {
@@ -531,13 +538,15 @@ public class PrimaryViewModel implements Initializable {
         }
     }
 
-    //TODO Get Settings
+    //TODO Get Settings when docx | An object that holds settings? 
     public void handleButtonSelectFile() {
         Window stage = mainPane.getScene().getWindow();
         try {
             File file = importFileChooser.showOpenDialog(stage);
             if (file != null) {
-                ObservableList<CharSequence> content = FXCollections.observableList(FileContentProvider.getContent(file.getPath()));
+                ObservableList<CharSequence> content = FXCollections
+                        .observableList(FileContentProvider
+                                .getContent(file.getPath()));
 
                 importedDocumentContent.setValue(content);
 
