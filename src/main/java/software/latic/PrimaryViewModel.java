@@ -1,5 +1,6 @@
 package software.latic;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -70,7 +71,7 @@ public class PrimaryViewModel implements Initializable {
 
     private final ListProperty<Locale> languages = new SimpleListProperty<>();
 
-    private ListProperty<CharSequence>  importedDocumentContent = new SimpleListProperty<>();
+    private final ListProperty<CharSequence>  importedDocumentContent = new SimpleListProperty<>();
 
     public void bindGuiElements() {
         menuHelp.textProperty().bind(Translation.getInstance().createStringBinding("help"));
@@ -277,10 +278,16 @@ public class PrimaryViewModel implements Initializable {
 
     private void initializeGui() {
         setLanguages();
+        applyPreferences();
         bindGuiElements();
         if (App.loggingLevel.isGreaterOrEqual(Level.WARN)) {
             menuDebug.setVisible(false);
         }
+    }
+
+    private void applyPreferences() {
+        analyzeHeadersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeHeaders", "true")));
+        analyzeFootersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeFooters", "true")));
     }
 
     private void addBoxToParent(List<CheckBoxTreeItem<Task>> rootBoxes, CheckBoxTreeItem<Task> subBox) {
@@ -538,7 +545,7 @@ public class PrimaryViewModel implements Initializable {
         }
     }
 
-    //TODO Get Settings when docx | An object that holds settings? 
+    //TODO Get Settings when docx | An object that holds settings?
     public void handleButtonSelectFile() {
         Window stage = mainPane.getScene().getWindow();
         try {
@@ -556,5 +563,13 @@ public class PrimaryViewModel implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void handleAnalyzeHeadersCheckboxValueChanged(ActionEvent actionEvent) {
+        Settings.userPreferences.put("analyzeHeaders", String.valueOf(((CheckBox) actionEvent.getTarget()).isSelected()));
+    }
+
+    public void handleAnalyzeFootersCheckboxValueChanged(ActionEvent actionEvent) {
+        Settings.userPreferences.put("analyzeFooters", String.valueOf(((CheckBox) actionEvent.getTarget()).isSelected()));
     }
 }
