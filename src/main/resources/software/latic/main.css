@@ -16,6 +16,14 @@
 
 }
 
+.table-cell {
+    /*-fx-background-color: green;*/
+    -fx-max-height: 3em;
+    -fx-pref-height: 3em;
+    -fx-text-overrun: ellipsis;
+
+}
+
 .choice-box {
     -fx-background-color: white;
     /*-fx-background-color: #b18282;*/
