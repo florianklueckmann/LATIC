@@ -1,5 +1,6 @@
 package software.latic;
 
+import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,10 +16,6 @@ import software.latic.translation.Translation;
 import software.latic.task.Task;
 import software.latic.task.TaskLevel;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -72,6 +69,7 @@ public class PrimaryViewModel implements Initializable {
     private final ListProperty<Locale> languages = new SimpleListProperty<>();
 
     private final ListProperty<CharSequence>  importedDocumentContent = new SimpleListProperty<>();
+    private final ObjectProperty<File> importedFile = new SimpleObjectProperty<>();
 
     public void bindGuiElements() {
         menuHelp.textProperty().bind(Translation.getInstance().createStringBinding("help"));
@@ -95,11 +93,7 @@ public class PrimaryViewModel implements Initializable {
         resultPlaceholder.textProperty().bind(Translation.getInstance().createStringBinding("resultPlaceholder"));
         tableViewResults.setPlaceholder(resultPlaceholder);
 
-        var textInputBinding = Bindings.createBooleanBinding(
-                () -> textAreaInput.getText().isBlank(), textAreaInput.textProperty());
-        var fileImportBinding = Bindings.createBooleanBinding(
-                () -> importedDocumentContent.isEmpty(), importedDocumentContent);
-        buttonAnalyze.disableProperty().bind(textInputBinding.and(fileImportBinding));
+        buttonAnalyze.disableProperty().bind(textAreaInput.textProperty().isEmpty().and(importedFile.isNull()));
 
         choiceBoxLanguage.disableProperty().bind(Bindings.isNotEmpty(textItemDataResults));
 
@@ -426,7 +420,17 @@ public class PrimaryViewModel implements Initializable {
 
         TextItemData currentItem = null;
 
-        if (fileTab.isSelected()) {
+        if (fileTab.isSelected() && importedFile.getValue() != null) {
+            try {
+                ObservableList<CharSequence> content = FXCollections
+                        .observableList(FileContentProvider
+                                .getContent(importedFile.getValue().getPath()));
+
+                importedDocumentContent.setValue(content);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             currentItem = new PrimaryModel()
                     .initializeDocument(importedDocumentContent.getValue())
                     .processTasks(textTasks, generalTasks, wordLevelTasks);
@@ -545,23 +549,14 @@ public class PrimaryViewModel implements Initializable {
         }
     }
 
-    //TODO Get Settings when docx | An object that holds settings?
     public void handleButtonSelectFile() {
         Window stage = mainPane.getScene().getWindow();
-        try {
-            File file = importFileChooser.showOpenDialog(stage);
-            if (file != null) {
-                ObservableList<CharSequence> content = FXCollections
-                        .observableList(FileContentProvider
-                                .getContent(file.getPath()));
+        File file = importFileChooser.showOpenDialog(stage);
+        if (file != null) {
+            importedFile.set(file);
 
-                importedDocumentContent.setValue(content);
-
-                importFileChooser.setInitialDirectory(file.getParentFile());
-                filePathTextField.setText(file.getPath());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            importFileChooser.setInitialDirectory(file.getParentFile());
+            filePathTextField.setText(file.getPath());
         }
     }
 
