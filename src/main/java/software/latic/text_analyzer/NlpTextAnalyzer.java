@@ -3,7 +3,6 @@ package software.latic.text_analyzer;
 import software.latic.item.TextItemData;
 import software.latic.helper.TagMapper;
 import software.latic.linguistic_feature.LinguisticFeature;
-import software.latic.word_class_service.TextFormattingService;
 import software.latic.task.Task;
 import edu.stanford.nlp.simple.Token;
 import javafx.collections.FXCollections;
@@ -26,8 +25,15 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
 
     public String textAndPosTags() {
         StringBuilder sb = new StringBuilder();
-        doc.sentences().forEach(sentence -> sb.append(sentence).append("\n").append(replaceTags(sentence.tokens())).append("\n"));
-        return sb.toString();
+        doc.sentences().forEach(sentence -> {
+            sentence.tokens().forEach(token -> sb
+                    .append(token.word())
+                    .append(" [")
+                    .append(token.tag())
+                    .append("] "));
+            sb.append("\n");
+        });
+        return sb.toString().trim();
     }
 
     private List<String> replaceTags(List<Token> tokens) {

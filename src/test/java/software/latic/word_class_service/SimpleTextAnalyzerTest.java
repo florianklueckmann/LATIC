@@ -26,9 +26,17 @@ class SimpleTextAnalyzerTest {
             21, 6, 27, 3.5, 3.90,
             13.66, 4.5, 1.28);
 
-    private final String deItemTwo = "Es war einmal ein Junge. Er lebte mit seinen Eltern im Walde. Eines Tages beobachtete der Junge ein Eichhörnchen, das gerade eine Nuss vergrub. „Das Eichhörnchen macht sich bestimmt bereit für den Winterschlaf“, dachte der Junge.";
+    private final String deItemTwo = """
+            Es war einmal ein Junge. Er lebte mit seinen Eltern im Walde.
+            Eines Tages beobachtete der Junge ein Eichhörnchen, das gerade eine Nuss vergrub.
+            „Das Eichhörnchen macht sich bestimmt bereit für den Winterschlaf“, dachte der Junge.
+            """;
 
-    private final String enItemTwo = "At noon the tractor driver stopped sometimes near a tenant house and opened his lunch: sandwiches wrapped in waxed paper, white bread, pickle, cheese, Spam, a piece of pie branded like an engine part. He ate without relish. And tenants not yet moved away came out to see him, looked curiously while the goggles were taken off, and the rubber dust mask, leaving white circles around the eyes and a large white circle around nose and mouth. The exhaust of the tractor puttered on, for fuel is so cheap it is more efficient to leave the engine running than to heat the Diesel nose for a new start. Curious children crowded close, ragged children who ate their fried dough as they watched.";
+    private final String enItemTwo = """
+            At noon the tractor driver stopped sometimes near a tenant house and opened his lunch: sandwiches wrapped in waxed paper, white bread, pickle, cheese, Spam, a piece of pie branded like an engine part.
+            He ate without relish. And tenants not yet moved away came out to see him, looked curiously while the goggles were taken off, and the rubber dust mask, leaving white circles around the eyes and a large white circle around nose and mouth.
+            The exhaust of the tractor puttered on, for fuel is so cheap it is more efficient to leave the engine running than to heat the Diesel nose for a new start. Curious children crowded close, ragged children who ate their fried dough as they watched.
+            """;
 
     SimpleTextAnalyzer simpleTextAnalyzer;
 
