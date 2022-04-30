@@ -10,6 +10,11 @@ import java.util.stream.Stream;
 public class CsvBuilder {
     private static final String DEFAULT_SEPARATOR = ",";
 
+    private static final CsvBuilder csvBuilder = new CsvBuilder();
+    public static CsvBuilder getInstance() {
+        return csvBuilder;
+    }
+
     private String convertToCSV(String[] data) {
         return Stream.of(data)
                 .map(this::escapeSpecialCharacters)

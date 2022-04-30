@@ -71,6 +71,11 @@ public class PrimaryViewModel implements Initializable {
     private final ListProperty<CharSequence>  importedDocumentContent = new SimpleListProperty<>();
     private final ObjectProperty<File> importedFile = new SimpleObjectProperty<>();
 
+    private final FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Excel 2007-365", "*.xlsx");
+    private final FileChooser.ExtensionFilter csvFilter = new FileChooser.ExtensionFilter("CSV table file", "*.csv");
+    private final FileChooser.ExtensionFilter supportedFilesFilter = new FileChooser.ExtensionFilter("Supported files (*.txt, *.docx, *.pdf)", "*.txt", "*.docx", "*.pdf");
+
+
     public void bindGuiElements() {
         menuHelp.textProperty().bind(Translation.getInstance().createStringBinding("help"));
         menuItemDocumentation.textProperty().bind(Translation.getInstance().createStringBinding("documentation"));
@@ -205,23 +210,16 @@ public class PrimaryViewModel implements Initializable {
         else
             initialFilePath = System.getProperty("user.home") + File.separator + "Documents";
 
+        var initialFileName = "results";
 
         exportFileChooser.setInitialDirectory(new File(initialFilePath));
-        exportFileChooser.setTitle("Save File");
-        exportFileChooser.setInitialFileName("results");
-        exportFileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text file", "*.txt"),
-                new FileChooser.ExtensionFilter("CSV table file", "*.csv"),
-                new FileChooser.ExtensionFilter("CSV table file for excel", "*.csv"));
+        exportFileChooser.titleProperty().bind(Translation.getInstance().createStringBinding("saveFile"));
+        exportFileChooser.setInitialFileName(initialFileName);
+        exportFileChooser.getExtensionFilters().addAll(excelFilter, csvFilter);
 
         importFileChooser.setInitialDirectory(new File(initialFilePath));
-        importFileChooser.setTitle("Import File");
-        importFileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Supported files (*.txt, *.docx, *.pdf)", "*.txt", "*.docx", "*.pdf"),
-                new FileChooser.ExtensionFilter("Text file", "*.txt"),
-                new FileChooser.ExtensionFilter("docx", "*.docx"),
-                new FileChooser.ExtensionFilter("pdf", "*.pdf"));
-
+        importFileChooser.titleProperty().bind(Translation.getInstance().createStringBinding("select"));
+        importFileChooser.getExtensionFilters().addAll(supportedFilesFilter);
     }
 
     private List<String[]> getTableData() {
@@ -251,13 +249,17 @@ public class PrimaryViewModel implements Initializable {
     @FXML
     private void handleSaveClicked() {
         Window stage = mainPane.getScene().getWindow();
-        CsvBuilder csvBuilder = new CsvBuilder();
         try {
-            File file = exportFileChooser.showSaveDialog(stage);
+            File file = exportFileChooser.showSaveDialog(stage); //TODO EXTENSION
             if (file != null) {
+                var selectedFileExtension = exportFileChooser.getSelectedExtensionFilter().getExtensions().get(0).replace("*", "");
+                if (!file.getPath().contains(selectedFileExtension)) {
+                    file = new File(file.getPath() + selectedFileExtension);
+                }
+
                 file = exportFileChooser.getSelectedExtensionFilter().getDescription().contains("excel")
-                        ? csvBuilder.writeCsvForExcel(file, getTableData())
-                        : csvBuilder.writeToFile(file, getTableData());
+                        ? XlsxBuilder.getInstance().writeToFile(file, tableViewResults)
+                        : CsvBuilder.getInstance().writeToFile(file, getTableData());
                 exportFileChooser.setInitialDirectory(file.getParentFile());
             }
         } catch (IOException e) {

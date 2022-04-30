@@ -52,7 +52,7 @@ public class PrimaryModel {
     public PrimaryModel initializeDocument(List<CharSequence> paragraphs) {
         var text = paragraphs.stream()
                 .map(charSequence -> charSequence.toString().trim())
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining("\n"));
 
         if (Translation.getInstance().getLocale().equals(SupportedLocales.FRENCH.getLocale())) {
             props.setProperty("annotators", "tokenize, ssplit, pos");
