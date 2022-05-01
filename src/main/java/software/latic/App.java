@@ -1,6 +1,11 @@
 package software.latic;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.brouillard.oss.cssfx.CSSFX;
 import org.apache.log4j.BasicConfigurator;
+import software.latic.helper.Settings;
+import software.latic.helper.UpdateHelper;
 import software.latic.translation.Translation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,11 +15,20 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.sql.Date;
+import java.time.Duration;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
+import javax.json.Json;
 
 /**
  * JavaFX App
@@ -29,6 +43,15 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         prepareStage(stage);
         stage.show();
+        CSSFX.start();
+        UpdateHelper.getInstance().updateCheck();
+
+//        //TODO: Dialog: Would you like to update? Remind me next week / never
+//        try {
+//            System.out.println(UpdateHelper.getInstance().updateAvailable());
+//        } catch (InterruptedException e) {
+//            System.out.println(e.getMessage());
+//        }
 
         Logging.getInstance().debug("App", String.format("JavaFX runtime: %s", System.getProperty("javafx.runtime.version")));
         Logging.getInstance().debug("App", String.format("Java runtime: %s", System.getProperty("java.runtime.version")));
