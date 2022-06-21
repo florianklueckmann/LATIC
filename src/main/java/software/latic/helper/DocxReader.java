@@ -1,7 +1,8 @@
 package software.latic.helper;
 
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFHeaderFooter;
+import org.apache.poi.xwpf.usermodel.XWPFFooter;
+import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 
 import java.io.IOException;
@@ -41,12 +42,12 @@ public class DocxReader implements FileReader {
     }
 
     public List<CharSequence> getHeaders(XWPFDocument document) {
-        return document.getHeaderList().stream().map(XWPFHeaderFooter::getText).collect(Collectors.toList());
+        return document.getHeaderList().stream().map(XWPFHeader::getText).filter(text -> !text.isEmpty()).collect(Collectors.toList());
     }
     public List<CharSequence> getParagraphs(XWPFDocument document) {
         return document.getParagraphs().stream().map(XWPFParagraph::getText).collect(Collectors.toList());
     }
     public List<CharSequence> getFooters(XWPFDocument document) {
-        return document.getFooterList().stream().map(XWPFHeaderFooter::getText).collect(Collectors.toList());
+        return document.getFooterList().stream().map(XWPFFooter::getText).filter(text -> !text.isEmpty()).collect(Collectors.toList());
     }
 }
