@@ -257,7 +257,7 @@ public class PrimaryViewModel implements Initializable {
                     file = new File(file.getPath() + selectedFileExtension);
                 }
 
-                file = exportFileChooser.getSelectedExtensionFilter().getDescription().contains("excel")
+                file = exportFileChooser.getSelectedExtensionFilter().getDescription().toLowerCase().contains("excel")
                         ? XlsxBuilder.getInstance().writeToFile(file, tableViewResults)
                         : CsvBuilder.getInstance().writeToFile(file, getTableData());
                 exportFileChooser.setInitialDirectory(file.getParentFile());
