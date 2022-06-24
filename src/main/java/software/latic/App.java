@@ -55,6 +55,10 @@ public class App extends Application {
         scene = new Scene(loadFXML("PrimaryView"), 1000, 600);
         scene.getStylesheets().add("/software/latic/main.css");
 
+        var imageResourceStream = App.class.getResourceAsStream("latic-square-256.png");
+        if (imageResourceStream != null) {
+            stage.getIcons().add(new Image(imageResourceStream));
+        }
         stage.setScene(scene);
     }
 
