@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CsvBuilder {
-    private static final String DEFAULT_SEPARATOR = ",";
+    private static final String DEFAULT_SEPARATOR = ";";
 
     private static final CsvBuilder csvBuilder = new CsvBuilder();
     public static CsvBuilder getInstance() {
@@ -23,7 +23,7 @@ public class CsvBuilder {
 
     private String escapeSpecialCharacters(String data) {
         String escapedData = data.replaceAll("\\R", " ");
-        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+        if (data.contains(",") || data.contains("\"") || data.contains("'") || data.contains(";")) {
             data = data.replace("\"", "\"\"");
             escapedData = "\"" + data + "\"";
         }
