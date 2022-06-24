@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -14,7 +15,6 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -63,42 +63,21 @@
                               <children>
                                  <HBox fillHeight="false" styleClass="h-box" GridPane.columnSpan="2" GridPane.hgrow="NEVER" GridPane.rowIndex="1">
                                     <children>
-                                       <Button fx:id="buttonSelectFile"
-                                               maxHeight="1.7976931348623157E308"
-                                               mnemonicParsing="false"
-                                               prefHeight="100.0"
-                                               HBox.hgrow="ALWAYS"
-                                               text="%select"
-                                               onAction="#handleButtonSelectFile"
-                                       >
+                                       <Button fx:id="buttonSelectFile" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleButtonSelectFile" prefHeight="100.0" text="%select" HBox.hgrow="ALWAYS">
                                           <styleClass>
                                              <String fx:value="btn-primary" />
                                              <String fx:value="btn-no-bg-radius" />
                                           </styleClass>
                                        </Button>
-                                       <TextField disable="true"
-                                                  maxWidth="1.7976931348623157E308"
-                                                  prefHeight="100.0"
-                                                  styleClass="text-field-no-border"
-                                                  HBox.hgrow="ALWAYS"
-                                                  fx:id="filePathTextField"
-                                       />
+                                       <TextField fx:id="filePathTextField" disable="true" maxWidth="1.7976931348623157E308" prefHeight="100.0" styleClass="text-field-no-border" HBox.hgrow="ALWAYS" />
                                     </children>
                                  </HBox>
                               </children>
                            </GridPane>
                            <VBox prefHeight="200.0" prefWidth="100.0" spacing="15.0" GridPane.rowIndex="1">
                               <children>
-                                 <CheckBox fx:id="analyzeHeadersCheckbox"
-                                           mnemonicParsing="false"
-                                           text="%analyzeHeaders"
-                                           onAction="#handleAnalyzeHeadersCheckboxValueChanged"
-                                 />
-                                 <CheckBox fx:id="analyzeFootersCheckbox"
-                                           mnemonicParsing="false"
-                                           text="%analyzeFooters"
-                                           onAction="#handleAnalyzeFootersCheckboxValueChanged"
-                                 />
+                                 <CheckBox fx:id="analyzeHeadersCheckbox" mnemonicParsing="false" onAction="#handleAnalyzeHeadersCheckboxValueChanged" text="%analyzeHeaders" />
+                                 <CheckBox fx:id="analyzeFootersCheckbox" mnemonicParsing="false" onAction="#handleAnalyzeFootersCheckboxValueChanged" text="%analyzeFooters" />
                               </children>
                               <padding>
                                  <Insets top="15.0" />
@@ -133,10 +112,7 @@
          <children>
               <HBox alignment="CENTER_LEFT" prefWidth="451.0">
                   <children>
-                  <ImageView id="mainLogo" fx:id="logo" fitHeight="50.0" fitWidth="101.0" pickOnBounds="true" preserveRatio="true">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin></ImageView>
+                  <Label fx:id="mainLogo" text="LATIC" textFill="WHITE" />
                       <MenuBar id="menuBar">
                           <menus>
                               <Menu fx:id="menuHelp" mnemonicParsing="false" text="%help">

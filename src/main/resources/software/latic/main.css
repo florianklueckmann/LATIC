@@ -2,7 +2,7 @@
     -fx-font-size: 1.25em;
     -fx-font-family: "Lato";
 
-    -primary: #a57676;
+    -primary: #8b5e5f;
     -primary-lighter: derive(-primary, 16%);
     -primary-darker: derive(-primary, -16%);
     -green: #76a576;
@@ -235,12 +235,12 @@
 }
 
 #mainLogo {
-    -fx-image: url("latic_text_white_60px.png");
+    -fx-font-weight: 900;
+    -fx-padding: 0 0 0 1em;
 }
 
 #menuBox {
     -fx-pref-height: 60px;
-    -fx-background-image: url("latic-header.png");
     -fx-background-color: -primary-lighter;
     -fx-border-width: 0;
 }
@@ -252,7 +252,6 @@
 }
 
 #bottomMenuBox {
-    -fx-background-image: url("latic-header.png");
     -fx-background-color: -primary-lighter;
 }
 
@@ -297,7 +296,7 @@
 
 .scroll-bar:horizontal .thumb,
 .scroll-bar:vertical .thumb {
-    -fx-background-color: #a57676;
+    -fx-background-color: -primary;
 }
 
 .scroll-bar:horizontal .thumb:hover,
