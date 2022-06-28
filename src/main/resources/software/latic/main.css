@@ -53,6 +53,10 @@
     -fx-font-weight: bolder;
 }
 
+.menu:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
 .context-menu > .menu-item > .label {
     -fx-text-fill: black;
     -fx-font-weight: normal;
@@ -235,8 +239,9 @@
 }
 
 #mainLogo {
+    -fx-font-size: 2.3em;
     -fx-font-weight: 900;
-    -fx-padding: 0 0 0 1em;
+    -fx-padding: 0 0 0 0.1em;
 }
 
 #menuBox {
@@ -365,4 +370,15 @@
 
 .dialog-pane > .button-bar > .container > .details-button:hover {
     -fx-underline: true;
+}
+
+.button,
+.check-box,
+.tab,
+.choice-box,
+.scroll-bar,
+.table-view .column-header,
+.menu,
+.menu-item{
+    -fx-cursor: hand;
 }
