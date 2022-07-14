@@ -1,0 +1,40 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ github-actions-* ]
+#  pull_request:
+#    branches: [ main ]
+
+#on:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 18 for x64
+      uses: actions/setup-java@v2
+      with:
+        java-version: '18'
+        distribution: 'zulu'
+        java-package: jdk+fk
+        architecture: x64
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+    - name: Copy jar to deb 
+      run: mkdir jar && cp shade/*.jar jar
+    - name: Package jar as deb
+      run: jpackage --input jar --main-jar latic.jar --name latic --description "LATIC - Linguistic Analysis Tools for Item Characteristics" --vendor "Florian Klückmann" --linux-menu-group Office --linux-shortcut 
+    - uses: actions/upload-artifact@v2
+      with: 
+        name: Package
+        path: jar/*
