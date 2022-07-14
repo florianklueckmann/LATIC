@@ -33,7 +33,7 @@ jobs:
     - name: Copy jar to deb 
       run: mkdir jar && cp shade/*.jar jar
     - name: Package jar as deb
-      run: jpackage --input jar --main-jar latic-1.2.2-RC1.jar --name latic --description "LATIC - Linguistic Analysis Tools for Item Characteristics" --vendor "Florian Klückmann" --linux-menu-group Office --linux-shortcut
+      run: jpackage --input jar --main-jar LATIC-1.2.2-RC1.jar --name LATIC --description "LATIC - Linguistic Analysis Tools for Item Characteristics" --vendor "Florian Klückmann" --linux-menu-group Office --linux-shortcut
     - uses: actions/upload-artifact@v2
       with: 
         name: Package
