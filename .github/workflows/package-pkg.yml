@@ -33,7 +33,7 @@ jobs:
     - name: Copy jar
       run: mkdir jar && cp shade/*.jar jar
     - name: Package jar as pkg
-      run: jpackage --input jar --main-jar LATIC-1.2.1.jar --name LATIC --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --icon ./src/main/resources/software/latic/latic-square-256.png -d pkg --app-version 1.2.1 --mac-package-identifier LATIC --mac-package-name LATIC
+      run: jpackage --input jar --main-jar LATIC-1.2.1.jar --name LATIC --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --icon ./src/main/resources/software/latic/latic-square-256.png -d pkg --app-version 1.2.1 --mac-package-identifier LATIC --mac-package-name LATIC --type pkg
     - uses: actions/upload-artifact@v2
       with: 
         name: LATIC-1.2.1-macOS-EN-DE
