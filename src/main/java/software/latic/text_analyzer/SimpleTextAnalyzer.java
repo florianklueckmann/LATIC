@@ -202,9 +202,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
         return 0.2656 * averageSentenceLengthWords() + 0.2744 * wordsWithMoreThanTwoSyllablesPercent() - 1.693;
     }
 
-    public double gSMOG() {
-        return Math.sqrt( (double) (wordsWithMoreThanThreeSyllables() * 30) / sentenceCount()) - 2;
-    }
+    public double gSMOG() {return Math.sqrt( (double) (wordsWithMoreThanTwoSyllables() * 30) / sentenceCount()) - 2;}
 
     //English indices
     public double fleschIndexEnglish() {
