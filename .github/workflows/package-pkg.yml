@@ -28,13 +28,24 @@ jobs:
         java-version: '18'
         java-package: jdk+fx
         architecture: x64
+    - name: Get version
+      run: echo project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
+    - name: test
+      run: echo test ${{ env.project_version }}
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - name: Copy jar
       run: mkdir jar && cp shade/*.jar jar
     - name: Package jar as pkg
-      run: jpackage --input jar --main-jar LATIC-1.2.1.jar --name LATIC --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --icon ./src/main/resources/software/latic/latic-square-256.png -d pkg --app-version 1.2.1 --mac-package-identifier LATIC --mac-package-name LATIC --type pkg
+      run: jpackage --input jar --main-jar LATIC-${{ env.project_version }}.jar --name LATIC --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --icon ./src/main/resources/software/latic/latic-square-256.png -d pkg --app-version ${{ env.project_version }} --mac-package-identifier LATIC --mac-package-name LATIC --type pkg
+    - name: Copy documentation
+      run: |
+        mkdir pkg
+        mkdir pkg/english
+        mkdir pkg/deutsch
+        cp ./src/main/resources/software/latic/documentation_en.pdf "pkg/english/LATIC ${{ env.project_version }} Documentation.pdf"
+        cp ./src/main/resources/software/latic/documentation_de.pdf "pkg/deutsch/LATIC ${{ env.project_version }} Dokumentation.pdf"
     - uses: actions/upload-artifact@v2
       with: 
-        name: LATIC-1.2.1-macOS-EN-DE
+        name: LATIC-${{ env.project_version }}-macOS-EN-DE
         path: pkg/*
