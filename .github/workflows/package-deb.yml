@@ -21,8 +21,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: GH Release
-      uses: softprops/action-gh-release@v0.1.14
     - name: Set up JDK 18 for x64
       uses: actions/setup-java@v3
       with:
@@ -50,12 +48,41 @@ jobs:
         cp ./src/main/resources/software/latic/documentation_de.pdf "deb/deutsch/LATIC ${{ env.project_version }} Dokumentation.pdf"
         cp "./supplemental-material/en/Instructions Installing and Starting LATIC on Ubuntu and Debian.docx" "deb/english/Instructions Installing and Starting LATIC on Ubuntu and Debian.docx"
         cp "./supplemental-material/de/Anleitung LATIC installieren und starten Ubuntu und Debian.docx" "deb/deutsch/Anleitung LATIC installieren und starten Ubuntu und Debian.docx"
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        files: deb/*
     - uses: actions/upload-artifact@v2
       with: 
         name: LATIC-${{ env.project_version }}-Ubuntu-Debian-EN-DE
         path: deb/*
+
+  release:
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 18 for x64
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '18'
+          java-package: jdk
+          architecture: x64
+      - uses: actions/checkout@v3
+      - name: Get version
+        run: echo project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
+      - name: Download artifacts for build
+        uses: actions/download-artifact@v3
+        with:
+          name: LATIC-${{ env.project_version }}-Ubuntu-Debian-EN-DE
+          path: LATIC-${{ env.project_version }}-Ubuntu-Debian-EN-DE
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Archive Release
+        uses: thedoctor0/zip-release@main
+        with:
+          type: 'zip'
+          filename: 'LATIC-${{ env.project_version }}-Ubuntu-Debian-EN-DE.zip'
+          path: LATIC-${{ env.project_version }}-Ubuntu-Debian-EN-DE
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: LATIC-${{ env.project_version }}-Ubuntu-Debian-EN-DE.zip

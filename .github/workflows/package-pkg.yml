@@ -15,7 +15,7 @@ on:
       - created
 
 jobs:
-  build:
+  build-en-de:
 
     runs-on: macos-12
 
@@ -69,7 +69,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: LATIC-${{ env.project_version }}-macOS-EN-DE
-          path: artifact
+          path: LATIC-${{ env.project_version }}-macOS-EN-DE
       - name: Display structure of downloaded files
         run: ls -R
       - name: Archive Release
@@ -77,7 +77,7 @@ jobs:
         with:
           type: 'zip'
           filename: 'LATIC-${{ env.project_version }}-macOS-EN-DE.zip'
-          path: artifact
+          path: LATIC-${{ env.project_version }}-macOS-EN-DE
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
