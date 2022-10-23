@@ -18,112 +18,140 @@
         <corenlp.version>4.4.0</corenlp.version>
     </properties>
 
-    <dependencies>
-        <!--JavaFX-->
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx.version}</version>
-            <classifier>win</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx.version}</version>
-            <classifier>linux</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx.version}</version>
-            <classifier>mac</classifier>
-        </dependency>
 
-        <!--CoreNLP-->
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>${corenlp.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>${corenlp.version}</version>
-            <classifier>models</classifier>
-        </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>edu.stanford.nlp</groupId>-->
-        <!--            <artifactId>stanford-corenlp</artifactId>-->
-        <!--            <version>${corenlp.version}</version>-->
-        <!--            <classifier>models-english</classifier>-->
-        <!--        </dependency>-->
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>${corenlp.version}</version>
-            <classifier>models-german</classifier>
-        </dependency>
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>${corenlp.version}</version>
-            <classifier>models-spanish</classifier>
-        </dependency>
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>${corenlp.version}</version>
-            <classifier>models-french</classifier>
-        </dependency>
+    <profiles>
+        <profile>
+            <id>en-de</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <!--JavaFX-->
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-base</artifactId>
+                    <version>${javafx.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                    <version>${javafx.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-fxml</artifactId>
+                    <version>${javafx.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>win</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>linux</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>mac</classifier>
+                </dependency>
 
-        <!--Logger for CoreNLP-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-reload4j</artifactId>
-            <version>1.7.35</version>
-        </dependency>
+                <!--CoreNLP-->
+                <dependency>
+                    <groupId>edu.stanford.nlp</groupId>
+                    <artifactId>stanford-corenlp</artifactId>
+                    <version>${corenlp.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>edu.stanford.nlp</groupId>
+                    <artifactId>stanford-corenlp</artifactId>
+                    <version>${corenlp.version}</version>
+                    <classifier>models</classifier>
+                </dependency>
+                <!--        <dependency>-->
+                <!--            <groupId>edu.stanford.nlp</groupId>-->
+                <!--            <artifactId>stanford-corenlp</artifactId>-->
+                <!--            <version>${corenlp.version}</version>-->
+                <!--            <classifier>models-english</classifier>-->
+                <!--        </dependency>-->
+                <dependency>
+                    <groupId>edu.stanford.nlp</groupId>
+                    <artifactId>stanford-corenlp</artifactId>
+                    <version>${corenlp.version}</version>
+                    <classifier>models-german</classifier>
+                </dependency>
+                <!--        <dependency>-->
+                <!--            <groupId>edu.stanford.nlp</groupId>-->
+                <!--            <artifactId>stanford-corenlp</artifactId>-->
+                <!--            <version>${corenlp.version}</version>-->
+                <!--            <classifier>models-spanish</classifier>-->
+                <!--        </dependency>-->
+                <!--        <dependency>-->
+                <!--            <groupId>edu.stanford.nlp</groupId>-->
+                <!--            <artifactId>stanford-corenlp</artifactId>-->
+                <!--            <version>${corenlp.version}</version>-->
+                <!--            <classifier>models-french</classifier>-->
+                <!--        </dependency>-->
 
-        <!-- Document import-->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>2.0.25</version>
-        </dependency>
+                <!--Logger for CoreNLP-->
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-reload4j</artifactId>
+                    <version>1.7.35</version>
+                </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.13.2.2</version>
-        </dependency>
+                <!-- Document import-->
+                <dependency>
+                    <groupId>org.apache.poi</groupId>
+                    <artifactId>poi-ooxml</artifactId>
+                    <version>5.2.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.pdfbox</groupId>
+                    <artifactId>pdfbox</artifactId>
+                    <version>2.0.25</version>
+                </dependency>
 
-        <!--Test Dependencies-->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.7.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                    <version>2.13.2.2</version>
+                </dependency>
+
+                <!--Test Dependencies-->
+                <dependency>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter</artifactId>
+                    <version>5.7.1</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>all-lang</id>
+            <dependencies>
+                <dependency>
+                    <groupId>edu.stanford.nlp</groupId>
+                    <artifactId>stanford-corenlp</artifactId>
+                    <version>${corenlp.version}</version>
+                    <classifier>models-spanish</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>edu.stanford.nlp</groupId>
+                    <artifactId>stanford-corenlp</artifactId>
+                    <version>${corenlp.version}</version>
+                    <classifier>models-french</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+
 
 
     <build>
