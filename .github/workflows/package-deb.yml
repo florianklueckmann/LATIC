@@ -4,8 +4,8 @@
 name: Debian package
 
 on:
-  push:
-    branches: [ github-actions-* ]
+#  push:
+#    branches: [ github-actions-* ]
 #  pull_request:
 #    branches: [ main ]
 
