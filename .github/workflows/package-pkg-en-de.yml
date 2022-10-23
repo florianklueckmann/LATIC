@@ -15,7 +15,7 @@ on:
       - created
 
 jobs:
-  build-en-de:
+  build:
 
     runs-on: macos-12
 
