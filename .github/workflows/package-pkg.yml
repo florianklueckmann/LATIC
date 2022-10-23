@@ -40,7 +40,6 @@ jobs:
       run: jpackage --input jar --main-jar LATIC-${{ env.project_version }}.jar --name LATIC --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --icon ./src/main/resources/software/latic/latic-square-256.png -d pkg --app-version ${{ env.project_version }} --mac-package-identifier LATIC --mac-package-name LATIC --type pkg
     - name: Copy documentation
       run: |
-        mkdir pkg
         mkdir pkg/english
         mkdir pkg/deutsch
         cp ./src/main/resources/software/latic/documentation_en.pdf "pkg/english/LATIC ${{ env.project_version }} Documentation.pdf"
