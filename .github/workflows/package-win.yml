@@ -25,6 +25,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: GH Release
+        uses: softprops/action-gh-release@v0.1.14
       - name: Set up JDK 18 for x64
         uses: actions/setup-java@v3
         with:
@@ -50,6 +52,11 @@ jobs:
           cp ./src/main/resources/software/latic/documentation_de.pdf "win/deutsch/LATIC ${{ env.project_version }} Dokumentation.pdf"
           cp "./supplemental-material/en/Instructions Installing and Starting LATIC on Windows.docx" "win/english/Instructions Installing and Starting LATIC on Windows.docx"
           cp "./supplemental-material/de/Anleitung LATIC installieren und starten Windows.docx" "win/deutsch/Anleitung LATIC installieren und starten Windows.docx"
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: win/*
       - uses: actions/upload-artifact@v2
         with:
           name: LATIC-${{ env.project_version }}-Windows-EN-DE
