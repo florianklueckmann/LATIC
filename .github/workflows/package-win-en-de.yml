@@ -43,7 +43,7 @@ jobs:
       - name: Copy jar
         run: mkdir jar && cp shade/*.jar jar
       - name: Package jar for Windows
-        run: jpackage --input jar --main-jar LATIC-${{ env.project_version }}.jar --name LATIC --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --win-shortcut --win-menu --win-dir-chooser --win-per-user-install --icon ./src/main/resources/software/latic/latic-square-256.png -d win --app-version ${{ env.project_version }}
+        run: jpackage --input jar --main-jar LATIC-${{ env.project_version }}.jar --name latic --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --win-shortcut --win-menu --win-dir-chooser --win-per-user-install --icon ./src/main/resources/software/latic/latic-square-256.ico -d win --app-version ${{ env.project_version }}  --license-file ./LICENSE --about-url https://www.latic.software
       - name: Copy documentation and installation guide
         run: |
           mkdir win/english

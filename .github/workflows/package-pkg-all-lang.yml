@@ -37,7 +37,7 @@ jobs:
     - name: Copy jar
       run: mkdir jar && cp shade/*.jar jar
     - name: Package jar as pkg
-      run: jpackage --input jar --main-jar LATIC-${{ env.project_version }}.jar --name LATIC --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --icon ./src/main/resources/software/latic/latic-square-256.png -d pkg --app-version ${{ env.project_version }} --mac-package-identifier LATIC --mac-package-name LATIC --type pkg
+      run: jpackage --input jar --main-jar LATIC-${{ env.project_version }}.jar --name LATIC --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --icon ./src/main/resources/software/latic/latic-square-256.icns -d pkg --app-version ${{ env.project_version }} --mac-package-identifier LATIC --mac-package-name LATIC --type pkg --license-file ./LICENSE --about-url https://www.latic.software
     - name: Copy documentation
       run: |
         mkdir pkg/english

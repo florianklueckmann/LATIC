@@ -32,5 +32,5 @@ Feel free to create issues for feature requests, bugs, or other improvements.
 
 ### Development
 To compile and package the project use 
-`mvn clean compile package` and run the file `latic.jar` using `java -jar shade/latic.jar`
+`mvn clean compile package` and run the file `LATIC-1.2.2.jar` using `java -jar shade/LATIC-1.2.2.jar`
 Note that you have to launch the class AppLauncher to stat the application in your IDE.
