@@ -39,7 +39,7 @@ jobs:
     - name: Get version
       run: echo project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
     - name: Package jar as deb
-      run: jpackage --input jar --main-jar LATIC-${{ env.project_version }}.jar --name LATIC --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --linux-menu-group Office --linux-shortcut --icon ./src/main/resources/software/latic/latic-square-256.png --linux-deb-maintainer hello@latic.software -d deb --app-version ${{ env.project_version }}
+      run: jpackage --input jar --main-jar LATIC-${{ env.project_version }}.jar --name LATIC --description "LATIC - A Linguistic Analyzer for Text and Item Characteristics" --vendor "Florian Klückmann" --linux-menu-group Office --linux-shortcut --icon ./src/main/resources/software/latic/latic-square-256.png --linux-deb-maintainer hello@latic.software -d deb --app-version ${{ env.project_version }} --license-file ./LICENSE --linux-rpm-license-type GPL-3.0-or-later --about-url https://www.latic.software
     - name: Copy documentation and installation guide
       run: | 
         mkdir deb/english
