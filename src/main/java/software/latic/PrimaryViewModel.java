@@ -9,7 +9,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
+
 import software.latic.helper.*;
 import software.latic.item.*;
 import software.latic.translation.Translation;
@@ -38,6 +38,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class PrimaryViewModel implements Initializable {
@@ -276,7 +277,7 @@ public class PrimaryViewModel implements Initializable {
         setLanguages();
         applyPreferences();
         bindGuiElements();
-        if (App.loggingLevel.isGreaterOrEqual(Level.WARN)) {
+        if (App.loggingLevel.intValue() >= Level.WARNING.intValue()) {
             menuDebug.setVisible(false);
         }
     }
