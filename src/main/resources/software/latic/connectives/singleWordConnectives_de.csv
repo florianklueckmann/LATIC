@@ -96,8 +96,10 @@ drittens
 drum
 ebenfalls
 ebenso
-egal w-
+egal w[a-z]+
 eh
+ehe
+endlich
 entsprechend
 ergo
 erst
@@ -120,6 +122,8 @@ genauer ausgedrückt
 genauer formuliert
 genauer gefragt
 genauer gesagt
+gerade
+geschweige
 gleichfalls
 gleichwie
 gleichwohl
@@ -182,6 +186,7 @@ mit anderen Worten gesagt
 mit einem Wort ausgedrückt
 mit einem Wort gesagt
 mit einem Wort gesprochen
+mithilfe
 mithin
 mittlerweile
 nachdem
@@ -261,8 +266,8 @@ vielmehr
 viertens
 vorbehaltlich
 vorher
-w- auch immer
-w- immer
+w[a-z]+ auch immer
+w[a-z]+ immer
 während
 währenddem
 währenddessen

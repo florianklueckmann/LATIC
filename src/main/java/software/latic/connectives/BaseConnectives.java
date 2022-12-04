@@ -7,6 +7,7 @@ import software.latic.translation.Translation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
@@ -20,6 +21,10 @@ public class BaseConnectives implements Connectives {
         return baseConnectives;
     }
 
+    public BaseConnectives() {
+        initialize();
+    }
+
     private void initialize() {
         singleWordConnectives = CsvReader.getInstance()
                 .readFile(String.format("connectives/singleWordConnectives_%s.csv", Translation.getInstance().getLanguageTag()));
@@ -27,7 +32,6 @@ public class BaseConnectives implements Connectives {
 
     @Override
     public int connectivesInDocument(Document doc) {
-        initialize();
         var sentences = doc.sentences();
 
         var docConnectiveCount = 0;
@@ -39,7 +43,7 @@ public class BaseConnectives implements Connectives {
         return docConnectiveCount;
     }
 
-    private int countConnective(List<Integer> start, List<Integer> end) {
+    private int countConnective(List<Integer> start, List<Integer> end, int removeConnectives) {
         var count = new AtomicInteger();
 
         start.forEach(s -> {
@@ -48,25 +52,49 @@ public class BaseConnectives implements Connectives {
             }
         });
 
-        return count.get();
+        return count.get() - removeConnectives;
     }
 
     private int singleWordConnectivesInDocument(List<Sentence> sentences) {
         var matchedStart = new ArrayList<Integer>();
         var matchedEnd = new ArrayList<Integer>();
 
+        var connectivesTaggedNoun = 0;
+
         for (var sentence : sentences) {
             for (String connective : singleWordConnectives) {
                 var pattern = Pattern.compile("\\b" + connective + "\\b");
 
-                var matcher = pattern.matcher(sentence.text());
+                var matcher = pattern.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
 
                 while (matcher.find()) {
+                    connectivesTaggedNoun = connectivesWithInvalidTag(sentence, connective);
+
                     matchedStart.add(matcher.start() - 1);
                     matchedEnd.add(matcher.end());
                 }
             }
         }
-        return countConnective(matchedStart, matchedEnd);
+        return countConnective(matchedStart, matchedEnd, connectivesTaggedNoun);
+    }
+
+    private int connectivesWithInvalidTag(Sentence sentence, String connective) {
+        int count = 0;
+        for (var token: sentence.tokens()) {
+            if (token.word().equalsIgnoreCase(connective)) {
+                if (isNotAValidConnective(token.posTag())) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    private boolean isNotAValidConnective(String posTag) {
+        if (Translation.getInstance().getLocale().equals(Locale.ENGLISH)) {
+            return posTag.contains("NN") || posTag.contains("JJ");
+        } else {
+            return posTag.equals("NOUN") || posTag.equals("ADJ");
+        }
     }
 }
