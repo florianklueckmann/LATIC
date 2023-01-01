@@ -2,15 +2,15 @@ package software.latic.connectives;
 
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.simple.Document;
+import edu.stanford.nlp.simple.Sentence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import software.latic.translation.Translation;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,7 +58,9 @@ class BaseConnectivesTest {
                 new TestDataClass("Ich bin allerdings ein Baum und auch ein Haus.", 2, props),
                 new TestDataClass("Ich bin allerdings dass ein Baum", 1, props),
                 new TestDataClass("Ich bin allerdings sieht man dass ein Baum", 2, props),
-                new TestDataClass("Egal wie groß du bist, ich bin größer.", 1, props)
+                new TestDataClass("Egal wie groß du bist, ich bin größer.", 1, props),
+                new TestDataClass("Ich bin teils Baum teils Haus.", 1, props),
+                new TestDataClass("Entweder du bist ein Baum oder ein Haus.", 1, props)
         };
 
         return Arrays.stream(data).map(entry -> dynamicTest(

@@ -8,12 +8,14 @@ import software.latic.translation.Translation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 public class BaseConnectives implements Connectives {
 
     List<String> singleWordConnectives;
+    List<String[]> twoWordInOneSentenceConnectives;
 
     private static final Connectives baseConnectives = new BaseConnectives();
 
@@ -28,6 +30,10 @@ public class BaseConnectives implements Connectives {
     private void initialize() {
         singleWordConnectives = CsvReader.getInstance()
                 .readFile(String.format("connectives/singleWordConnectives_%s.csv", Translation.getInstance().getLanguageTag()));
+        twoWordInOneSentenceConnectives = CsvReader.getInstance()
+                .readFile(String.format("connectives/twoWordInOneSentenceConnectives_%s.csv", Translation.getInstance().getLanguageTag()))
+                .stream()
+                .map(s -> s.split(";")).toList();
     }
 
     @Override
@@ -39,6 +45,7 @@ public class BaseConnectives implements Connectives {
         //TODO beim init für jedes Connective ein Pattern in einer PatternList erstelleN?
 
         docConnectiveCount += singleWordConnectivesInDocument(sentences);
+        docConnectiveCount += twoWordConnectivesInDocument(sentences);
 
         return docConnectiveCount;
     }
@@ -76,6 +83,44 @@ public class BaseConnectives implements Connectives {
             }
         }
         return countConnective(matchedStart, matchedEnd, connectivesTaggedNoun);
+    }
+
+    protected int twoWordConnectivesInDocument(List<Sentence> sentences) {
+        var matchedStart = new ArrayList<Integer>();
+        var matchedEnd = new ArrayList<Integer>();
+
+        var connectivesTaggedNoun = 0;
+        var count = 0;
+
+        for (var sentence : sentences) {
+            for (String[] connective : twoWordInOneSentenceConnectives) {
+                if (connective.length < 2) {
+                    break;
+                }
+                var patternLead = Pattern.compile("\\b" + connective[0] + "\\b");
+                var patternFollow = Pattern.compile("\\b" + connective[1] + "\\b");
+
+                var matcherLead = patternLead.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
+
+                while (matcherLead.find()) {
+                    var matchedLeadEnd = matcherLead.end();
+
+                    var matcherFollow = patternFollow.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
+
+                    if (matcherFollow.find(matchedLeadEnd)) {
+                        var matchedFollowStart = matcherFollow.start();
+
+                        if(matchedLeadEnd < matchedFollowStart
+                                && (connectivesWithInvalidTag(sentence, connective[0])
+                                    + connectivesWithInvalidTag(sentence, connective[0])
+                                        == 0)) {
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     private int connectivesWithInvalidTag(Sentence sentence, String connective) {
