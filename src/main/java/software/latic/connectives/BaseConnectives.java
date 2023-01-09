@@ -102,13 +102,17 @@ public class BaseConnectives implements Connectives {
 
                 var matcherLead = patternLead.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
 
+
+                var lastFollowFound = -1;
+
                 while (matcherLead.find()) {
                     var matchedLeadEnd = matcherLead.end();
 
                     var matcherFollow = patternFollow.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
 
-                    if (matcherFollow.find(matchedLeadEnd)) {
+                    if (matcherFollow.find(matchedLeadEnd) && lastFollowFound < matchedLeadEnd ) {
                         var matchedFollowStart = matcherFollow.start();
+                        lastFollowFound = matcherFollow.end();
 
                         if(matchedLeadEnd < matchedFollowStart
                                 && (connectivesWithInvalidTag(sentence, connective[0])
