@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 
 public class PrimaryViewModel implements Initializable {
 
+    @FXML public MenuItem menuItemConnectivesToTxt;
     @FXML private TextField filePathTextField;
     @FXML private CheckBox analyzeHeadersCheckbox;
     @FXML private CheckBox analyzeFootersCheckbox;
@@ -569,5 +570,9 @@ public class PrimaryViewModel implements Initializable {
 
     public void handleAnalyzeFootersCheckboxValueChanged(ActionEvent actionEvent) {
         Settings.userPreferences.put("analyzeFooters", String.valueOf(((CheckBox) actionEvent.getTarget()).isSelected()));
+    }
+
+    public void handleDebugMenuItemConnectivesToTxt(ActionEvent actionEvent) {
+        var connectiveResult = new PrimaryModel().initializeDocument(textAreaInput.getParagraphs()).connectiveTest();
     }
 }

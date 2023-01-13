@@ -2,6 +2,8 @@ package software.latic.connectives;
 
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
+import software.latic.App;
+import software.latic.Logging;
 import software.latic.helper.CsvReader;
 import software.latic.translation.Translation;
 
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class BaseConnectives implements Connectives {
@@ -49,10 +52,23 @@ public class BaseConnectives implements Connectives {
 
         //TODO beim init für jedes Connective ein Pattern in einer PatternList erstelleN?
 
-        docConnectiveCount += singleWordConnectivesInDocument(sentences);
-        docConnectiveCount += twoWordConnectivesInOneSentence(sentences);
-        docConnectiveCount += twoWordConnectivesInManySentence(doc);
+        var singleWordConnectivesInDocument = singleWordConnectivesInDocument(sentences);
+        var twoWordConnectivesInOneSentence = twoWordConnectivesInOneSentence(sentences);
+        var twoWordConnectivesInManySentence = twoWordConnectivesInManySentence(doc);
 
+        docConnectiveCount += singleWordConnectivesInDocument;
+        docConnectiveCount += twoWordConnectivesInOneSentence;
+        docConnectiveCount += twoWordConnectivesInManySentence;
+
+
+        if (App.getLoggingLevel() == Level.INFO) {
+            System.out.println("---------------------------------------------");
+            System.out.println("singleWordConnectivesInDocument: " + singleWordConnectivesInDocument);
+            System.out.println("twoWordConnectivesInOneSentence: " + twoWordConnectivesInOneSentence);
+            System.out.println("twoWordConnectivesInManySentence: " + twoWordConnectivesInManySentence);
+            System.out.println("total connectives: " + docConnectiveCount);
+            System.out.println("---------------------------------------------");
+        }
 
         return docConnectiveCount;
     }
@@ -76,13 +92,24 @@ public class BaseConnectives implements Connectives {
         var connectivesTaggedNoun = 0;
 
         for (var sentence : sentences) {
+            if (App.getLoggingLevel() == Level.INFO) {
+                System.out.println("Sentence: " + sentence.text());
+            }
             for (String connective : singleWordConnectives) {
-                var pattern = Pattern.compile("\\b" + connective + "\\b");
+                var pattern = Pattern.compile("\\b" + connective.toLowerCase() + "\\b");
 
                 var matcher = pattern.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
 
                 while (matcher.find()) {
-                    connectivesTaggedNoun = connectivesWithInvalidTag(sentence, connective);
+                    //TODO Look into that
+
+                    if (!connective.contains(" ") && !connective.contains("-")) {
+                        connectivesTaggedNoun += connectivesWithInvalidTag(sentence, connective);
+                    }
+
+                    if (App.getLoggingLevel() == Level.INFO) {
+                        System.out.println("    singleWordConnectives: " + connective);
+                    }
 
                     matchedStart.add(matcher.start() - 1);
                     matchedEnd.add(matcher.end());
@@ -100,12 +127,16 @@ public class BaseConnectives implements Connectives {
         var count = 0;
 
         for (var sentence : sentences) {
+            if (App.getLoggingLevel() == Level.INFO) {
+                System.out.println("Sentence: " + sentence.text());
+            }
+            var connectivesInSentence = 0;
             for (String[] connective : twoWordInOneSentenceConnectives) {
                 if (connective.length < 2) {
                     break;
                 }
-                var patternLead = Pattern.compile("\\b" + connective[0] + "\\b");
-                var patternFollow = Pattern.compile("\\b" + connective[1] + "\\b");
+                var patternLead = Pattern.compile("\\b" + connective[0].toLowerCase() + "\\b");
+                var patternFollow = Pattern.compile("\\b" + connective[1].toLowerCase() + "\\b");
 
                 var matcherLead = patternLead.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
 
@@ -125,10 +156,17 @@ public class BaseConnectives implements Connectives {
                                 && (connectivesWithInvalidTag(sentence, connective[0])
                                 + connectivesWithInvalidTag(sentence, connective[1])
                                 == 0)) {
-                            count++;
+                            connectivesInSentence++;
+                            if (App.getLoggingLevel() == Level.INFO) {
+                                System.out.println("    TwoWordInOneSentence Connectives: " + connective[0] + " " + connective[1]);
+                            }
                         }
                     }
                 }
+            }
+            count += connectivesInSentence;
+            if (App.getLoggingLevel() == Level.INFO) {
+                System.out.println("    TwoWordInOneSentence Connectives: " + connectivesInSentence);
             }
         }
         return count;
@@ -145,8 +183,8 @@ public class BaseConnectives implements Connectives {
             if (connective.length < 2) {
                 break;
             }
-            var patternLead = Pattern.compile("\\b" + connective[0] + "\\b");
-            var patternFollow = Pattern.compile("\\b" + connective[1] + "\\b");
+            var patternLead = Pattern.compile("\\b" + connective[0].toLowerCase() + "\\b");
+            var patternFollow = Pattern.compile("\\b" + connective[1].toLowerCase() + "\\b");
 
             var matcherLead = patternLead.matcher(doc.text().toLowerCase(Translation.getInstance().getLocale()));
 
@@ -163,6 +201,10 @@ public class BaseConnectives implements Connectives {
                     lastFollowFound = matcherFollow.end();
 
                     if (matchedLeadEnd < matchedFollowStart) {
+                        if (App.getLoggingLevel() == Level.INFO) {
+
+                            System.out.println("InMany: " + connective[0] + " " + connective[1]);
+                        }
                         var isValidConnective = false;
                         for (Sentence sentence : doc.sentences()) {
                             if (connectivesWithInvalidTag(sentence, connective[0])

@@ -64,7 +64,8 @@ class BaseConnectivesTest {
                 new TestDataClass("Du bist halb halb Baum, halb Haus.", 1, props),
                 new TestDataClass("Du bist halb Baum. Du bist halb Haus.", 0, props),
                 new TestDataClass("Du bist zum einen ein Baum, zum anderen ein Haus.", 1, props),
-                new TestDataClass("Du bist zum einen ein Baum. Zum anderen ein Haus.", 1, props)
+                new TestDataClass("Du bist zum einen ein Baum. Zum anderen ein Haus.", 1, props),
+                new TestDataClass("Du bist zum Beispiel ein Baum.", 1, props)
         };
 
         return Arrays.stream(data).map(entry -> dynamicTest(
