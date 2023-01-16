@@ -28,6 +28,21 @@ class BaseConnectivesTest {
         props.load(IOUtils.readerFromString("StanfordCoreNLP-" + "german" + ".properties"));
     }
 
+    @TestFactory
+    Stream<DynamicTest> singleWordConnectivesWithConditionInDocument() {
+        BaseConnectives tester = new BaseConnectives();
+
+        TestDataClass[] data = new TestDataClass[]{
+                new TestDataClass("Ich bin ein Baum, da du Blätter hast.", 0, props),
+                new TestDataClass("Da du ein Baum bist, hast du Blätter.", 0, props)
+        };
+
+        return Arrays.stream(data).map(entry -> dynamicTest(
+                String.format("%s contains %d connectives", entry.testDoc, entry.expected), () ->
+                        assertEquals(entry.expected, tester.singleWordConnectivesWithConditionInDocument(entry.testDoc.sentences()))
+        ));
+    }
+
     static class TestDataClass {
         public TestDataClass(String testString, int expected, Properties props) {
             this.testDoc = new Document(props, testString);
@@ -61,11 +76,14 @@ class BaseConnectivesTest {
                 new TestDataClass("Egal wie groß du bist, ich bin größer.", 1, props),
                 new TestDataClass("Ich bin teils Baum teils Haus.", 1, props),
                 new TestDataClass("Entweder du bist ein Baum oder ein Haus.", 1, props),
+                new TestDataClass("Du bist Halb HAlb Baum, halb Haus.", 1, props),
                 new TestDataClass("Du bist halb halb Baum, halb Haus.", 1, props),
                 new TestDataClass("Du bist halb Baum. Du bist halb Haus.", 0, props),
                 new TestDataClass("Du bist zum einen ein Baum, zum anderen ein Haus.", 1, props),
                 new TestDataClass("Du bist zum einen ein Baum. Zum anderen ein Haus.", 1, props),
-                new TestDataClass("Du bist zum Beispiel ein Baum.", 1, props)
+                new TestDataClass("Du bist zum Beispiel ein Baum.", 1, props),
+                new TestDataClass("Wie immer, du bist ein Baum.", 1, props),
+                new TestDataClass("EinMAL war ein ein Baum. Ein aNDErmal ein Haus.", 1, props)
         };
 
         return Arrays.stream(data).map(entry -> dynamicTest(

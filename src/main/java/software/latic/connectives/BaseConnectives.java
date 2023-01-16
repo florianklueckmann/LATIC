@@ -7,10 +7,7 @@ import software.latic.Logging;
 import software.latic.helper.CsvReader;
 import software.latic.translation.Translation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -18,6 +15,7 @@ import java.util.regex.Pattern;
 public class BaseConnectives implements Connectives {
 
     List<String> singleWordConnectives;
+    List<String> singleWordConnectivesWithCondition;
     List<String[]> twoWordInOneSentenceConnectives;
     List<String[]> twoWordInManySentencesConnectives;
 
@@ -34,6 +32,8 @@ public class BaseConnectives implements Connectives {
     private void initialize() {
         singleWordConnectives = CsvReader.getInstance()
                 .readFile(String.format("connectives/singleWordConnectives_%s.csv", Translation.getInstance().getLanguageTag()));
+        singleWordConnectivesWithCondition = CsvReader.getInstance()
+                .readFile(String.format("connectives/singleWordConnectivesWithCondition_%s.csv", Translation.getInstance().getLanguageTag()));
         twoWordInOneSentenceConnectives = CsvReader.getInstance()
                 .readFile(String.format("connectives/twoWordInOneSentenceConnectives_%s.csv", Translation.getInstance().getLanguageTag()))
                 .stream()
@@ -97,6 +97,52 @@ public class BaseConnectives implements Connectives {
             }
             for (String connective : singleWordConnectives) {
                 var pattern = Pattern.compile("\\b" + connective.toLowerCase() + "\\b");
+
+                System.out.println("pattern " + pattern.pattern());
+
+                var matcher = pattern.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
+
+                while (matcher.find()) {
+                    //TODO Look into that
+
+                    if (!connective.contains(" ") && !connective.contains("-")) {
+                        connectivesTaggedNoun += connectivesWithInvalidTag(sentence, connective);
+                    }
+
+                    if (App.getLoggingLevel() == Level.INFO) {
+                        System.out.println("    singleWordConnectives: " + connective);
+                    }
+
+                    matchedStart.add(matcher.start() - 1);
+                    matchedEnd.add(matcher.end());
+                }
+            }
+        }
+        return countConnective(matchedStart, matchedEnd, connectivesTaggedNoun);
+    }
+
+    public int singleWordConnectivesWithConditionInDocument(List<Sentence> sentences) {
+        var matchedStart = new ArrayList<Integer>();
+        var matchedEnd = new ArrayList<Integer>();
+
+        var connectivesTaggedNoun = 0;
+
+        for (var sentence : sentences) {
+            if (App.getLoggingLevel() == Level.INFO) {
+                System.out.println("Sentence: " + sentence.text());
+            }
+            for (String connective : singleWordConnectivesWithCondition) {
+                var c = (connective.split(";"));
+                System.out.println(connective);
+                System.out.println(c[0]);
+                var key = c[0];
+                var values = c[1].split(",");
+
+                System.out.println("----" + key + " " + Arrays.toString(values));
+
+                var pattern = Pattern.compile("\\b" + connective.toLowerCase() + "\\b");
+
+                System.out.println("pattern " + pattern.pattern());
 
                 var matcher = pattern.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
 
@@ -236,11 +282,15 @@ public class BaseConnectives implements Connectives {
         return count;
     }
 
+
     private boolean isNotAValidConnective(String posTag) {
         if (Translation.getInstance().getLocale().equals(Locale.ENGLISH)) {
             return posTag.contains("NN") || posTag.contains("JJ");
         } else {
-            return posTag.equals("NOUN") || posTag.equals("ADJ");
+            var invalid = new ArrayList<>(){};
+            return posTag.equals("NOUN") || posTag.equals("ADJ") || posTag.equals("VERB") || posTag.equals("AUX") || posTag.equals("INTJ");
+            //NOUN; ADJ; VERB; AUX; INTJ; NUM; PROPN; PUNCT; SYM
+            //TODO REMOVE ADJ due to errors ADJ/ADV
         }
     }
 }
