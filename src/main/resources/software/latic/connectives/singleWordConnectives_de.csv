@@ -3,15 +3,12 @@ abermals
 achtenst
 alldieweil
 allerdings
-allgemein formuliert
-allgemein gesagt
-allgemein gesprochen
+allgemein(er)? formuliert
+allgemein(er)? gesagt
+allgemein(er)? gesprochen
 allgemeiner ausgedrückt
-allgemeiner formuliert
 allgemeiner gefasst
 allgemeiner gefragt
-allgemeiner gesagt
-allgemeiner gesprochen
 als nächstes
 alsbald
 alsdann
@@ -66,8 +63,7 @@ damit
 danach
 daneben
 dann
-darauf
-daraufhin
+darauf(hin)?
 darüber hinaus
 darum
 das bedeutet
@@ -81,87 +77,65 @@ dementgegen
 dementsprechend
 demgegenüber
 demzufolge
-denn
-dennoch
+denn(och)?
 dergestalt
-derweil
-derweilen
-deshalb
-desungeachtet
-deswegen
+derweil(en)?
+des(halb|ungeachtet|wegen)?
 des Weiteren
-dieweil
-dieweilen
+dieweil(en)?
 doch
 drittens
 drum
 ebenfalls
 ebenso
 egal w[a-z]+
-eh
-ehe
+eh(e)?
 endlich
 entsprechend
 ergo
-erst
-erstens
-erstmal
+erst(ens|mal)?
 es sei denn
 falls
-ferner
-fernerhin
+ferner(hin)?
 folglich
 fortan
 freilich
 fünftens
-für den Fall
+für den (?:[a-z]* ){0,2}Fall
 fürderhin
 gegebenenfalls
 genau genommen
-genau gesagt
+genau(er)? gesagt
 genauer ausgedrückt
 genauer formuliert
 genauer gefragt
-genauer gesagt
 geschweige
-gleichfalls
-gleichwie
-gleichwohl
-gleichzeitig
+gleich(falls|wie|wohl|zeitig)?
 hernach
-hierdurch
-hierfür
-hiermit
-hierzu
-hingegen
-hinterher
-hinwieder
-hinwiederum
+hier(durch|für|mit|zu)?
+hin(gegen|terher|wieder|wiederum)?
 höchstens
 im darauffolgenden
-im Falle
+im (?:[a-z]* ){0,2}Falle
 im folgenden
 im nächsten
 im Klartext ausgedrückt
 im Klartext gesprochen
 im Übrigen
-in dem Fall
-in dem Falle
+in dem (?:[a-z]* ){0,2}Fall(e)?
 in den darauffolgenden
 in den folgenden
 in den nächsten
-in diesem Fall
-in diesem Falle
-in dürren Worten ausgedrückt
-in dürren Worten formuliert
-in dürren Worten gesagt
-in dürren Worten gesprochen
+in diesem (?:[a-z]* ){0,2}Fall(e)?
+in (?:[a-z]* ){0,2}Worten ausgedrückt
+in (?:[a-z]* ){0,2}Worten formuliert
+in (?:[a-z]* ){0,2}Worten gesagt
+in (?:[a-z]* ){0,2}Worten gesprochen
 in einem Wort ausgedrückt
 in einem Wort gesagt
 in einem Wort gesprochen
 indem
-indes
-indessen
+indes(sen)?
 infolgedessen
 insbesondere
 insofern
@@ -183,16 +157,14 @@ kürzer formuliert
 kürzer gefasst
 kürzer gefragt
 kürzer gesagt
-mit anderen Worten ausgdrückt
+mit anderen Worten ausgedrückt
 mit anderen Worten formuliert
 mit anderen Worten gefragt
 mit anderen Worten gesagt
 mit einem Wort ausgedrückt
 mit einem Wort gesagt
 mit einem Wort gesprochen
-mithilfe
-mithin
-mittlerweile
+mit(hilfe|hin|tlerweile)?
 nachdem
 nämlich
 nebenbei bemerkt
@@ -201,34 +173,22 @@ nebenbei gesagt
 nebenbei gesprochen
 nebenher
 neunstens
-nichtsdestominder
-nichtsdestotrotz
-nichtsdestoweniger
-nun
-nunmehr
-ob
-obendrein
-obgleich
-obschon
-obwohl
-obzwar
+nichtsdesto(minder|trotz|weniger)?
+nun(mehr)?
+ob(endrein|gleich|schon|wohl|zwar)?
 oder
 ohne dass
-ohnedies
-ohnehin
+ohne(dies|hin)?
 respective
 respektive
 schließlich
 schon
 sechstens
 sei es
-seit
-seitdem
-seither
+seit(dem|her)?
 selbst wenn
 siebtenst
-sintemal
-sintemalen
+sintemal(en)?
 sobald
 sodann
 sodass
@@ -236,55 +196,41 @@ sofern
 sogar
 sogleich
 sofort
-solang
-solange
+solang(e)?
 soll heißen
 somit
 sondern
 sonst
 sooft
 sosehr
-soviel
-sovielmal
+soviel(mal)?
 soweit
 sowenig
-sowie
-sowieso
+sowie(so)?
 sozusagen
 später
 sprich
-statt
-statdessen
-trotzdem
-trotzdessen
+statt(dessen)?
+trotzde(m|ssen)?
 überdies
 übrigens
 umso
 unbeschadet dessen
 und
 ungeachtet
-unterdes
-unterdessen
+unterdes(sen)?
 vielmehr
 viertens
 vor allem
 vorbehaltlich
 vorher
 w[a-z]+ immer
-während
-währenddem
-währenddessen
+während(dem|dessen)?
 weil
-weiterhin
-weiters
-wenn
-wenngleich
-wennschon
-wennzwar
+weiter(hin|s)?
+wenn(gleich|schon|zwar)?
 widrigenfalls
-wiederum
-wieweit
-wiewohl
+wie(derum|weit|wohl)?
 will heißen
 will sagen
 wofern
@@ -304,5 +250,5 @@ zusätzlich
 zuvor
 zwar
 zweitens
-zwischendurch
+zwischen(durch|zeitlich)?
 zwischenzeitlich
