@@ -62,7 +62,7 @@ class BaseConnectivesTest {
 
         TestDataClass[] data = new TestDataClass[]{
                 new TestDataClass("Ich bin ein Baum", 0, props),
-                new TestDataClass("Ehe ich ein Baum bin.", 0, props),
+                new TestDataClass("Ehe ich ein Baum bin.", 1, props),
                 new TestDataClass("Ich bin allerdings ein Baum.", 1, props),
                 new TestDataClass("IcH biN AlLerdings Ein BAUm.", 1, props),
                 new TestDataClass("Ich bin allerdings allerdings ein Baum.", 1, props),
