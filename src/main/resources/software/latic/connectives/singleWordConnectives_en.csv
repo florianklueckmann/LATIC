@@ -49,7 +49,7 @@ fifthly
 finally
 first
 firstly
-on|in the following
+(on|in) the following
 for
 for example
 for instance
@@ -88,7 +88,7 @@ lust but not least
 last of all
 later
 lately
-likewise
+like(wise)?
 little by little
 meanwhile
 momentarily
@@ -133,6 +133,7 @@ summing it up
 summing up
 tenth
 tenthly
+than
 that
 th[a-z]+ means
 th[a-z]+ is why
@@ -158,6 +159,7 @@ too
 to put it another way
 ultimately
 unless
+which
 when
 where
 while
@@ -170,10 +172,10 @@ along the (?:[a-z]* ){0,2}wall
 as a (?:[a-z]* ){0,2}consequence
 as a (?:[a-z]* ){0,2}result
 as (?:[a-z]* ){0,2}time (?:[a-z]* ){0,2}goes on
-as you|one can (?:[a-z]* ){0,2}see
-as you|one (?:[a-z]* ){0,2}turn left
-as you|one (?:[a-z]* ){0,2}turn right
-at any|that|this (?:[a-z]* ){0,2}rate
+as (you|one) can (?:[a-z]* ){0,2}see
+as (you|one) (?:[a-z]* ){0,2}turn left
+as (you|one) (?:[a-z]* ){0,2}turn right
+at (any|that|this) (?:[a-z]* ){0,2}rate
 at th[a-z]+ (?:[a-z]* ){0,2}time[s]?
 at th[a-z]+ (?:[a-z]* ){0,2}moment[s]?
 at th[a-z]+ (?:[a-z]* ){0,2}top
@@ -191,7 +193,7 @@ in th[a-z]+ same (?:[a-z]* ){0,2}way
 on (?:[a-z]* ){0,2}account of
 on (?:[a-z]* ){0,2}condition[s]? that
 on (?:[a-z]* ){0,2}second thought[s]?
-on the left|right
+on the (left|right)
 th[a-z]+ (?:[a-z]* ){0,2}implies
 th[a-z]+ (?:[a-z]* ){0,2}indicates
 under th[a-z]+ (?:[a-z]* ){0,2}premise[s]
