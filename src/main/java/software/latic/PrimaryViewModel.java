@@ -573,6 +573,20 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void handleDebugMenuItemConnectivesToTxt(ActionEvent actionEvent) {
-        var connectiveResult = new PrimaryModel().initializeDocument(textAreaInput.getParagraphs()).connectiveTest();
+        if (fileTab.isSelected() && importedFile.getValue() != null) {
+            try {
+                ObservableList<CharSequence> content = FXCollections
+                        .observableList(FileContentProvider
+                                .getContent(importedFile.getValue().getPath()));
+
+                importedDocumentContent.setValue(content);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            new PrimaryModel().initializeDocument(importedDocumentContent.getValue()).connectiveTest();
+        } else if (textTab.isSelected()) {
+            new PrimaryModel().initializeDocument(textAreaInput.getParagraphs()).connectiveTest();
+        }
     }
 }

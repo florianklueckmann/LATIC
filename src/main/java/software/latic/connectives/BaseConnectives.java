@@ -76,6 +76,8 @@ public class BaseConnectives implements Connectives {
     private int countConnective(List<Integer> start, List<Integer> end, int removeConnectives) {
         var count = new AtomicInteger();
 
+        var st = start;
+
         start.forEach(s -> {
             //TODO Discuss if we want to count every connective in a chain of connectives
 //            if (!end.contains(s)) {
@@ -116,9 +118,9 @@ public class BaseConnectives implements Connectives {
                         System.out.println("    singleWordConnectives: " + connective);
                     }
 
-                    if (!matchedStart.contains(matcher.start() - 1) && !matchedEnd.contains(matcher.end())) {
-                        matchedStart.add(matcher.start() - 1);
-                        matchedEnd.add(matcher.end());
+                    if (!matchedStart.contains(matcher.start()) && !matchedEnd.contains(matcher.end())) {
+                        matchedStart.add(matcher.start());
+                        matchedEnd.add(matcher.end() - 1);
                     }
                 }
             }
@@ -126,6 +128,35 @@ public class BaseConnectives implements Connectives {
         }
         return count;
     }
+
+//    private List<Connective> singleWordConnectivesInDocument(List<Sentence> sentences) {
+//        var count = 0;
+//
+//        var connectives = new ArrayList<Connective>();
+//
+//        for (var sentence : sentences) {
+//
+//            if (App.getLoggingLevel() == Level.INFO) {
+//                System.out.println("Sentence: " + sentence.text());
+//            }
+//            for (String connective : singleWordConnectives) {
+//                var pattern = Pattern.compile("\\b" + connective.toLowerCase() + "\\b");
+//
+//                var matcher = pattern.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
+//
+//                while (matcher.find()) {
+//                    if (App.getLoggingLevel() == Level.INFO) {
+//                        System.out.println("    singleWordConnectives: " + connective);
+//                    }
+//
+//                    connectives.add(new Connective(sentence.text().substring(matcher.start(), matcher.end()), matcher.start(), matcher.end()));
+//
+//                }
+//            }
+//            count += countConnective(matchedStart, matchedEnd, connectivesTaggedNoun);
+//        }
+//        return count;
+//    }
 
     public int singleWordConnectivesWithConditionInDocument(List<Sentence> sentences) {
         var matchedStart = new ArrayList<Integer>();
@@ -163,9 +194,9 @@ public class BaseConnectives implements Connectives {
                         System.out.println("    singleWordConnectives: " + connective);
                     }
 
-                    if (!matchedStart.contains(matcher.start() - 1)) {
-                        matchedStart.add(matcher.start() - 1);
-                        matchedEnd.add(matcher.end());
+                    if (!matchedStart.contains(matcher.start())) {
+                        matchedStart.add(matcher.start());
+                        matchedEnd.add(matcher.end() - 1);
                     }
                 }
             }

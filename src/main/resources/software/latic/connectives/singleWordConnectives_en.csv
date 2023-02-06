@@ -1,3 +1,4 @@
+about the size
 above( all)?
 accordingly
 across
@@ -22,6 +23,7 @@ as to
 as well
 at last
 at length
+as [a-z]+ (by|in)
 because
 before
 beginning with
@@ -50,7 +52,6 @@ finally
 first
 firstly
 (on|in) the following
-for
 for example
 for instance
 for th[a-z]+ purpose[s]
@@ -60,6 +61,7 @@ fourthly
 frankly speaking
 from here on
 from now on
+from the ([a-z]+ ){1,3}of
 further
 furthermore
 gradually
@@ -68,7 +70,6 @@ here
 however
 if
 in any case
-in case of
 in fact
 in front of
 in short
@@ -81,6 +82,7 @@ in sum
 in summary
 in the end
 in the meantime
+in (that )?case( of)?
 it follows
 it seems
 it would be better to say
@@ -93,12 +95,14 @@ little by little
 meanwhile
 momentarily
 moreover
+namely
 nearby
 nevertheless
 next
 ninth
 ninthly
 nonetheless
+no matter where
 no sooner than
 now
 of equal importance
@@ -124,7 +128,7 @@ simultaneously
 since
 sixth
 sixthly
-so
+so(?!-)
 soon
 still
 subsequently
@@ -146,21 +150,20 @@ thereafter
 therefore
 third
 thirdly
+this way
 though
 thus
 to be specific
 to begin with
 to illustrate
 to sum up
-to the left
-to the right
 to th[a-z]+ end
 too
 to put it another way
 ultimately
 unless
 which
-when
+when(ever)?
 where
 while
 with reference to
@@ -173,8 +176,7 @@ as a (?:[a-z]* ){0,2}consequence
 as a (?:[a-z]* ){0,2}result
 as (?:[a-z]* ){0,2}time (?:[a-z]* ){0,2}goes on
 as (you|one) can (?:[a-z]* ){0,2}see
-as (you|one) (?:[a-z]* ){0,2}turn left
-as (you|one) (?:[a-z]* ){0,2}turn right
+as (you|one) (?:[a-z]* ){0,2}turn (left|right|around)
 at (any|that|this) (?:[a-z]* ){0,2}rate
 at th[a-z]+ (?:[a-z]* ){0,2}time[s]?
 at th[a-z]+ (?:[a-z]* ){0,2}moment[s]?
@@ -190,12 +192,16 @@ in th[a-z]+ (?:[a-z]* ){0,2}distance
 in th[a-z]+ (?:[a-z]* ){0,2}middle
 in th[a-z]+ same (?:[a-z]* ){0,2}manner
 in th[a-z]+ same (?:[a-z]* ){0,2}way
+is the case
 on (?:[a-z]* ){0,2}account of
 on (?:[a-z]* ){0,2}condition[s]? that
 on (?:[a-z]* ){0,2}second thought[s]?
-on the (left|right)
+(on|the) top of
+(on|to) the (left|right)
 th[a-z]+ (?:[a-z]* ){0,2}implies
 th[a-z]+ (?:[a-z]* ){0,2}indicates
+too(?! (many|much|high))
 under th[a-z]+ (?:[a-z]* ){0,2}premise[s]
+whether
 with th[a-z]+ in mind
 following
