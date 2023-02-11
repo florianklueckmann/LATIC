@@ -299,7 +299,11 @@ public class BaseConnectives implements Connectives {
                             }
                         }
                         if (isValidConnective) {
-                            count++;
+                            if (!connective[0].equalsIgnoreCase("not only")) {
+                                count++;
+                            } else {
+                                count--;
+                            }
                         }
                     }
                 }

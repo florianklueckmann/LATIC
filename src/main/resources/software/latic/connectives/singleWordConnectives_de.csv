@@ -80,7 +80,7 @@ demzufolge
 denn(och)?
 dergestalt
 derweil(en)?
-des(halb|ungeachtet|wegen)?
+des(halb|ungeachtet|wegen)
 des Weiteren
 dieweil(en)?
 doch
@@ -112,8 +112,8 @@ genauer gefragt
 geschweige
 gleich(falls|wie|wohl|zeitig)?
 hernach
-hier(durch|für|mit|zu)?
-hin(gegen|terher|wieder|wiederum)?
+hier(durch|für|mit|zu)
+hin(gegen|terher|wieder|wiederum)
 höchstens
 im darauffolgenden
 im (?:[a-z]* ){0,2}Falle
@@ -164,7 +164,7 @@ mit anderen Worten gesagt
 mit einem Wort ausgedrückt
 mit einem Wort gesagt
 mit einem Wort gesprochen
-mit(hilfe|hin|tlerweile)?
+mit(hilfe|hin|tlerweile)
 nachdem
 nämlich
 nebenbei bemerkt
@@ -178,7 +178,7 @@ nun(mehr)?
 ob(endrein|gleich|schon|wohl|zwar)?
 oder
 ohne dass
-ohne(dies|hin)?
+ohne(dies|hin)
 respective
 respektive
 schließlich
@@ -210,8 +210,9 @@ sowie(so)?
 sozusagen
 später
 sprich
-statt(dessen)?
-trotzde(m|ssen)?
+(?<!(finde[nt]|fand(en)) ([a-z]{0,20} )?([a-z]{0,20} )?([a-z]{0,20} )?([a-z]{0,20} )?)(statt)(?! fanden| gefunden)
+stattdessen
+trotzde(m|ssen)
 überdies
 übrigens
 umso
@@ -250,5 +251,5 @@ zusätzlich
 zuvor
 zwar
 zweitens
-zwischen(durch|zeitlich)?
+zwischen(durch|zeitlich)
 zwischenzeitlich
