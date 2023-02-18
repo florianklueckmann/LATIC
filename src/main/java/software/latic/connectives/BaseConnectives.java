@@ -2,6 +2,7 @@ package software.latic.connectives;
 
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
+import edu.stanford.nlp.simple.Token;
 import software.latic.App;
 import software.latic.Logging;
 import software.latic.helper.CsvReader;
@@ -18,6 +19,10 @@ public class BaseConnectives implements Connectives {
     List<String> singleWordConnectivesWithCondition;
     List<String[]> twoWordInOneSentenceConnectives;
     List<String[]> twoWordInManySentencesConnectives;
+
+    private static final String FRONT_BOUNDARY = "(?<=[\\s,.:;\"'\\-«]|^)";
+    private static final String REAR_BOUNDARY =  "(?=[\\s,.:;\"'\\-»]|$)";
+
 
     private static final Connectives baseConnectives = new BaseConnectives();
 
@@ -50,8 +55,6 @@ public class BaseConnectives implements Connectives {
 
         var docConnectiveCount = 0;
 
-        //TODO beim init für jedes Connective ein Pattern in einer PatternList erstelleN?
-
         var singleWordConnectivesInDocument = singleWordConnectivesInDocument(sentences);
         var twoWordConnectivesInOneSentence = twoWordConnectivesInOneSentence(sentences);
         var twoWordConnectivesInManySentence = twoWordConnectivesInManySentence(doc);
@@ -73,17 +76,10 @@ public class BaseConnectives implements Connectives {
         return docConnectiveCount;
     }
 
-    private int countConnective(List<Integer> start, List<Integer> end, int removeConnectives) {
+    private int countConnective(List<Integer> start, int removeConnectives) {
         var count = new AtomicInteger();
 
-        var st = start;
-
-        start.forEach(s -> {
-            //TODO Discuss if we want to count every connective in a chain of connectives
-//            if (!end.contains(s)) {
-                count.getAndIncrement();
-//            }
-        });
+        start.forEach(s -> count.getAndIncrement());
 
         return count.get() - removeConnectives;
     }
@@ -103,7 +99,7 @@ public class BaseConnectives implements Connectives {
                 System.out.println("Sentence: " + sentence.text());
             }
             for (String connective : singleWordConnectives) {
-                var pattern = Pattern.compile("\\b" + connective.toLowerCase() + "\\b");
+                var pattern = Pattern.compile(FRONT_BOUNDARY + connective.toLowerCase() + REAR_BOUNDARY);
 
                 var matcher = pattern.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
 
@@ -124,39 +120,10 @@ public class BaseConnectives implements Connectives {
                     }
                 }
             }
-            count += countConnective(matchedStart, matchedEnd, connectivesTaggedNoun);
+            count += countConnective(matchedStart, connectivesTaggedNoun);
         }
         return count;
     }
-
-//    private List<Connective> singleWordConnectivesInDocument(List<Sentence> sentences) {
-//        var count = 0;
-//
-//        var connectives = new ArrayList<Connective>();
-//
-//        for (var sentence : sentences) {
-//
-//            if (App.getLoggingLevel() == Level.INFO) {
-//                System.out.println("Sentence: " + sentence.text());
-//            }
-//            for (String connective : singleWordConnectives) {
-//                var pattern = Pattern.compile("\\b" + connective.toLowerCase() + "\\b");
-//
-//                var matcher = pattern.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
-//
-//                while (matcher.find()) {
-//                    if (App.getLoggingLevel() == Level.INFO) {
-//                        System.out.println("    singleWordConnectives: " + connective);
-//                    }
-//
-//                    connectives.add(new Connective(sentence.text().substring(matcher.start(), matcher.end()), matcher.start(), matcher.end()));
-//
-//                }
-//            }
-//            count += countConnective(matchedStart, matchedEnd, connectivesTaggedNoun);
-//        }
-//        return count;
-//    }
 
     public int singleWordConnectivesWithConditionInDocument(List<Sentence> sentences) {
         var matchedStart = new ArrayList<Integer>();
@@ -173,18 +140,25 @@ public class BaseConnectives implements Connectives {
                 System.out.println(connective);
                 System.out.println(c[0]);
                 var key = c[0];
-                var values = c[1].split(",");
+                var values = Arrays.stream(c[1].split(",")).toList();
 
-                System.out.println("----" + key + " " + Arrays.toString(values));
+                System.out.println("----" + key + " " + Arrays.toString(values.toArray()));
 
-                var pattern = Pattern.compile("\\b" + connective.toLowerCase() + "\\b");
-
-//                System.out.println("pattern " + pattern.pattern());
+                var pattern = Pattern.compile(FRONT_BOUNDARY + key + REAR_BOUNDARY);
 
                 var matcher = pattern.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
 
                 while (matcher.find()) {
-                    //TODO Look into that
+                    var conditionFulfilled = false;
+
+                    for (Token token : sentence.tokens()) {
+                        if (token.word().equalsIgnoreCase(key)) {
+                            if (values.contains(token.posTag())) {
+                                conditionFulfilled = true;
+                                break;
+                            }
+                        }
+                    }
 
                     if (!connective.contains(" ") && !connective.contains("-")) {
                         connectivesTaggedNoun += connectivesWithInvalidTag(sentence, connective);
@@ -194,21 +168,17 @@ public class BaseConnectives implements Connectives {
                         System.out.println("    singleWordConnectives: " + connective);
                     }
 
-                    if (!matchedStart.contains(matcher.start())) {
+                    if (!matchedStart.contains(matcher.start()) && conditionFulfilled) {
                         matchedStart.add(matcher.start());
                         matchedEnd.add(matcher.end() - 1);
                     }
                 }
             }
         }
-        return countConnective(matchedStart, matchedEnd, connectivesTaggedNoun);
+        return countConnective(matchedStart, connectivesTaggedNoun);
     }
 
     protected int twoWordConnectivesInOneSentence(List<Sentence> sentences) {
-        var matchedStart = new ArrayList<Integer>();
-        var matchedEnd = new ArrayList<Integer>();
-
-        var connectivesTaggedNoun = 0;
         var count = 0;
 
         for (var sentence : sentences) {
@@ -220,8 +190,8 @@ public class BaseConnectives implements Connectives {
                 if (connective.length < 2) {
                     break;
                 }
-                var patternLead = Pattern.compile("\\b" + connective[0].toLowerCase() + "\\b");
-                var patternFollow = Pattern.compile("\\b" + connective[1].toLowerCase() + "\\b");
+                var patternLead = Pattern.compile(FRONT_BOUNDARY + connective[0].toLowerCase() + REAR_BOUNDARY);
+                var patternFollow = Pattern.compile(FRONT_BOUNDARY + connective[1].toLowerCase() + REAR_BOUNDARY);
 
                 var matcherLead = patternLead.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
 
@@ -258,18 +228,14 @@ public class BaseConnectives implements Connectives {
     }
 
     protected int twoWordConnectivesInManySentence(Document doc) {
-        var matchedStart = new ArrayList<Integer>();
-        var matchedEnd = new ArrayList<Integer>();
-
-        var connectivesTaggedNoun = 0;
         var count = 0;
 
         for (String[] connective : twoWordInManySentencesConnectives) {
             if (connective.length < 2) {
                 break;
             }
-            var patternLead = Pattern.compile("\\b" + connective[0].toLowerCase() + "\\b");
-            var patternFollow = Pattern.compile("\\b" + connective[1].toLowerCase() + "\\b");
+            var patternLead = Pattern.compile(FRONT_BOUNDARY + connective[0].toLowerCase() + REAR_BOUNDARY);
+            var patternFollow = Pattern.compile(FRONT_BOUNDARY + connective[1].toLowerCase() + REAR_BOUNDARY);
 
             var matcherLead = patternLead.matcher(doc.text().toLowerCase(Translation.getInstance().getLocale()));
 
@@ -287,8 +253,7 @@ public class BaseConnectives implements Connectives {
 
                     if (matchedLeadEnd < matchedFollowStart) {
                         if (App.getLoggingLevel() == Level.INFO) {
-
-                            System.out.println("InMany: " + connective[0] + " " + connective[1]);
+                            Logging.getInstance().debug("BaseConnectives","InMany: " + connective[0] + " " + connective[1]);
                         }
                         var isValidConnective = false;
                         for (Sentence sentence : doc.sentences()) {
@@ -299,10 +264,10 @@ public class BaseConnectives implements Connectives {
                             }
                         }
                         if (isValidConnective) {
-                            if (!connective[0].equalsIgnoreCase("not only")) {
-                                count++;
+                            if (connective[0].equalsIgnoreCase("not only") && connective[1].equalsIgnoreCase("but also")) {
+                                count = count -2;
                             } else {
-                                count--;
+                                count++;
                             }
                         }
                     }
@@ -330,10 +295,9 @@ public class BaseConnectives implements Connectives {
         if (Translation.getInstance().getLocale().equals(Locale.ENGLISH)) {
             return posTag.contains("NN") || posTag.contains("JJ") || posTag.startsWith("V");
         } else {
-            var invalid = new ArrayList<>(){};
-            return posTag.equals("NOUN") || posTag.equals("ADJ") || posTag.equals("VERB") || posTag.equals("AUX") || posTag.equals("INTJ");
+            return posTag.equals("NOUN") || posTag.equals("PROPN") || posTag.equals("VERB") || posTag.equals("AUX") || posTag.equals("INTJ");
             //NOUN; ADJ; VERB; AUX; INTJ; NUM; PROPN; PUNCT; SYM
-            //TODO REMOVE ADJ due to errors ADJ/ADV
+            //REMOVED ADJ due to errors ADJ/ADV
         }
     }
 }
