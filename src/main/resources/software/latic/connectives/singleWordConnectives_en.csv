@@ -54,8 +54,8 @@ firstly
 (on|in) the following
 for example
 for instance
-for th[a-z]+ purpose[s]
-for th[a-z]+ reason[s]
+for th[a-z]+ purpose[s]?
+for th[a-z]+ reason[s]?
 fourth
 fourthly
 frankly speaking
@@ -82,7 +82,7 @@ in sum
 in summary
 in the end
 in the meantime
-in (that )?case( of)?
+in case( of)?
 it follows
 it seems
 it would be better to say
@@ -158,7 +158,6 @@ to begin with
 to illustrate
 to sum up
 to th[a-z]+ end
-too
 to put it another way
 ultimately
 unless
@@ -176,7 +175,7 @@ as a (?:[a-z]* ){0,2}consequence
 as a (?:[a-z]* ){0,2}result
 as (?:[a-z]* ){0,2}time (?:[a-z]* ){0,2}goes on
 as (you|one) can (?:[a-z]* ){0,2}see
-as (you|one) (?:[a-z]* ){0,2}turn (left|right|around)
+as (you|one) (?:[a-z]* ){0,2}turn(s)? (left|right|around)
 at (any|that|this) (?:[a-z]* ){0,2}rate
 at th[a-z]+ (?:[a-z]* ){0,2}time[s]?
 at th[a-z]+ (?:[a-z]* ){0,2}moment[s]?
@@ -185,9 +184,8 @@ at th[a-z]+ (?:[a-z]* ){0,2}point[s]?
 in (?:[a-z]* ){0,2}addition
 in (?:[a-z]* ){0,2}conclusion
 in (?:[a-z]* ){0,2}contrast
-in th[a-z]+ (?:[a-z]* ){0,2}case
 in the (?:[a-z]* ){0,2}background of
-in th[a-z]+ (?:[a-z]* ){0,2}case of
+in th[a-z]+ (?:[a-z]* ){0,2}case( of)?
 in th[a-z]+ (?:[a-z]* ){0,2}distance
 in th[a-z]+ (?:[a-z]* ){0,2}middle
 in th[a-z]+ same (?:[a-z]* ){0,2}manner
