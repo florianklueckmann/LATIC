@@ -2,8 +2,6 @@ package software.latic;
 
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import software.latic.connectives.BaseConnectives;
-import software.latic.connectives.ConnectivesProvider;
 import software.latic.item.GermanTextItemData;
 import software.latic.item.TextItemData;
 import software.latic.translation.SupportedLocales;
@@ -189,9 +187,5 @@ public class PrimaryModel {
         }
 
         return outList;
-    }
-
-    public Integer connectiveTest() {
-        return ConnectivesProvider.getInstance().connectivesInDocument(doc);
     }
 }

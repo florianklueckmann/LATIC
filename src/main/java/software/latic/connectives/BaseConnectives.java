@@ -6,6 +6,7 @@ import edu.stanford.nlp.simple.Token;
 import software.latic.App;
 import software.latic.Logging;
 import software.latic.helper.CsvReader;
+import software.latic.translation.SupportedLocales;
 import software.latic.translation.Translation;
 
 import java.util.*;
@@ -23,6 +24,9 @@ public class BaseConnectives implements Connectives {
     private static final String FRONT_BOUNDARY = "(?<=[\\s,.:;\"'\\-«]|^)";
     private static final String REAR_BOUNDARY =  "(?=[\\s,.:;\"'\\-»]|$)";
 
+    private static final List<Locale> SUPPORTED_LOCALES = List.of(SupportedLocales.ENGLISH.getLocale(), SupportedLocales.GERMAN.getLocale());
+
+    private Locale currentLocale = Translation.getInstance().getLocale();
 
     private static final Connectives baseConnectives = new BaseConnectives();
 
@@ -34,7 +38,20 @@ public class BaseConnectives implements Connectives {
         initialize();
     }
 
-    private void initialize() {
+    private boolean stopInitialize() {
+        if (this.currentLocale == null) {
+            return false;
+        } else {
+            return !SUPPORTED_LOCALES.contains(Translation.getInstance().getLocale()) && this.currentLocale == Translation.getInstance().getLocale();
+        }
+    }
+
+    public void initialize() {
+        if (stopInitialize()) {
+            return;
+        }
+
+
         singleWordConnectives = CsvReader.getInstance()
                 .readFile(String.format("connectives/singleWordConnectives_%s.csv", Translation.getInstance().getLanguageTag()));
         singleWordConnectivesWithCondition = CsvReader.getInstance()
@@ -47,6 +64,8 @@ public class BaseConnectives implements Connectives {
                 .readFile(String.format("connectives/twoWordInManySentenceConnectives_%s.csv", Translation.getInstance().getLanguageTag()))
                 .stream()
                 .map(s -> s.split(";")).toList();
+
+        currentLocale = Translation.getInstance().getLocale();
     }
 
     @Override

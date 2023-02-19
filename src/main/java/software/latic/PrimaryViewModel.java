@@ -2,14 +2,17 @@ package software.latic;
 
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 import org.apache.commons.lang3.StringUtils;
 
+import software.latic.connectives.BaseConnectives;
 import software.latic.helper.*;
 import software.latic.item.*;
 import software.latic.translation.Translation;
@@ -321,12 +324,21 @@ public class PrimaryViewModel implements Initializable {
         if (choiceBoxLanguage.getValue().equals(Locale.ENGLISH)) {
             generalTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
                     Arrays.stream(EnglishGeneralItemCharacteristics.values())
-                            .map(englishGeneralItemCharacteristic -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(englishGeneralItemCharacteristic.getId()), englishGeneralItemCharacteristic.getId(), englishGeneralItemCharacteristic.getLevel()), null, true))
+                            .map(ic -> new CheckBoxTreeItem<Task>(
+                                    new Task(Translation.getInstance().getTranslation(ic.getId()),
+                                            ic.getId(),
+                                            ic.getLevel(),
+                                            ic.getIsBeta()
+                                    ), null, true))
                             .collect(Collectors.toList())
             ));
             languageSpecificTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
                     Arrays.stream(EnglishItemCharacteristics.values())
-                            .map(englishItemCharacteristic -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(englishItemCharacteristic.getId()), englishItemCharacteristic.getId(), englishItemCharacteristic.getLevel()), null, true))
+                            .map(ic -> new CheckBoxTreeItem<Task>(
+                                    new Task(Translation.getInstance().getTranslation(ic.getId()),
+                                            ic.getId(),
+                                            ic.getLevel()
+                                    ), null, true))
                             .collect(Collectors.toList())
             ));
         }
@@ -334,15 +346,29 @@ public class PrimaryViewModel implements Initializable {
         if (choiceBoxLanguage.getValue().equals(Locale.GERMAN)) {
             generalTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
                     Arrays.stream(GermanGeneralItemCharacteristics.values())
-                            .map(germanGeneralItemCharacteristic -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(germanGeneralItemCharacteristic.getId()), germanGeneralItemCharacteristic.getId(), germanGeneralItemCharacteristic.getLevel()), null, true))
+                            .map(ic -> new CheckBoxTreeItem<Task>(
+                                    new Task(Translation.getInstance().getTranslation(ic.getId()),
+                                            ic.getId(),
+                                            ic.getLevel(),
+                                            ic.getIsBeta()
+                                    ), null, true))
                             .collect(Collectors.toList())
             ));
             languageSpecificTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
                     Arrays.stream(GermanItemCharacteristics.values())
-                            .map(germanItemCharacteristic -> new CheckBoxTreeItem<Task>(new Task(Translation.getInstance().getTranslation(germanItemCharacteristic.getId()), germanItemCharacteristic.getId(), germanItemCharacteristic.getLevel()), null, true))
+                            .map(ic -> new CheckBoxTreeItem<Task>(
+                                    new Task(Translation.getInstance().getTranslation(ic.getId()),
+                                            ic.getId(),
+                                            ic.getLevel()
+                                    ), null, true))
                             .collect(Collectors.toList())
             ));
         }
+
+//        betaTaskCheckBoxItems.forEach(item -> {
+//            item.setGraphic(choiceBoxLanguage);
+//
+//        });
 
         taskCheckBoxItems = FXCollections.concat(generalTaskCheckBoxItems, textTaskCheckBoxItems, languageSpecificTaskCheckBoxItems);
 
@@ -368,8 +394,21 @@ public class PrimaryViewModel implements Initializable {
         treeView.setRoot(null);
         treeView.setRoot(root);
         treeView.setShowRoot(false);
-
         treeView.setCellFactory(CheckBoxTreeCell.forTreeView());
+        treeView.setCellFactory(tv -> {
+            final Tooltip tooltip = new Tooltip("Beta");
+            tooltip.setShowDelay(Duration.millis(100));
+            CheckBoxTreeCell<Task> cell = new CheckBoxTreeCell<Task>() {
+                @Override
+                public void updateItem(Task item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item != null && item.getIsBeta()) {
+                        setTooltip(tooltip);
+                    }
+                }
+            };
+            return cell;
+        });
     }
 
     private void structureBoxes(CheckBoxTreeItem<Task> node, List<CheckBoxTreeItem<Task>> boxes) {
@@ -394,8 +433,10 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void changeLanguage() {
+        System.out.println("change");
         Translation.getInstance().setLocale(choiceBoxLanguage.getValue());
         TagMapper.getInstance().loadInterjections();
+        BaseConnectives.getInstance().initialize();
         createCheckboxes();
     }
 
@@ -570,23 +611,5 @@ public class PrimaryViewModel implements Initializable {
 
     public void handleAnalyzeFootersCheckboxValueChanged(ActionEvent actionEvent) {
         Settings.userPreferences.put("analyzeFooters", String.valueOf(((CheckBox) actionEvent.getTarget()).isSelected()));
-    }
-
-    public void handleDebugMenuItemConnectivesToTxt(ActionEvent actionEvent) {
-        if (fileTab.isSelected() && importedFile.getValue() != null) {
-            try {
-                ObservableList<CharSequence> content = FXCollections
-                        .observableList(FileContentProvider
-                                .getContent(importedFile.getValue().getPath()));
-
-                importedDocumentContent.setValue(content);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            new PrimaryModel().initializeDocument(importedDocumentContent.getValue()).connectiveTest();
-        } else if (textTab.isSelected()) {
-            new PrimaryModel().initializeDocument(textAreaInput.getParagraphs()).connectiveTest();
-        }
     }
 }

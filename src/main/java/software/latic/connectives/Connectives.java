@@ -9,4 +9,6 @@ public interface Connectives {
     }
 
     int connectivesInDocument(Document doc);
+
+    void initialize();
 }
