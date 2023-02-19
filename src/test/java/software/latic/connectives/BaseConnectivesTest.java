@@ -26,21 +26,6 @@ class BaseConnectivesTest {
         props.load(IOUtils.readerFromString("StanfordCoreNLP-" + "german" + ".properties"));
     }
 
-    @TestFactory
-    Stream<DynamicTest> singleWordConnectivesWithConditionInDocument() {
-        BaseConnectives tester = new BaseConnectives();
-
-        TestDataClass[] data = new TestDataClass[]{
-                new TestDataClass("Da steht ein Baum im Wald.", 0, props),
-                new TestDataClass("Ich sehe einen Baum, da er im Wald steht.", 1, props)
-        };
-
-        return Arrays.stream(data).map(entry -> dynamicTest(
-                String.format("%s contains %d connectives", entry.testDoc, entry.expected), () ->
-                        assertEquals(entry.expected, tester.singleWordConnectivesWithConditionInDocument(entry.testDoc.sentences()))
-        ));
-    }
-
     static class TestDataClass {
         public TestDataClass(String testString, int expected, Properties props) {
             this.testDoc = new Document(props, testString);
@@ -61,15 +46,14 @@ class BaseConnectivesTest {
         TestDataClass[] data = new TestDataClass[]{
 //                new TestDataClass("Ich bin ein Baum", 0, props),
 //                new TestDataClass("Ehe ich ein Baum bin.", 1, props),
-//                new TestDataClass("Ich bin allerdings ein Baum.", 1, props),
 //                new TestDataClass("IcH biN AlLerdings Ein BAUm.", 1, props),
-//                new TestDataClass("Ich bin allerdings allerdings ein Baum.", 1, props),
+//                new TestDataClass("Ich bin allerdings allerdings ein Baum.", 2, props),
 //                new TestDataClass("Ich bin allerdings ein Baum allerdings ein Haus.", 2, props),
-//                new TestDataClass("Ich bin allerdings ein Baum allerdings und ein Haus.", 2, props),
-//                new TestDataClass("Ich bin allerdings ein Baum allerdings und ein Haus. Ich bin allerdings allerdings ein Baum.", 3, props),
+//                new TestDataClass("Ich bin allerdings ein Baum allerdings und ein Haus.", 3, props),
+//                new TestDataClass("Ich bin allerdings ein Baum allerdings und ein Haus. Ich bin allerdings allerdings ein Baum.", 5, props),
 //                new TestDataClass("Ich bin allerdings ein Baum und ein Haus.", 2, props),
-//                new TestDataClass("Ich bin allerdings ein Baum und auch ein Haus.", 2, props),
-//                new TestDataClass("Ich bin allerdings dass ein Baum", 1, props),
+//                new TestDataClass("Ich bin allerdings ein Baum und auch ein Haus.", 3, props),
+//                new TestDataClass("Ich bin allerdings dass ein Baum", 2, props),
 //                new TestDataClass("Ich bin allerdings sieht man dass ein Baum", 2, props),
 //                new TestDataClass("Egal wie groß du bist, ich bin größer.", 1, props),
 //                new TestDataClass("Ich bin teils Baum teils Haus.", 1, props),
@@ -82,7 +66,9 @@ class BaseConnectivesTest {
 //                new TestDataClass("Du bist zum Beispiel ein Baum.", 1, props),
 //                new TestDataClass("Wie immer, du bist ein Baum.", 1, props),
 //                new TestDataClass("EinMAL war ein ein Baum. Ein aNDErmal ein Haus.", 1, props),
-                new TestDataClass("Ich weiß übrigens, daß du hier bist.", 1, props)
+//                new TestDataClass("Ich weiß übrigens, daß du hier bist.", 2, props),
+                new TestDataClass("Der Baum, der hier steht ist schön.", 1, props)
+
 
         };
 
