@@ -2,7 +2,6 @@ package software.latic;
 
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -364,11 +363,6 @@ public class PrimaryViewModel implements Initializable {
                             .collect(Collectors.toList())
             ));
         }
-
-//        betaTaskCheckBoxItems.forEach(item -> {
-//            item.setGraphic(choiceBoxLanguage);
-//
-//        });
 
         taskCheckBoxItems = FXCollections.concat(generalTaskCheckBoxItems, textTaskCheckBoxItems, languageSpecificTaskCheckBoxItems);
 
