@@ -20,8 +20,6 @@ class BaseConnectivesTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        Locale.setDefault(Locale.GERMAN);
-        Translation.getInstance().setLocale(Locale.GERMAN);
         props = new Properties();
         props.load(IOUtils.readerFromString("StanfordCoreNLP-" + "german" + ".properties"));
     }
@@ -39,7 +37,10 @@ class BaseConnectivesTest {
 
 
     @TestFactory
-    Stream<DynamicTest> testConnectivesInDocumentRegex() {
+    Stream<DynamicTest> testConnectivesInDocumentGerman() {
+
+        Locale.setDefault(Locale.GERMAN);
+        Translation.getInstance().setLocale(Locale.GERMAN);
 
         BaseConnectives tester = new BaseConnectives();
 
@@ -70,6 +71,24 @@ class BaseConnectivesTest {
                 new TestDataClass("Der Baum, der hier steht ist schön.", 1, props)
 
 
+        };
+
+        return Arrays.stream(data).map(entry -> dynamicTest(
+                String.format("%s contains %d connectives", entry.testDoc, entry.expected), () ->
+                        assertEquals(entry.expected, tester.connectivesInDocument(entry.testDoc))
+        ));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> testConnectivesInDocumentEnglish() {
+
+        Locale.setDefault(Locale.ENGLISH);
+        Translation.getInstance().setLocale(Locale.ENGLISH);
+
+        BaseConnectives tester = new BaseConnectives();
+
+        TestDataClass[] data = new TestDataClass[]{
+                new TestDataClass("In that case", 1, props)
         };
 
         return Arrays.stream(data).map(entry -> dynamicTest(

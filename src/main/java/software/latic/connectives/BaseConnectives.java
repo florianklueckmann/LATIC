@@ -135,7 +135,7 @@ public class BaseConnectives implements Connectives {
                         }
                     }
 
-                    sentence.tokens().forEach(token -> System.out.println(token.word() + " " + token.posTag()));
+                    sentence.tokens().forEach(token -> Logging.getInstance().debug("BaseConnectives",token.word() + " " + token.posTag()));
 
                     if (App.getLoggingLevel() == Level.INFO) {
                         System.out.println("    singleWordConnectives: " + connective);
