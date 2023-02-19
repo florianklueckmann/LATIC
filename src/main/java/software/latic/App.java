@@ -21,7 +21,7 @@ import java.util.logging.Level;
 public class App extends Application {
 
     private static Scene scene;
-    protected static final Level loggingLevel = Level.INFO;
+    protected static final Level loggingLevel = Level.WARNING;
     protected static ResourceBundle bundle = null;
 
     @Override

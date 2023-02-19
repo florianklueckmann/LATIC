@@ -433,7 +433,6 @@ public class PrimaryViewModel implements Initializable {
     }
 
     public void changeLanguage() {
-        System.out.println("change");
         Translation.getInstance().setLocale(choiceBoxLanguage.getValue());
         TagMapper.getInstance().loadInterjections();
         BaseConnectives.getInstance().initialize();
