@@ -87,7 +87,7 @@ drittens
 drum
 ebenfalls
 ebenso
-egal w[a-z]+
+egal,? w[a-z]+
 eh(e)?
 endlich
 entsprechend
