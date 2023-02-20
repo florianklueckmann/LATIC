@@ -101,9 +101,6 @@ public class BaseConnectives implements Connectives {
             var matchedStart = new ArrayList<Integer>();
             var matchedEnd = new ArrayList<Integer>();
 
-            if (App.getLoggingLevel() == Level.INFO) {
-                System.out.println("Sentence: " + sentence.text());
-            }
             for (String e : singleWordConnectives) {
                 var entry = List.of(e.split(";"));
 
@@ -136,24 +133,29 @@ public class BaseConnectives implements Connectives {
                         matchedStart.add(matcher.start());
                         matchedEnd.add(matcher.end() - 1);
                         connectives.add(new Connective(sentence.text().substring(matcher.start(), matcher.end()), matcher.start(), matcher.end()));
-                        if (App.getLoggingLevel() == Level.INFO) {
-                            System.out.println("    singleWordConnectives: " + connective);
-                        }
                     }
                 }
             }
-            count += removeConnectivesIfOverlap(connectives).size();
+            connectives = removeConnectivesIfOverlap(connectives);
+            count += connectives.size();
+            if (App.getLoggingLevel() == Level.INFO) {
+                System.out.println("Sentence: " + sentence.text());
+                System.out.println("singleWordConnectives: " + connectives.size());
+                for (Connective connective : connectives) {
+                    System.out.println(connective.word());
+                }
+            }
         }
         return count;
     }
 
     public List<Connective> removeConnectivesIfOverlap(List<Connective> connectives) {
-        connectives.sort(Comparator.comparingInt(Connective::getStart));
+        connectives.sort(Comparator.comparingInt(Connective::start));
         for (int i = 0; i < connectives.size(); i++) {
             Connective currentConnective = connectives.get(i);
             for (int j = i + 1; j < connectives.size(); j++) {
                 Connective nextConnective = connectives.get(j);
-                if (nextConnective.getStart() < currentConnective.getEnd()) {
+                if (nextConnective.start() < currentConnective.end()) {
                     connectives.remove(currentConnective);
                     i--;
                     break;
