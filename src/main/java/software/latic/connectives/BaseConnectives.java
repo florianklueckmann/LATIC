@@ -20,7 +20,7 @@ public class BaseConnectives implements Connectives {
     List<String[]> twoWordInManySentencesConnectives;
 
     private static final String FRONT_BOUNDARY = "(?<=[\\s,.:;\"'\\-«]|^)";
-    private static final String REAR_BOUNDARY =  "(?=[\\s,.:;\"'\\-»]|$)";
+    private static final String REAR_BOUNDARY = "(?=[\\s,.:;\"'\\-»]|$)";
 
     private static final List<Locale> SUPPORTED_LOCALES = List.of(SupportedLocales.ENGLISH.getLocale(), SupportedLocales.GERMAN.getLocale());
 
@@ -116,12 +116,6 @@ public class BaseConnectives implements Connectives {
                 var matcher = pattern.matcher(sentence.text().toLowerCase(Translation.getInstance().getLocale()));
 
                 while (matcher.find()) {
-                    if (!connective.contains(" ") && !connective.contains("-")) {
-                        if (!hasValidTag(sentence, connective)) {
-                            break;
-                        }
-                    }
-
                     var conditionFulfilled = false;
 
                     if (conditions.size() > 0) {
@@ -135,17 +129,16 @@ public class BaseConnectives implements Connectives {
                         }
                     }
 
-                    sentence.tokens().forEach(token -> Logging.getInstance().debug("BaseConnectives",token.word() + " " + token.posTag()));
-
-                    if (App.getLoggingLevel() == Level.INFO) {
-                        System.out.println("    singleWordConnectives: " + connective);
-                    }
+                    sentence.tokens().forEach(token -> Logging.getInstance().debug("BaseConnectives", token.word() + " " + token.posTag()));
 
                     if (!matchedStart.contains(matcher.start()) && !matchedEnd.contains(matcher.end())
                             && (conditionFulfilled || conditions.size() == 0)) {
                         matchedStart.add(matcher.start());
                         matchedEnd.add(matcher.end() - 1);
                         connectives.add(new Connective(sentence.text().substring(matcher.start(), matcher.end()), matcher.start(), matcher.end()));
+                        if (App.getLoggingLevel() == Level.INFO) {
+                            System.out.println("    singleWordConnectives: " + connective);
+                        }
                     }
                 }
             }
@@ -158,7 +151,7 @@ public class BaseConnectives implements Connectives {
         connectives.sort(Comparator.comparingInt(Connective::getStart));
         for (int i = 0; i < connectives.size(); i++) {
             Connective currentConnective = connectives.get(i);
-            for (int j = i+1; j < connectives.size(); j++) {
+            for (int j = i + 1; j < connectives.size(); j++) {
                 Connective nextConnective = connectives.get(j);
                 if (nextConnective.getStart() < currentConnective.getEnd()) {
                     connectives.remove(currentConnective);
@@ -199,9 +192,7 @@ public class BaseConnectives implements Connectives {
                         var matchedFollowStart = matcherFollow.start();
                         lastFollowFound = matcherFollow.end();
 
-                        if (matchedLeadEnd < matchedFollowStart
-                                && hasValidTag(sentence, connective[0])
-                                && hasValidTag(sentence, connective[1])) {
+                        if (matchedLeadEnd < matchedFollowStart) {
                             connectivesInSentence++;
                             if (App.getLoggingLevel() == Level.INFO) {
                                 System.out.println("    TwoWordInOneSentence Connectives: " + connective[0] + " " + connective[1]);
@@ -244,46 +235,17 @@ public class BaseConnectives implements Connectives {
 
                     if (matchedLeadEnd < matchedFollowStart) {
                         if (App.getLoggingLevel() == Level.INFO) {
-                            Logging.getInstance().debug("BaseConnectives","InMany: " + connective[0] + " " + connective[1]);
+                            System.out.println("InMany: " + connective[0] + " " + connective[1]);
                         }
-                        var isValidConnective = false;
-                        for (Sentence sentence : doc.sentences()) {
-                            if (hasValidTag(sentence, connective[0]) && hasValidTag(sentence, connective[1])) {
-                                isValidConnective = true;
-                            }
-                        }
-                        if (isValidConnective) {
-                            if (connective[0].equalsIgnoreCase("not only") && connective[1].equalsIgnoreCase("but also")) {
-                                count = count -2;
-                            } else {
-                                count++;
-                            }
+                        if (connective[0].equalsIgnoreCase("not only") && connective[1].equalsIgnoreCase("but also")) {
+                            count = count - 1;
+                        } else {
+                            count++;
                         }
                     }
                 }
             }
         }
         return count;
-    }
-
-
-    private boolean hasValidTag(Sentence sentence, String connective) {
-        for (var token : sentence.tokens()) {
-            if (token.word().equalsIgnoreCase(connective)) {
-                return !isValidTagForConnective(token.posTag());
-            }
-        }
-        return true;
-    }
-
-
-    private boolean isValidTagForConnective(String posTag) {
-        if (Translation.getInstance().getLocale().equals(Locale.ENGLISH)) {
-            return posTag.contains("NN") || posTag.contains("JJ") || posTag.startsWith("V");
-        } else {
-            return posTag.equals("NOUN") || posTag.equals("PROPN") || posTag.equals("VERB") || posTag.equals("AUX") || posTag.equals("INTJ");
-            //NOUN; ADJ; VERB; AUX; INTJ; NUM; PROPN; PUNCT; SYM
-            //REMOVED ADJ due to errors ADJ/ADV
-        }
     }
 }
