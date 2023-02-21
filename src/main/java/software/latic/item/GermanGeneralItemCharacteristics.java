@@ -6,7 +6,7 @@ public enum GermanGeneralItemCharacteristics implements ItemCharacteristics {
     FLESCH_INDEX( "fleschIndexGerman", TaskLevel.TEXT_READABILITY),
     WIENER_SACHTEXTFORMEL( "wienerSachtextformel", TaskLevel.TEXT_READABILITY),
     gSMOG( "gSMOG", TaskLevel.TEXT_READABILITY),
-    CONNECTIVES_COUNT("connectivesCount", TaskLevel.TEXT, true);
+    CONNECTIVES_COUNT("connectivesCount", TaskLevel.TEXT);
 
     private final TaskLevel level;
 

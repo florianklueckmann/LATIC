@@ -9,7 +9,7 @@ public enum EnglishGeneralItemCharacteristics implements ItemCharacteristics {
     AUTOMATED_READABILITY_INDEX( "automatedReadabilityIndex", TaskLevel.TEXT_READABILITY),
     COLEMAN_LIAU( "colemanLiau", TaskLevel.TEXT_READABILITY),
     SMOG( "SMOG", TaskLevel.TEXT_READABILITY),
-    CONNECTIVES_COUNT("connectivesCount", TaskLevel.TEXT, true);
+    CONNECTIVES_COUNT("connectivesCount", TaskLevel.TEXT);
 
     private final TaskLevel level;
 
