@@ -8,7 +8,8 @@ public enum EnglishGeneralItemCharacteristics implements ItemCharacteristics {
     GUNNING_FOG( "gunningFog", TaskLevel.TEXT_READABILITY),
     AUTOMATED_READABILITY_INDEX( "automatedReadabilityIndex", TaskLevel.TEXT_READABILITY),
     COLEMAN_LIAU( "colemanLiau", TaskLevel.TEXT_READABILITY),
-    SMOG( "SMOG", TaskLevel.TEXT_READABILITY);
+    SMOG( "SMOG", TaskLevel.TEXT_READABILITY),
+    CONNECTIVES_COUNT("connectivesCount", TaskLevel.TEXT);
 
     private final TaskLevel level;
 
@@ -24,8 +25,19 @@ public enum EnglishGeneralItemCharacteristics implements ItemCharacteristics {
         return id;
     }
 
+    public final boolean isBeta;
+
+    public boolean getIsBeta() {return isBeta;}
+
+    EnglishGeneralItemCharacteristics(String id, TaskLevel level, boolean isBeta) {
+        this.id = id;
+        this.level = level;
+        this.isBeta = isBeta;
+    }
+
     EnglishGeneralItemCharacteristics(String id, TaskLevel level) {
         this.id = id;
         this.level = level;
+        this.isBeta = false;
     }
 }

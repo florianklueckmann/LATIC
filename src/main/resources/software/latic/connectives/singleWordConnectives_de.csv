@@ -1,0 +1,268 @@
+aber
+abermals
+achtenst
+alldieweil
+allerdings
+allgemein(er)? formuliert
+allgemein(er)? gesagt
+allgemein(er)? gesprochen
+allgemeiner ausgedrückt
+allgemeiner gefasst
+allgemeiner gefragt
+alsbald
+alsdann
+also
+am darauffolgendem
+am folgenden
+am nächsten
+an den darauffolgenden
+an den folgenden
+an den nächsten
+andernfalls
+anderenfalls
+anders ausgedrückt
+anders formuliert
+anders gefasst
+anders gefragt
+anders gesagt
+anders gesprochen
+anfänglich
+anfangs
+angesichts
+anhand
+anschließend
+ansonst
+ansonsten
+anstatt
+anstelle
+auch
+auf dass
+aufgrund
+auf gut Deutsch
+außer
+außerdem
+beispielsweise
+bereits
+besser ausgedrückt
+besser formuliert
+besser gefragt
+besser gesagt
+bevor
+beziehungsweise
+bloß
+dabei
+dadurch
+dafern
+dafür
+dagegen
+daher
+dahingegen
+damals
+damit
+danach
+daneben
+dann
+darauf(hin)?
+darüber hinaus
+darum
+das bedeutet
+das heißt
+dass
+daß
+davor
+dazu
+dazwischen
+dementgegen
+dementsprechend
+demgegenüber
+demzufolge
+denn(och)?
+dergestalt
+derweil(en)?
+des(halb|ungeachtet|wegen)
+des Weiteren
+dieweil(en)?
+doch
+drittens
+drum
+ebenfalls
+ebenso
+egal,? w[a-z]+
+eh(e)?
+endlich
+entsprechend
+ergo
+erst(ens|mal)?
+es sei denn
+falls
+ferner(hin)?
+folglich
+fortan
+freilich
+fünftens
+für den (?:[a-z]* ){0,2}Fall
+fürderhin
+gegebenenfalls
+genau genommen
+genau(er)? gesagt
+genauer ausgedrückt
+genauer formuliert
+genauer gefragt
+genauso
+geschweige
+gleich(falls|wie|wohl|zeitig)?
+hernach
+hier(durch|für|mit|zu)
+hin(gegen|terher|wieder|wiederum)
+höchstens
+im darauffolgenden
+im (?:[a-z]* ){0,2}Falle
+im folgenden
+im nächsten
+im Klartext ausgedrückt
+im Klartext gesprochen
+im Übrigen
+in dem (?:[a-z]* ){0,2}Fall(e)?
+in den darauffolgenden
+in den folgenden
+in den nächsten
+in diesem (?:[a-z]* ){0,2}Fall(e)?
+in (?:[a-z]* ){0,2}Worten ausgedrückt
+in (?:[a-z]* ){0,2}Worten formuliert
+in (?:[a-z]* ){0,2}Worten gesagt
+in (?:[a-z]* ){0,2}Worten gesprochen
+in einem Wort ausgedrückt
+in einem Wort gesagt
+in einem Wort gesprochen
+indem
+indes(sen)?
+infolgedessen
+insbesondere
+insofern
+insoweit
+inzwischen
+jedenfalls
+jedennoch
+jedoch
+kurz ausgedrückt
+kurz formuliert
+kurz gefasst
+kurz gefragt
+kurz gesagt
+kurz gesprochen
+kurz und gut
+kürzer ausgedrückt
+kurzum
+kürzer formuliert
+kürzer gefasst
+kürzer gefragt
+kürzer gesagt
+mit anderen Worten ausgedrückt
+mit anderen Worten formuliert
+mit anderen Worten gefragt
+mit anderen Worten gesagt
+mit einem Wort ausgedrückt
+mit einem Wort gesagt
+mit einem Wort gesprochen
+mit(hilfe|hin|tlerweile)
+nachdem
+nämlich
+nebenbei bemerkt
+nebenbei gefragt
+nebenbei gesagt
+nebenbei gesprochen
+nebenher
+neunstens
+nichtsdesto(minder|trotz|weniger)?
+noch
+nun(mehr)?
+nur
+ob(endrein|gleich|schon|wohl|zwar)?
+oder
+ohne dass
+ohne(dies|hin)
+respective
+respektive
+schließlich
+schon
+sechstens
+sei es
+seit(dem|her)?
+selbst wenn
+siebtenst
+sintemal(en)?
+sobald
+sodann
+sodass
+sofern
+sogar
+sogleich
+sofort
+solang(e)?
+soll heißen
+somit
+sondern
+sonst
+sooft
+sosehr
+soviel(mal)?
+soweit
+sowenig
+sowie(so)?
+sozusagen
+später
+sprich
+(?<!(finde[nt]|fand(en)) ([a-z]{0,20} )?([a-z]{0,20} )?([a-z]{0,20} )?([a-z]{0,20} )?)(statt)(?! fanden| gefunden)
+stattdessen
+trotzde(m|ssen)
+überdies
+übrigens
+umso
+unbeschadet dessen
+und
+ungeachtet
+unterdes(sen)?
+vielmehr
+viertens
+vor allem
+vorbehaltlich
+vorher
+w[a-z]+ immer
+während(dem|dessen)?
+weil
+weiter(hin|s)?
+wenn(gleich|schon|zwar)?
+widrigenfalls
+wie(derum|weit|wohl)?
+will heißen
+will sagen
+wofern
+wohingegen
+woraufhin
+zehntenst
+zudem
+zuerst
+zugleich
+zuguterletzt
+zu guter Letzt
+zuletzt
+zumal
+zum Beispiel
+zunächst
+zusätzlich
+zuvor
+zwar
+zweitens
+zwischen(durch|zeitlich)
+zwischenzeitlich
+da;SCONJ
+der;PRON
+die;PRON
+das;PRON
+dem;PRON
+den;PRON
+denen;PRON
+deren;PRON
+welcher;PRON
+welche;PRON
+welches;PRON

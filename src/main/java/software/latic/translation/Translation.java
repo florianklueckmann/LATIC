@@ -4,10 +4,11 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Translation {
     private static final Translation translation = new Translation();
@@ -55,7 +56,7 @@ public class Translation {
         try {
             return bundle.getString(key);
         }catch (MissingResourceException e) {
-            Logger.getLogger("Translation").log(Level.WARN, String.format("Missing translation in locale '%s': %s. Using key '%s' as fallback.", getLocale().getLanguage(),e.getMessage(), e.getKey()) );
+            Logger.getLogger("Translation").log(Level.WARNING, String.format("Missing translation in locale '%s': %s. Using key '%s' as fallback.", getLocale().getLanguage(),e.getMessage(), e.getKey()) );
             return key;
         }
 

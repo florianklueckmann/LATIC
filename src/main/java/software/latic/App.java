@@ -12,8 +12,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
-import org.apache.log4j.Level;
 
 /**
  * JavaFX App
@@ -21,7 +21,7 @@ import org.apache.log4j.Level;
 public class App extends Application {
 
     private static Scene scene;
-    protected static final Level loggingLevel = Level.WARN;
+    protected static final Level loggingLevel = Level.WARNING;
     protected static ResourceBundle bundle = null;
 
     @Override
@@ -66,6 +66,9 @@ public class App extends Application {
         launch();
     }
 
+    public static Level getLoggingLevel() {
+        return loggingLevel;
+    }
 }
 
 /**
