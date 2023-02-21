@@ -11,6 +11,7 @@ public class Task {
     private ReadOnlyStringWrapper id = new ReadOnlyStringWrapper();
     private BooleanProperty selected = new SimpleBooleanProperty(false);
     private TaskLevel level;
+    private boolean isBeta = false;
 
     public Task(TaskLevel taskLevel) {
         this.name.set(Translation.getInstance().getTranslation(taskLevel.name()));
@@ -24,6 +25,15 @@ public class Task {
         this.name.set(name);
         this.id.set(id);
         this.level = taskLevel;
+
+        setSelected(true);
+    }
+
+    public Task(String name, String id, TaskLevel taskLevel, boolean isBeta) {
+        this.name.set(name);
+        this.id.set(id);
+        this.level = taskLevel;
+        this.isBeta = isBeta;
 
         setSelected(true);
     }
@@ -49,6 +59,9 @@ public class Task {
     }
 
     public TaskLevel getLevel() {return this.level;}
+
+    public boolean getIsBeta() {return this.isBeta;}
+    public void setIsBeta(boolean isBeta) {this.isBeta = isBeta;}
 
     public BooleanProperty selectedProperty() {
         return selected;

@@ -1,5 +1,6 @@
 package software.latic.text_analyzer;
 
+import software.latic.connectives.BaseConnectives;
 import software.latic.helper.TagMapper;
 import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
@@ -224,4 +225,9 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     public double colemanLiau () { return 0.0588 * ( (double) textCountCharactersWithoutPunctuation() / (double) wordCount() * 100 ) - 0.296 * ( (double)sentenceCount() / (double) wordCount() * 100 ) - 15.8; }
 
     public double SMOG () { return 1.043 * Math.sqrt(30 *  (double) wordsWithMoreThanTwoSyllables() / (double) sentenceCount() + 3.1291); }
+
+    public int connectivesCount () {
+        return BaseConnectives.getInstance().connectivesInDocument(doc);
+    }
 }
+

@@ -23,6 +23,8 @@ public abstract class TextItemData {
     DoubleProperty lixReadabilityScore;
     DoubleProperty averageSentenceLengthSyllables;
 
+    IntegerProperty connectivesCount;
+
 //    IntegerProperty advers;
 //    IntegerProperty determiner;
 //    IntegerProperty interjections;
@@ -107,6 +109,8 @@ public abstract class TextItemData {
         this.averageSentenceLengthSyllables = new RoundedDoubleProperty();
         this.lexicalDiversity = new RoundedDoubleProperty();
         this.lixReadabilityScore = new RoundedDoubleProperty();
+
+        this.connectivesCount = new SimpleIntegerProperty();
     }
 
     public String[] getValues() {
@@ -119,7 +123,8 @@ public abstract class TextItemData {
                 String.valueOf(getAverageSentenceLengthCharacters()),
                 String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()),
                 String.valueOf(getLexicalDiversity()),
-                String.valueOf(getLexicalDiversity())
+                String.valueOf(getLexicalDiversity()),
+                String.valueOf(getConnectivesCount())
         };
     }
 
@@ -138,6 +143,7 @@ public abstract class TextItemData {
         valueMap.put("averageSentenceLengthSyllables",String.valueOf(getAverageSentenceLengthWords()));
         valueMap.put("lexicalDiversity",String.valueOf(getLexicalDiversity()));
         valueMap.put("lixReadabilityScore",String.valueOf(getLixReadabilityScore()));
+        valueMap.put("connectivesCount",String.valueOf(getConnectivesCount()));
 
         return FXCollections.observableMap(valueMap);
     }
@@ -275,4 +281,10 @@ public abstract class TextItemData {
     public void setSyllableCount(int syllableCount) {
         this.syllableCount.set(syllableCount);
     }
+
+    public int getConnectivesCount() {return connectivesCount.get();}
+
+    public IntegerProperty connectivesCountProperty() {return connectivesCount;}
+
+    public void setConnectivesCount(int connectivesCount) {this.connectivesCount.set(connectivesCount);}
 }
