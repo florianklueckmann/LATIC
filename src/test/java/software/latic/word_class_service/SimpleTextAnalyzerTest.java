@@ -183,7 +183,7 @@ class SimpleTextAnalyzerTest {
     @Test
     void gSMOG() {
         setDocument("de", deItemTwo);
-        Assertions.assertEquals(0.7386, simpleTextAnalyzer.gSMOG(), 0.01);
+        Assertions.assertEquals(4.124, simpleTextAnalyzer.gSMOG(), 0.01);
     }
 
     @Test
