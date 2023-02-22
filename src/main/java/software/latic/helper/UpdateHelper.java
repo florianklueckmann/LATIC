@@ -53,7 +53,6 @@ public class UpdateHelper {
         if (shouldCheckForUpdate(tagName)) {
             updateAlert(tagName, changeLog);
         } else {
-            System.out.println("test");
             updateAlert(tagName, changeLog);
         }
     }
