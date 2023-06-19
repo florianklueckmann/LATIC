@@ -2,6 +2,7 @@ package software.latic.helper;
 
 import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TableView;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import software.latic.item.TextItemData;
@@ -59,7 +60,9 @@ public class XlsxBuilder {
             for (int colIndex = 0; colIndex < table.getColumns().size(); colIndex++) {
                 if (table.getColumns().get(colIndex).getCellData(rowIndex) != null) {
                     var cell = row.createCell(colIndex);
-                    cell.setCellValue(table.getColumns().get(colIndex).getCellData(rowIndex).toString());
+                    var content = table.getColumns().get(colIndex).getCellData(rowIndex).toString();
+                    content = StringUtils.abbreviate(content, 32767);
+                    cell.setCellValue(content);
                     cell.setCellStyle(style);
                 } else {
                     row.createCell(colIndex).setCellValue("");
