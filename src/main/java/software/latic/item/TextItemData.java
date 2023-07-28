@@ -14,6 +14,7 @@ public abstract class TextItemData {
     IntegerProperty wordCount;
     IntegerProperty sentenceCount;
     IntegerProperty syllableCount;
+    IntegerProperty wordsWithMoreThanTwoSyllablesCount;
     DoubleProperty averageWordLengthCharacters;
     DoubleProperty averageWordLengthSyllables;
     DoubleProperty averageSentenceLengthCharacters;
@@ -101,6 +102,7 @@ public abstract class TextItemData {
         this.wordCount = new SimpleIntegerProperty();
         this.sentenceCount = new SimpleIntegerProperty();
         this.syllableCount = new SimpleIntegerProperty();
+        this.wordsWithMoreThanTwoSyllablesCount = new SimpleIntegerProperty();
         this.averageWordLengthCharacters = new RoundedDoubleProperty();
         this.averageWordLengthSyllables = new RoundedDoubleProperty();
         this.averageSentenceLengthCharacters = new RoundedDoubleProperty();
@@ -109,7 +111,6 @@ public abstract class TextItemData {
         this.averageSentenceLengthSyllables = new RoundedDoubleProperty();
         this.lexicalDiversity = new RoundedDoubleProperty();
         this.lixReadabilityScore = new RoundedDoubleProperty();
-
         this.connectivesCount = new SimpleIntegerProperty();
     }
 
@@ -118,10 +119,16 @@ public abstract class TextItemData {
                 getText(),
                 getTextAndPosTags(),
                 String.valueOf(getWordCount()),
-                String.valueOf(getAverageWordLengthCharacters()),
                 String.valueOf(getSentenceCount()),
+                String.valueOf(getSyllableCount()),
+                String.valueOf(getWordsWithMoreThanTwoSyllablesCount()),
+                String.valueOf(getAverageWordLengthCharacters()),
+                String.valueOf(getAverageWordLengthSyllables()),
                 String.valueOf(getAverageSentenceLengthCharacters()),
                 String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()),
+                String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()),
+                String.valueOf(getAverageSentenceLengthWords()),
+                String.valueOf(getAverageSentenceLengthSyllables()),
                 String.valueOf(getLexicalDiversity()),
                 String.valueOf(getLexicalDiversity()),
                 String.valueOf(getConnectivesCount())
@@ -135,6 +142,7 @@ public abstract class TextItemData {
         valueMap.put("wordCount",String.valueOf(getWordCount()));
         valueMap.put("sentenceCount",String.valueOf(getSentenceCount()));
         valueMap.put("syllableCount",String.valueOf(getSyllableCount()));
+        valueMap.put("wordsWithMoreThanTwoSyllablesCount",String.valueOf(getWordsWithMoreThanTwoSyllablesCount()));
         valueMap.put("averageWordLengthCharacters",String.valueOf(getAverageWordLengthCharacters()));
         valueMap.put("averageWordLengthSyllables",String.valueOf(getAverageWordLengthSyllables()));
         valueMap.put("averageSentenceLengthCharacters",String.valueOf(getAverageSentenceLengthCharacters()));
@@ -287,4 +295,16 @@ public abstract class TextItemData {
     public IntegerProperty connectivesCountProperty() {return connectivesCount;}
 
     public void setConnectivesCount(int connectivesCount) {this.connectivesCount.set(connectivesCount);}
+
+    public int getWordsWithMoreThanTwoSyllablesCount() {
+        return wordsWithMoreThanTwoSyllablesCount.get();
+    }
+
+    public IntegerProperty wordsWithMoreThanTwoSyllablesCountProperty() {
+        return wordsWithMoreThanTwoSyllablesCount;
+    }
+
+    public void setWordsWithMoreThanTwoSyllablesCount(int wordsWithMoreThanTwoSyllables) {
+        this.wordsWithMoreThanTwoSyllablesCount.set(wordsWithMoreThanTwoSyllables);
+    }
 }
