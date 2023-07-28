@@ -12,7 +12,7 @@ public class Logging {
     }
 
     public void debug(String name, String message) {
-        Logger.getLogger(name).log(Level.FINE, message);
+        Logger.getLogger(name).log(Level.INFO, message);
     }
 
     public void warn(String name, String message) {

@@ -159,8 +159,8 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
         return uniqueWords;
     }
-
-    public int wordsWithMoreThanTwoSyllables() {
+    
+    public int wordsWithMoreThanTwoSyllablesCount() {
         return SyllableProvider.getInstance().getWordsWithMoreThanTwoSyllables();
     }
 
@@ -169,7 +169,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public double wordsWithMoreThanTwoSyllablesPercent() {
-        return ((double) wordsWithMoreThanTwoSyllables() / wordCount() * 100);
+        return ((double) wordsWithMoreThanTwoSyllablesCount() / wordCount() * 100);
     }
 
     public double lexicalDiversity() {
@@ -203,7 +203,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
         return 0.2656 * averageSentenceLengthWords() + 0.2744 * wordsWithMoreThanTwoSyllablesPercent() - 1.693;
     }
 
-    public double gSMOG() {return Math.sqrt( (double) (wordsWithMoreThanTwoSyllables() * 30) / sentenceCount()) - 2;}
+    public double gSMOG() {return Math.sqrt( (double) (wordsWithMoreThanTwoSyllablesCount() * 30) / sentenceCount()) - 2;}
 
     //English indices
     public double fleschIndexEnglish() {
@@ -215,7 +215,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public double gunningFog() {
-        return 0.4 * wordCount() / sentenceCount() + (double) wordsWithMoreThanTwoSyllables() / wordCount();
+        return 0.4 * wordCount() / sentenceCount() + (double) wordsWithMoreThanTwoSyllablesCount() / wordCount();
     }
 
     public double automatedReadabilityIndex () {
@@ -224,7 +224,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public double colemanLiau () { return 0.0588 * ( (double) textCountCharactersWithoutPunctuation() / (double) wordCount() * 100 ) - 0.296 * ( (double)sentenceCount() / (double) wordCount() * 100 ) - 15.8; }
 
-    public double SMOG () { return 1.043 * Math.sqrt(30 *  (double) wordsWithMoreThanTwoSyllables() / (double) sentenceCount() + 3.1291); }
+    public double SMOG () { return 1.043 * Math.sqrt(30 *  (double) wordsWithMoreThanTwoSyllablesCount() / (double) sentenceCount() + 3.1291); }
 
     public int connectivesCount () {
         return BaseConnectives.getInstance().connectivesInDocument(doc);
