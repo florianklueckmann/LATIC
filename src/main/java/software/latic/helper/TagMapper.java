@@ -9,8 +9,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.log4j.Logger;
-
 public class TagMapper {
     private static final TagMapper tagMapper = new TagMapper();
     private final Map<String, String> tagsDE = new HashMap<>();
@@ -86,7 +84,7 @@ public class TagMapper {
         return tagMapper;
     }
 
-    public List<String> replaceTags(List<Token> tokens) {
+    private Stream<SimpleToken> prepareTokenStream(List<Token> tokens) {
         tagMap = localeTags.get(Translation.getInstance().getLocale());
         fixedTagMap = localeFixedTagMaps.get(Translation.getInstance().getLocale());
 
@@ -100,8 +98,15 @@ public class TagMapper {
                     if (!tagMap.isEmpty()) return mapPunctuation(token);
                     else return token;
                 })
-                .map(this::mapKnownTags)
-                .map(this::getTag).collect(Collectors.toList());
+                .map(this::mapKnownTags);
+    }
+
+    public List<String> replaceTags(List<Token> tokens) {
+        return prepareTokenStream(tokens).map(this::getTag).collect(Collectors.toList());
+    }
+
+    public List<SimpleToken> replaceTagsInTokenList(List<Token> tokens) {
+        return prepareTokenStream(tokens).collect(Collectors.toList());
     }
 
     private String getTag(SimpleToken token) {
