@@ -26,7 +26,7 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
     public String textAndPosTags() {
         StringBuilder sb = new StringBuilder();
         doc.sentences().forEach(sentence -> {
-            sentence.tokens().forEach(token -> sb
+            TagMapper.getInstance().replaceTagsInTokenList(sentence.tokens()).forEach(token -> sb
                     .append(token.word())
                     .append(" [")
                     .append(token.tag())
