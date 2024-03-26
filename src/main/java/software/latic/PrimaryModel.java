@@ -163,15 +163,23 @@ public class PrimaryModel {
 
         TextItemData textItemData;
 
-        if (language.equals(Locale.GERMAN) || language.equals(Locale.FRENCH) || language.equals(SupportedLocales.SPANISH.getLocale()))
+        if (language.equals(Locale.GERMAN) || language.equals(Locale.FRENCH) || language.equals(SupportedLocales.SPANISH.getLocale())) {
             textItemData = new GermanTextItemData(doc.text());
-        else
+        }
+        else {
             textItemData = new EnglishTextItemData(doc.text());
+        }
 
         nlp.processTasks(textItemData, textTasks);
         simpleTextAnalyzer.processTasks(textItemData, generalTasks);
         processLanguageTasks(textItemData, languageTasks);
 
+        return textItemData;
+    }
+
+    protected TextItemData processTasks(ObservableList<Task> textTasks, ObservableList<Task> generalTasks, ObservableList<Task> languageTasks, String fileName) {
+        var textItemData = processTasks(textTasks, generalTasks, languageTasks);
+        textItemData.setFileName(fileName);
         return textItemData;
     }
 
