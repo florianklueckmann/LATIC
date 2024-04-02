@@ -123,6 +123,26 @@
                     <version>2.13.2.2</version>
                 </dependency>
 
+                <!-- Charset Detection -->
+
+                <dependency>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j</artifactId>
+                    <version>68.1</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j-charset</artifactId>
+                    <version>68.1</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j-localespi</artifactId>
+                    <version>68.1</version>
+                </dependency>
+
                 <!--Test Dependencies-->
                 <dependency>
                     <groupId>org.junit.jupiter</groupId>
