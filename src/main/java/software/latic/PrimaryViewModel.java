@@ -89,7 +89,7 @@ public class PrimaryViewModel implements Initializable {
 
         buttonAnalyze.textProperty().bind(Translation.getInstance().createStringBinding("analyze"));
 
-        buttonSelectFile.textProperty().bind(Translation.getInstance().createStringBinding("select"));
+        buttonSelectFile.textProperty().bind(Translation.getInstance().createStringBinding("selectFiles"));
 
         fileTab.textProperty().bind(Translation.getInstance().createStringBinding("file"));
         textTab.textProperty().bind(Translation.getInstance().createStringBinding("text"));
@@ -224,7 +224,7 @@ public class PrimaryViewModel implements Initializable {
         exportFileChooser.getExtensionFilters().addAll(csvFilter, excelFilter);
 
         importFileChooser.setInitialDirectory(new File(initialFilePath));
-        importFileChooser.titleProperty().bind(Translation.getInstance().createStringBinding("select"));
+        importFileChooser.titleProperty().bind(Translation.getInstance().createStringBinding("selectFiles"));
         importFileChooser.getExtensionFilters().addAll(supportedFilesFilter);
     }
 
@@ -609,12 +609,8 @@ public class PrimaryViewModel implements Initializable {
         Window stage = mainPane.getScene().getWindow();
         var files = importFileChooser.showOpenMultipleDialog(stage);
 
-//        for (var file : files) {
         if (files != null && !files.isEmpty()) {
             importedFiles.addAll(files);
-//            if (file != null) {
-//                importedFiles.getValue().add(file);
-
             if (importedFiles.size() == 1) {
                 importFileChooser.setInitialDirectory(importedFiles.get(0).getParentFile());
                 filePathTextField.setText(importedFiles.get(0).getPath());
@@ -622,8 +618,6 @@ public class PrimaryViewModel implements Initializable {
                 importFileChooser.setInitialDirectory(importedFiles.get(0).getParentFile());
                 filePathTextField.setText(importedFiles.size() + " files selected");
             }
-//            }
-//        }
         }
     }
 
