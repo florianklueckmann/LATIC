@@ -11,10 +11,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>19</maven.compiler.source>
-        <maven.compiler.target>19</maven.compiler.target>
-        <maven.compiler.release>19</maven.compiler.release>
-        <javafx.version>19</javafx.version>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
+        <maven.compiler.release>22</maven.compiler.release>
+        <javafx.version>22</javafx.version>
         <corenlp.version>[4.5.6,4.6.0)</corenlp.version>
         <com.ibm.icu.version>[68.1,69)</com.ibm.icu.version>
     </properties>
@@ -28,39 +28,11 @@
             </activation>
             <dependencies>
                 <!--JavaFX-->
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>win</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>linux</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>mac</classifier>
-                </dependency>
+<!--                <dependency>-->
+<!--                    <groupId>org.openjfx</groupId>-->
+<!--                    <artifactId>javafx-base</artifactId>-->
+<!--                    <version>${javafx.version}</version>-->
+<!--                </dependency>-->
 
                 <!--CoreNLP-->
                 <dependency>
@@ -186,7 +158,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <release>${maven.compiler.release}</release>
                 </configuration>
@@ -205,8 +177,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.3.1</version>
                 <configuration>
+                    <propertiesEncoding>UTF-8</propertiesEncoding>
                     <nonFilteredFileExtensions>
                         <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
                         <nonFilteredFileExtension>icns</nonFilteredFileExtension>
