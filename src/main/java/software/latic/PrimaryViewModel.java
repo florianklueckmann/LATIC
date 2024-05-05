@@ -74,7 +74,6 @@ public class PrimaryViewModel implements Initializable {
 
     private final ListProperty<CharSequence>  importedDocumentContent = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final MapProperty<String, List<CharSequence>>  importedDocumentsContent = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
-//    private final ObjectProperty<File> importedFile = new SimpleObjectProperty<>();
     private final ListProperty<File> importedFiles = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     private final FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Excel 2007-365", "*.xlsx");
@@ -479,11 +478,8 @@ public class PrimaryViewModel implements Initializable {
                         .initializeDocument(importedDocumentContent.getValue())
                         .processTasks(textTasks, generalTasks, wordLevelTasks, importedDocumentContent.getKey()));
             }
-
-//            currentItem = new PrimaryModel()
-//                    .initializeDocument(importedDocumentContent.getValue())
-//                    .processTasks(textTasks, generalTasks, wordLevelTasks);
         } else if (textTab.isSelected()) {
+            //TODO We could split the input in multiple items
             currentItems.add(new PrimaryModel()
                     .initializeDocument(textAreaInput.getParagraphs())
                     .processTasks(textTasks, generalTasks, wordLevelTasks));
