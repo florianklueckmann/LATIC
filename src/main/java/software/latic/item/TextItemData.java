@@ -1,5 +1,6 @@
 package software.latic.item;
 
+import javafx.collections.ObservableList;
 import software.latic.linguistic_feature.IntegerLinguisticFeature;
 import software.latic.linguistic_feature.LinguisticFeature;
 import javafx.beans.property.*;
@@ -9,6 +10,7 @@ import javafx.collections.ObservableMap;
 import java.util.HashMap;
 
 public abstract class TextItemData {
+    final StringProperty fileName;
     final StringProperty text;
     StringProperty textAndPosTags;
     IntegerProperty wordCount;
@@ -97,6 +99,7 @@ public abstract class TextItemData {
 
 
     public TextItemData(String text) {
+        this.fileName = new SimpleStringProperty();
         this.text = new SimpleStringProperty(text);
         this.textAndPosTags = new SimpleStringProperty();
         this.wordCount = new SimpleIntegerProperty();
@@ -117,6 +120,7 @@ public abstract class TextItemData {
     public String[] getValues() {
         return new String[] {
                 getText(),
+                getFileName(),
                 getTextAndPosTags(),
                 String.valueOf(getWordCount()),
                 String.valueOf(getSentenceCount()),
@@ -137,6 +141,7 @@ public abstract class TextItemData {
 
     public ObservableMap<String, String> getIdValueMap() {
         var valueMap = new HashMap<String, String>();
+        valueMap.put("fileName", getFileName());
         valueMap.put("text",getText());
         valueMap.put("textAndPosTags",getTextAndPosTags());
         valueMap.put("wordCount",String.valueOf(getWordCount()));
@@ -180,6 +185,30 @@ public abstract class TextItemData {
 
     public StringProperty textProperty() {
         return text;
+    }
+
+    public String getFileName() {
+        return fileName.get();
+    }
+
+    public StringProperty fileNameProperty() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName.set(fileName);
+    }
+
+    public ObservableList<IntegerLinguisticFeature> getPosTagCount() {
+        return posTagCount.get();
+    }
+
+    public ListProperty<IntegerLinguisticFeature> posTagCountProperty() {
+        return posTagCount;
+    }
+
+    public void setPosTagCount(ObservableList<IntegerLinguisticFeature> posTagCount) {
+        this.posTagCount.set(posTagCount);
     }
 
     public String getTextAndPosTags() {

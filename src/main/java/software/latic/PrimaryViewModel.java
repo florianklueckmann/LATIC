@@ -72,8 +72,9 @@ public class PrimaryViewModel implements Initializable {
 
     private final ListProperty<Locale> languages = new SimpleListProperty<>();
 
-    private final ListProperty<CharSequence>  importedDocumentContent = new SimpleListProperty<>();
-    private final ObjectProperty<File> importedFile = new SimpleObjectProperty<>();
+    private final ListProperty<CharSequence>  importedDocumentContent = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final MapProperty<String, List<CharSequence>>  importedDocumentsContent = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
+    private final ListProperty<File> importedFiles = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     private final FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Excel 2007-365", "*.xlsx");
     private final FileChooser.ExtensionFilter csvFilter = new FileChooser.ExtensionFilter("CSV table file", "*.csv");
@@ -87,7 +88,7 @@ public class PrimaryViewModel implements Initializable {
 
         buttonAnalyze.textProperty().bind(Translation.getInstance().createStringBinding("analyze"));
 
-        buttonSelectFile.textProperty().bind(Translation.getInstance().createStringBinding("select"));
+        buttonSelectFile.textProperty().bind(Translation.getInstance().createStringBinding("selectFiles"));
 
         fileTab.textProperty().bind(Translation.getInstance().createStringBinding("file"));
         textTab.textProperty().bind(Translation.getInstance().createStringBinding("text"));
@@ -102,7 +103,7 @@ public class PrimaryViewModel implements Initializable {
         resultPlaceholder.textProperty().bind(Translation.getInstance().createStringBinding("resultPlaceholder"));
         tableViewResults.setPlaceholder(resultPlaceholder);
 
-        buttonAnalyze.disableProperty().bind(textAreaInput.textProperty().isEmpty().and(importedFile.isNull()));
+        buttonAnalyze.disableProperty().bind(textAreaInput.textProperty().isEmpty().and(importedFiles.emptyProperty()));
 
         choiceBoxLanguage.disableProperty().bind(Bindings.isNotEmpty(textItemDataResults));
 
@@ -219,10 +220,10 @@ public class PrimaryViewModel implements Initializable {
         exportFileChooser.setInitialDirectory(new File(initialFilePath));
         exportFileChooser.titleProperty().bind(Translation.getInstance().createStringBinding("saveFile"));
         exportFileChooser.setInitialFileName(initialFileName);
-        exportFileChooser.getExtensionFilters().addAll(excelFilter, csvFilter);
+        exportFileChooser.getExtensionFilters().addAll(csvFilter, excelFilter);
 
         importFileChooser.setInitialDirectory(new File(initialFilePath));
-        importFileChooser.titleProperty().bind(Translation.getInstance().createStringBinding("select"));
+        importFileChooser.titleProperty().bind(Translation.getInstance().createStringBinding("selectFiles"));
         importFileChooser.getExtensionFilters().addAll(supportedFilesFilter);
     }
 
@@ -457,33 +458,44 @@ public class PrimaryViewModel implements Initializable {
         );
 
         TextItemData currentItem = null;
+        List<TextItemData> currentItems = FXCollections.observableArrayList();
 
-        if (fileTab.isSelected() && importedFile.getValue() != null) {
-            try {
-                ObservableList<CharSequence> content = FXCollections
-                        .observableList(FileContentProvider
-                                .getContent(importedFile.getValue().getPath()));
+        if (fileTab.isSelected() && !importedFiles.isEmpty()) {
+            for (var importedFile : importedFiles) {
+                try {
+                    ObservableList<CharSequence> content = FXCollections
+                            .observableList(FileContentProvider
+                                    .getContent(importedFile.getPath()));
 
-                importedDocumentContent.setValue(content);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                    importedDocumentsContent.put(importedFile.getName(), content);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
-            currentItem = new PrimaryModel()
-                    .initializeDocument(importedDocumentContent.getValue())
-                    .processTasks(textTasks, generalTasks, wordLevelTasks);
+            for( var importedDocumentContent : importedDocumentsContent.entrySet()) {
+                currentItems.add(new PrimaryModel()
+                        .initializeDocument(importedDocumentContent.getValue())
+                        .processTasks(textTasks, generalTasks, wordLevelTasks, importedDocumentContent.getKey()));
+            }
         } else if (textTab.isSelected()) {
-            currentItem = new PrimaryModel()
+            //TODO We could split the input in multiple items
+            currentItems.add(new PrimaryModel()
                     .initializeDocument(textAreaInput.getParagraphs())
-                    .processTasks(textTasks, generalTasks, wordLevelTasks);
+                    .processTasks(textTasks, generalTasks, wordLevelTasks));
 
         }
 
-        if (currentItem != null) {
-            textItemDataResults.add(currentItem);
+        if (!currentItems.isEmpty()) {
+            textItemDataResults.addAll(currentItems);
 
             tableViewResults.setItems(textItemDataResults);
         }
+        importedFiles.clear();
+        importedDocumentsContent.clear();
+        filePathTextField.clear();
+        //TODO is clearing a good idea?
+        //TODO add filename to first column
     }
 
     private void createColumns(CheckBoxTreeItem<Task> root) {
@@ -508,7 +520,9 @@ public class PrimaryViewModel implements Initializable {
     }
 
     private void addItemColumn() {
+        var fileNameCheckBox = new CheckBoxTreeItem<Task>(new Task("FileName", "fileName", TaskLevel.ROOT), null, true);
         var itemCheckBox = new CheckBoxTreeItem<Task>(new Task("Text", "text", TaskLevel.ROOT), null, true);
+        addTreeItemColumn(fileNameCheckBox);
         addTreeItemColumn(itemCheckBox);
     }
 
@@ -589,12 +603,17 @@ public class PrimaryViewModel implements Initializable {
 
     public void handleButtonSelectFile() {
         Window stage = mainPane.getScene().getWindow();
-        File file = importFileChooser.showOpenDialog(stage);
-        if (file != null) {
-            importedFile.set(file);
+        var files = importFileChooser.showOpenMultipleDialog(stage);
 
-            importFileChooser.setInitialDirectory(file.getParentFile());
-            filePathTextField.setText(file.getPath());
+        if (files != null && !files.isEmpty()) {
+            importedFiles.addAll(files);
+            if (importedFiles.size() == 1) {
+                importFileChooser.setInitialDirectory(importedFiles.get(0).getParentFile());
+                filePathTextField.setText(importedFiles.get(0).getPath());
+            } else {
+                importFileChooser.setInitialDirectory(importedFiles.get(0).getParentFile());
+                filePathTextField.setText(importedFiles.size() + " files selected");
+            }
         }
     }
 
