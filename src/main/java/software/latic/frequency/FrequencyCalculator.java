@@ -1,12 +1,14 @@
 package software.latic.frequency;
 
+import edu.stanford.nlp.simple.Document;
 import software.latic.helper.CsvReader;
 import software.latic.translation.SupportedLocales;
 import software.latic.translation.Translation;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class FrequencyCalculator {
@@ -21,13 +23,27 @@ public class FrequencyCalculator {
 
     private Locale currentLocale = Translation.getInstance().getLocale();
 
-    public double calculateAverageWordFrequency(List<String> words) {
+    public double calculateAverageWordFrequencyClass(List<String> words) {
 
+        int sumFrequencyClass = 0;
+        int totalWords = words.size();
+
+        for (String word : words) {
+            var wordFrequencyClass = calculateFrequencyClass(frequencyMap.getOrDefault(word.toLowerCase(Translation.getInstance().getLocale()), 1));
+            Logger.getLogger("FrequencyCalculator").log(Level.INFO, String.format("FrequencyClass %s %s", word, wordFrequencyClass));
+
+            sumFrequencyClass += wordFrequencyClass;
+        }
+
+        return (double) sumFrequencyClass / totalWords;
+    }
+
+    public double calculateAverageWordFrequency(List<String> words) {
         int sumFrequency = 0;
         int totalWords = words.size();
 
         for (String word : words) {
-            sumFrequency += frequencyMap.getOrDefault(word, 1);
+            sumFrequency += frequencyMap.getOrDefault(word.toLowerCase(Translation.getInstance().getLocale()), 1);
         }
 
         return (double) sumFrequency / totalWords;
@@ -44,18 +60,23 @@ public class FrequencyCalculator {
         if (stopInitialize()) {
             return;
         }
-        var lines =  CsvReader.getInstance().readFile(String.format("frequency/%s/frequencyList.csv", Translation.getInstance().getLanguageTag()));
+        var lines =  CsvReader.getInstance().readFile(String.format("frequency/%s/frequencies.csv", Translation.getInstance().getLanguageTag()));
 
-        highestFrequency = Integer.parseInt(lines.getFirst().split(";")[1]);
+        var list = new ArrayList<>(lines.stream().map(line -> new FrequencyListEntry(line.split(";")[0], Integer.parseInt(line.split(";")[1]))).toList());
 
-        frequencyMap = getFrequencyMap(lines);
+        list.sort(Comparator.comparingInt(FrequencyListEntry::frequency).reversed());
+        highestFrequency = list.getFirst().frequency();
+
+        Logger.getLogger("FrequencyCalculator").log(Level.INFO, String.format("Highest frequency %s %s", list.getFirst().word(), list.getFirst().frequency()) );
+
+        frequencyMap = list.stream().map(entry -> Map.entry(entry.word(), entry.frequency())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, HashMap::new));
     }
 
-    protected Map<String, Integer> getFrequencyMap(List<String> lines) {
+    protected ConcurrentMap<String, Integer> getFrequencyMap(List<String> lines) {
         return lines.stream()
                 .filter(line -> line.contains(";"))
                 .map(line -> line.split(";"))
-                .map(split -> new FrequencyListEntry(split[0], Integer.parseInt(split[1]))).collect(Collectors.toMap(
+                .map(split -> new FrequencyListEntry(split[0], Integer.parseInt(split[1]))).collect(Collectors.toConcurrentMap(
                         FrequencyListEntry::word,FrequencyListEntry::frequency
                 ));
     }
@@ -77,7 +98,8 @@ public class FrequencyCalculator {
     }
 
     protected Integer calculateFrequencyClass(int currentFrequency) {
-        return (int) Math.round(Math.log((double) highestFrequency / currentFrequency) / Math.log(2));
+        Logger.getLogger("FrequencyCalculator").log(Level.INFO, String.format("current: %s highest: %s", currentFrequency, getHighestFrequency()));
+        return this.calculateFrequencyClass(currentFrequency, getHighestFrequency());
     }
 
     protected double calculateFrequencyClassNotRounded(int currentFrequency, int highestFrequency) {

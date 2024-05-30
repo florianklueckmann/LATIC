@@ -1,6 +1,7 @@
 package software.latic.text_analyzer;
 
 import software.latic.connectives.BaseConnectives;
+import software.latic.frequency.FrequencyCalculator;
 import software.latic.helper.TagMapper;
 import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
@@ -228,6 +229,10 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public int connectivesCount () {
         return BaseConnectives.getInstance().connectivesInDocument(doc);
+    }
+
+    public double averageWordFrequencyClass() {
+        return FrequencyCalculator.getInstance().calculateAverageWordFrequencyClass(doc.sentences().stream().flatMap(sentence -> sentence.words().stream()).toList());
     }
 }
 
