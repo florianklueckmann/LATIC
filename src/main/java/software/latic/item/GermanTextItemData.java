@@ -28,6 +28,7 @@ public class GermanTextItemData extends TextItemData {
     IntegerProperty punctuation;
     IntegerProperty unknown;
 
+    DoubleProperty averageWordFrequencyClass;
     DoubleProperty fleschIndexGerman;
     DoubleProperty wienerSachtextformel;
     DoubleProperty gSMOG;
@@ -58,6 +59,7 @@ public class GermanTextItemData extends TextItemData {
         this.coordinatingConjunctions = new SimpleIntegerProperty();
         this.subordinatingConjunctions = new SimpleIntegerProperty();
 
+        this.averageWordFrequencyClass = new RoundedDoubleProperty();
         this.fleschIndexGerman = new RoundedDoubleProperty();
         this.wienerSachtextformel = new RoundedDoubleProperty();
         this.gSMOG = new RoundedDoubleProperty();
@@ -114,6 +116,7 @@ public class GermanTextItemData extends TextItemData {
         valueMap.put("punctuation",String.valueOf(getPunctuation()));
         valueMap.put("unknown",String.valueOf(getUnknown()));
 
+        valueMap.put("averageWordFrequencyClass",String.valueOf(getAverageWordFrequencyClass()));
         valueMap.put("fleschIndexGerman",String.valueOf(getFleschIndexGerman()));
         valueMap.put("wienerSachtextformel",String.valueOf(getWienerSachtextformel()));
         valueMap.put("gSMOG",String.valueOf(getGSMOG()));
@@ -371,5 +374,17 @@ public class GermanTextItemData extends TextItemData {
 
     public void setGSMOG(double gSMOG) {
         this.gSMOG.set(gSMOG);
+    }
+
+    public double getAverageWordFrequencyClass() {
+        return averageWordFrequencyClass.get();
+    }
+
+    public DoubleProperty averageWordFrequencyClassProperty() {
+        return averageWordFrequencyClass;
+    }
+
+    public void setAverageWordFrequencyClass(double averageWordFrequency) {
+        this.averageWordFrequencyClass.set(averageWordFrequency);
     }
 }

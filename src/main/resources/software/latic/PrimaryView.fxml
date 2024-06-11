@@ -124,6 +124,7 @@
                               <Menu fx:id="menuDebug" mnemonicParsing="false" text="Debug">
                                   <items>
                                       <MenuItem fx:id="menuItemSyllablesPerWordToCsv" mnemonicParsing="false" onAction="#handleSyllablesPerWordToCsv" text="%syllablesPerWordToCsv" />
+                                      <MenuItem fx:id="cleanCsv" mnemonicParsing="false" onAction="#cleanCsv" text="cleanCsv" />
                                   </items>
                               </Menu>
                           </menus>

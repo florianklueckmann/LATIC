@@ -14,7 +14,7 @@ public class FileContentProvider {
         return switch (type.toLowerCase(Locale.ROOT)) {
             case "pdf" -> PDFReader.getInstance().getContent(filename);
             case "docx" -> DocxReader.getInstance().getContent(filename);
-            case "txt" -> TxtReader.getInstance().getContent(filename);
+            case "txt", "csv" -> TxtReader.getInstance().getContent(filename);
 
             default -> new ArrayList<>();
         };

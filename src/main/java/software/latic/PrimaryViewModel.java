@@ -12,6 +12,8 @@ import javafx.util.Duration;
 import org.apache.commons.lang3.StringUtils;
 
 import software.latic.connectives.BaseConnectives;
+import software.latic.frequency.FrequencyCalculator;
+import software.latic.frequency.FrequencyListCleaner;
 import software.latic.helper.*;
 import software.latic.item.*;
 import software.latic.translation.Translation;
@@ -431,6 +433,7 @@ public class PrimaryViewModel implements Initializable {
         Translation.getInstance().setLocale(choiceBoxLanguage.getValue());
         TagMapper.getInstance().loadInterjections();
         BaseConnectives.getInstance().initialize();
+        FrequencyCalculator.getInstance().initialize();
         createCheckboxes();
     }
 
@@ -623,5 +626,33 @@ public class PrimaryViewModel implements Initializable {
 
     public void handleAnalyzeFootersCheckboxValueChanged(ActionEvent actionEvent) {
         Settings.userPreferences.put("analyzeFooters", String.valueOf(((CheckBox) actionEvent.getTarget()).isSelected()));
+    }
+
+    public void cleanCsv(ActionEvent actionEvent) {
+        Window stage = mainPane.getScene().getWindow();
+        importFileChooser.getExtensionFilters().add(csvFilter);
+        var file = importFileChooser.showOpenDialog(stage);
+
+        var cleaner = new FrequencyListCleaner();
+
+        var x = cleaner.cleanCleanedCsv(file);
+
+
+
+        try {
+            File saveFile = exportFileChooser.showSaveDialog(stage); //TODO EXTENSION
+            if (saveFile != null) {
+                var selectedFileExtension = exportFileChooser.getSelectedExtensionFilter().getExtensions().get(0).replace("*", "");
+                if (!saveFile.getPath().contains(selectedFileExtension)) {
+                    saveFile = new File(saveFile.getPath() + selectedFileExtension);
+                }
+
+                saveFile = CsvBuilder.getInstance().writeToFile(saveFile, x);
+                exportFileChooser.setInitialDirectory(saveFile.getParentFile());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
