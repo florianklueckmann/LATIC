@@ -1,6 +1,5 @@
 package software.latic.frequency;
 
-import edu.stanford.nlp.simple.Document;
 import software.latic.helper.CsvReader;
 import software.latic.translation.SupportedLocales;
 import software.latic.translation.Translation;
