@@ -1,15 +1,9 @@
 package software.latic.item;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.collections.ObservableMap;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
-public class EnglishTextItemData extends TextItemData
-{
+public class EnglishTextItemData extends TextItemData {
     IntegerProperty adverbs;
     IntegerProperty determiner;
     IntegerProperty interjections;
@@ -40,14 +34,19 @@ public class EnglishTextItemData extends TextItemData
     IntegerProperty to;
 
     DoubleProperty fleschIndexEnglish;
+    StringProperty fleschIndexEnglishLevel = new SimpleStringProperty();
     DoubleProperty fleschKincaid;
+    StringProperty fleschKincaidLevel = new SimpleStringProperty();
     DoubleProperty gunningFog;
+    StringProperty gunningFogLevel = new SimpleStringProperty();
     DoubleProperty automatedReadabilityIndex;
+    StringProperty automatedReadabilityIndexLevel = new SimpleStringProperty();
     DoubleProperty colemanLiau;
+    StringProperty colemanLiauLevel = new SimpleStringProperty();
     DoubleProperty SMOG;
+    StringProperty SMOGLevel = new SimpleStringProperty();
 
-    public EnglishTextItemData(String text)
-    {
+    public EnglishTextItemData(String text) {
         super(text);
 
         this.adverbs = new SimpleIntegerProperty();
@@ -81,394 +80,301 @@ public class EnglishTextItemData extends TextItemData
         this.SMOG = new RoundedDoubleProperty();
     }
 
-    public String[] getValues() {
-
-        String[] superValues = super.getValues();
-        String[] values = new String[]{
-                String.valueOf(getAdjectives()),
-                String.valueOf(getConjunctions()),
-                String.valueOf(getPrepositionOrSubordinatingConjunction()),
-                String.valueOf(getAdverbs()),
-                String.valueOf(getDeterminer()),
-                String.valueOf(getInterjections()),
-                String.valueOf(getModals()),
-                String.valueOf(getNouns()),
-                String.valueOf(getNumbers()),
-                String.valueOf(getParticles()),
-                String.valueOf(getPronouns()),
-                String.valueOf(getProperNouns()),
-                String.valueOf(getSymbols()),
-                String.valueOf(getVerbs()),
-                String.valueOf(getVerbsBaseForm()),
-                String.valueOf(getVerbsPastTense()),
-                String.valueOf(getVerbsGerundOrPresentParticiple()),
-                String.valueOf(getVerbsPastParticiple()),
-                String.valueOf(getVerbsNonThirdSingularPresent()),
-                String.valueOf(getVerbsThirdSingularPresent()),
-                String.valueOf(getPunctuation()),
-                String.valueOf(getExistentialThere()),
-                String.valueOf(getListItemMarkers()),
-                String.valueOf(getPossessiveEndings()),
-                String.valueOf(getTo()),
-                String.valueOf(getUnknown())
-        };
-
-        return Stream.concat(Arrays.stream(superValues), Arrays.stream(values))
-                .toArray(String[]::new);
-    }
-
     @Override
     public ObservableMap<String, String> getIdValueMap() {
         var valueMap = super.getIdValueMap();
-        valueMap.put("adjectives",String.valueOf(getAdjectives()));
-        valueMap.put("conjunctions",String.valueOf(getConjunctions()));
-        valueMap.put("prepositionOrSubordinatingConjunction",String.valueOf(getPrepositionOrSubordinatingConjunction()));
-        valueMap.put("adverbs",String.valueOf(getAdverbs()));
-        valueMap.put("determiner",String.valueOf(getDeterminer()));
-        valueMap.put("interjections",String.valueOf(getInterjections()));
-        valueMap.put("modals",String.valueOf(getModals()));
-        valueMap.put("nouns",String.valueOf(getNouns()));
-        valueMap.put("numbers",String.valueOf(getNumbers()));
-        valueMap.put("particles",String.valueOf(getParticles()));
-        valueMap.put("pronouns",String.valueOf(getPronouns()));
-        valueMap.put("properNouns",String.valueOf(getProperNouns()));
-        valueMap.put("symbols",String.valueOf(getSymbols()));
-        valueMap.put("verbs",String.valueOf(getVerbs()));
-        valueMap.put("verbsBaseForm",String.valueOf(getVerbsBaseForm()));
-        valueMap.put("verbsPastTense",String.valueOf(getVerbsPastTense()));
-        valueMap.put("verbsGerundOrPresentParticiple",String.valueOf(getVerbsGerundOrPresentParticiple()));
-        valueMap.put("verbsPastParticiple",String.valueOf(getVerbsPastParticiple()));
-        valueMap.put("verbsNonThirdSingularPresent",String.valueOf(getVerbsNonThirdSingularPresent()));
-        valueMap.put("verbsThirdSingularPresent",String.valueOf(getVerbsThirdSingularPresent()));
-        valueMap.put("punctuation",String.valueOf(getPunctuation()));
-        valueMap.put("existentialThere",String.valueOf(getExistentialThere()));
-        valueMap.put("listItemMarkers",String.valueOf(getListItemMarkers()));
-        valueMap.put("possessiveEndings",String.valueOf(getPossessiveEndings()));
-        valueMap.put("to",String.valueOf(getTo()));
-        valueMap.put("unknown",String.valueOf(getUnknown()));
+        valueMap.put("adjectives", String.valueOf(getAdjectives()));
+        valueMap.put("conjunctions", String.valueOf(getConjunctions()));
+        valueMap.put("prepositionOrSubordinatingConjunction", String.valueOf(getPrepositionOrSubordinatingConjunction()));
+        valueMap.put("adverbs", String.valueOf(getAdverbs()));
+        valueMap.put("determiner", String.valueOf(getDeterminer()));
+        valueMap.put("interjections", String.valueOf(getInterjections()));
+        valueMap.put("modals", String.valueOf(getModals()));
+        valueMap.put("nouns", String.valueOf(getNouns()));
+        valueMap.put("numbers", String.valueOf(getNumbers()));
+        valueMap.put("particles", String.valueOf(getParticles()));
+        valueMap.put("pronouns", String.valueOf(getPronouns()));
+        valueMap.put("properNouns", String.valueOf(getProperNouns()));
+        valueMap.put("symbols", String.valueOf(getSymbols()));
+        valueMap.put("verbs", String.valueOf(getVerbs()));
+        valueMap.put("verbsBaseForm", String.valueOf(getVerbsBaseForm()));
+        valueMap.put("verbsPastTense", String.valueOf(getVerbsPastTense()));
+        valueMap.put("verbsGerundOrPresentParticiple", String.valueOf(getVerbsGerundOrPresentParticiple()));
+        valueMap.put("verbsPastParticiple", String.valueOf(getVerbsPastParticiple()));
+        valueMap.put("verbsNonThirdSingularPresent", String.valueOf(getVerbsNonThirdSingularPresent()));
+        valueMap.put("verbsThirdSingularPresent", String.valueOf(getVerbsThirdSingularPresent()));
+        valueMap.put("punctuation", String.valueOf(getPunctuation()));
+        valueMap.put("existentialThere", String.valueOf(getExistentialThere()));
+        valueMap.put("listItemMarkers", String.valueOf(getListItemMarkers()));
+        valueMap.put("possessiveEndings", String.valueOf(getPossessiveEndings()));
+        valueMap.put("to", String.valueOf(getTo()));
+        valueMap.put("unknown", String.valueOf(getUnknown()));
 
-        valueMap.put("fleschIndexEnglish",String.valueOf(getFleschIndexEnglish()));
-        valueMap.put("fleschKincaid",String.valueOf(getFleschKincaid()));
-        valueMap.put("gunningFog",String.valueOf(getGunningFog()));
-        valueMap.put("automatedReadabilityIndex",String.valueOf(getAutomatedReadabilityIndex()));
-        valueMap.put("colemanLiau",String.valueOf(getColemanLiau()));
-        valueMap.put("SMOG",String.valueOf(getSMOG()));
+        valueMap.put("fleschIndexEnglish", String.valueOf(getFleschIndexEnglish()));
+        valueMap.put("fleschKincaid", String.valueOf(getFleschKincaid()));
+        valueMap.put("gunningFog", String.valueOf(getGunningFog()));
+        valueMap.put("automatedReadabilityIndex", String.valueOf(getAutomatedReadabilityIndex()));
+        valueMap.put("colemanLiau", String.valueOf(getColemanLiau()));
+        valueMap.put("SMOG", String.valueOf(getSMOG()));
+        valueMap.put("fleschIndexEnglishLevel", getFleschIndexEnglishLevel());
+        valueMap.put("fleschKincaidLevel", getFleschKincaidLevel());
+        valueMap.put("gunningFogLevel", getGunningFogLevel());
+        valueMap.put("automatedReadabilityIndexLevel", getAutomatedReadabilityIndexLevel());
+        valueMap.put("colemanLiauLevel", getColemanLiauLevel());
+        valueMap.put("SMOGLevel", getSMOGLevel());
 
         return valueMap;
     }
 
-    public int getConjunctions()
-    {
+    public int getConjunctions() {
         return conjunctions.get();
     }
 
-    public IntegerProperty conjunctionsProperty()
-    {
+    public IntegerProperty conjunctionsProperty() {
         return conjunctions;
     }
 
-    public void setConjunctions(int conjunctions)
-    {
+    public void setConjunctions(int conjunctions) {
         this.conjunctions.set(conjunctions);
     }
 
-    public int getExistentialThere()
-    {
+    public int getExistentialThere() {
         return existentialThere.get();
     }
 
-    public IntegerProperty existentialThereProperty()
-    {
+    public IntegerProperty existentialThereProperty() {
         return existentialThere;
     }
 
-    public void setExistentialThere(int existentialThere)
-    {
+    public void setExistentialThere(int existentialThere) {
         this.existentialThere.set(existentialThere);
     }
 
-    public int getForeignWords()
-    {
+    public int getForeignWords() {
         return foreignWords.get();
     }
 
-    public IntegerProperty foreignWordsProperty()
-    {
+    public IntegerProperty foreignWordsProperty() {
         return foreignWords;
     }
 
-    public void setForeignWords(int foreignWords)
-    {
+    public void setForeignWords(int foreignWords) {
         this.foreignWords.set(foreignWords);
     }
 
-    public int getListItemMarkers()
-    {
+    public int getListItemMarkers() {
         return listItemMarkers.get();
     }
 
-    public IntegerProperty listItemMarkersProperty()
-    {
+    public IntegerProperty listItemMarkersProperty() {
         return listItemMarkers;
     }
 
-    public void setListItemMarkers(int listItemMarkers)
-    {
+    public void setListItemMarkers(int listItemMarkers) {
         this.listItemMarkers.set(listItemMarkers);
     }
 
-    public int getPossessiveEndings()
-    {
+    public int getPossessiveEndings() {
         return possessiveEndings.get();
     }
 
-    public IntegerProperty possessiveEndingsProperty()
-    {
+    public IntegerProperty possessiveEndingsProperty() {
         return possessiveEndings;
     }
 
-    public void setPossessiveEndings(int possessiveEndings)
-    {
+    public void setPossessiveEndings(int possessiveEndings) {
         this.possessiveEndings.set(possessiveEndings);
     }
 
-    public int getPrepositionOrSubordinatingConjunction()
-    {
+    public int getPrepositionOrSubordinatingConjunction() {
         return prepositionOrSubordinatingConjunction.get();
     }
 
-    public IntegerProperty prepositionOrSubordinatingConjunctionProperty()
-    {
+    public IntegerProperty prepositionOrSubordinatingConjunctionProperty() {
         return prepositionOrSubordinatingConjunction;
     }
 
-    public void setPrepositionOrSubordinatingConjunction(int prepositionOrSubordinatingConjunction)
-    {
+    public void setPrepositionOrSubordinatingConjunction(int prepositionOrSubordinatingConjunction) {
         this.prepositionOrSubordinatingConjunction.set(prepositionOrSubordinatingConjunction);
     }
 
-    public int getTo()
-    {
+    public int getTo() {
         return to.get();
     }
 
-    public IntegerProperty toProperty()
-    {
+    public IntegerProperty toProperty() {
         return to;
     }
 
-    public void setTo(int to)
-    {
+    public void setTo(int to) {
         this.to.set(to);
     }
 
-    public int getAdverbs()
-    {
+    public int getAdverbs() {
         return adverbs.get();
     }
 
-    public IntegerProperty adverbsProperty()
-    {
+    public IntegerProperty adverbsProperty() {
         return adverbs;
     }
 
-    public void setAdverbs(int adverbs)
-    {
+    public void setAdverbs(int adverbs) {
         this.adverbs.set(adverbs);
     }
 
-    public int getDeterminer()
-    {
+    public int getDeterminer() {
         return determiner.get();
     }
 
-    public IntegerProperty determinerProperty()
-    {
+    public IntegerProperty determinerProperty() {
         return determiner;
     }
 
-    public void setDeterminer(int determiner)
-    {
+    public void setDeterminer(int determiner) {
         this.determiner.set(determiner);
     }
 
-    public int getInterjections()
-    {
+    public int getInterjections() {
         return interjections.get();
     }
 
-    public IntegerProperty interjectionsProperty()
-    {
+    public IntegerProperty interjectionsProperty() {
         return interjections;
     }
 
-    public void setInterjections(int interjections)
-    {
+    public void setInterjections(int interjections) {
         this.interjections.set(interjections);
     }
 
-    public int getModals()
-    {
+    public int getModals() {
         return modals.get();
     }
 
-    public IntegerProperty modalsProperty()
-    {
+    public IntegerProperty modalsProperty() {
         return modals;
     }
 
-    public void setModals(int modals)
-    {
+    public void setModals(int modals) {
         this.modals.set(modals);
     }
 
-    public int getNouns()
-    {
+    public int getNouns() {
         return nouns.get();
     }
 
-    public IntegerProperty nounsProperty()
-    {
+    public IntegerProperty nounsProperty() {
         return nouns;
     }
 
-    public void setNouns(int nouns)
-    {
+    public void setNouns(int nouns) {
         this.nouns.set(nouns);
     }
 
-    public int getNumbers()
-    {
+    public int getNumbers() {
         return numbers.get();
     }
 
-    public IntegerProperty numbersProperty()
-    {
+    public IntegerProperty numbersProperty() {
         return numbers;
     }
 
-    public void setNumbers(int numbers)
-    {
+    public void setNumbers(int numbers) {
         this.numbers.set(numbers);
     }
 
-    public int getParticles()
-    {
+    public int getParticles() {
         return particles.get();
     }
 
-    public IntegerProperty particlesProperty()
-    {
+    public IntegerProperty particlesProperty() {
         return particles;
     }
 
-    public void setParticles(int particles)
-    {
+    public void setParticles(int particles) {
         this.particles.set(particles);
     }
 
-    public int getPronouns()
-    {
+    public int getPronouns() {
         return pronouns.get();
     }
 
-    public IntegerProperty pronounsProperty()
-    {
+    public IntegerProperty pronounsProperty() {
         return pronouns;
     }
 
-    public void setPronouns(int pronouns)
-    {
+    public void setPronouns(int pronouns) {
         this.pronouns.set(pronouns);
     }
 
-    public int getProperNouns()
-    {
+    public int getProperNouns() {
         return properNouns.get();
     }
 
-    public IntegerProperty properNounsProperty()
-    {
+    public IntegerProperty properNounsProperty() {
         return properNouns;
     }
 
-    public void setProperNouns(int properNouns)
-    {
+    public void setProperNouns(int properNouns) {
         this.properNouns.set(properNouns);
     }
 
-    public int getSymbols()
-    {
+    public int getSymbols() {
         return symbols.get();
     }
 
-    public IntegerProperty symbolsProperty()
-    {
+    public IntegerProperty symbolsProperty() {
         return symbols;
     }
 
-    public void setSymbols(int symbols)
-    {
+    public void setSymbols(int symbols) {
         this.symbols.set(symbols);
     }
 
-    public int getVerbs()
-    {
+    public int getVerbs() {
         return verbs.get();
     }
 
-    public IntegerProperty verbsProperty()
-    {
+    public IntegerProperty verbsProperty() {
         return verbs;
     }
 
-    public void setVerbs(int verbs)
-    {
+    public void setVerbs(int verbs) {
         this.verbs.set(verbs);
     }
 
-    public int getPunctuation()
-    {
+    public int getPunctuation() {
         return punctuation.get();
     }
 
-    public IntegerProperty punctuationProperty()
-    {
+    public IntegerProperty punctuationProperty() {
         return punctuation;
     }
 
-    public void setPunctuation(int punctuation)
-    {
+    public void setPunctuation(int punctuation) {
         this.punctuation.set(punctuation);
     }
 
-    public int getUnknown()
-    {
+    public int getUnknown() {
         return unknown.get();
     }
 
-    public IntegerProperty unknownProperty()
-    {
+    public IntegerProperty unknownProperty() {
         return unknown;
     }
 
-    public void setUnknown(int unknown)
-    {
+    public void setUnknown(int unknown) {
         this.unknown.set(unknown);
     }
 
-    public int getAdjectives()
-    {
+    public int getAdjectives() {
         return adjectives.get();
     }
 
-    public IntegerProperty adjectivesProperty()
-    {
+    public IntegerProperty adjectivesProperty() {
         return adjectives;
     }
 
-    public void setAdjectives(int adjectives)
-    {
+    public void setAdjectives(int adjectives) {
         this.adjectives.set(adjectives);
     }
 
@@ -614,5 +520,77 @@ public class EnglishTextItemData extends TextItemData
 
     public void setSMOG(double SMOG) {
         this.SMOG.set(SMOG);
+    }
+
+    public String getFleschIndexEnglishLevel() {
+        return fleschIndexEnglishLevel.get();
+    }
+
+    public StringProperty fleschIndexEnglishLevelProperty() {
+        return fleschIndexEnglishLevel;
+    }
+
+    public void setFleschIndexEnglishLevel(String fleschIndexEnglishLevel) {
+        this.fleschIndexEnglishLevel.set(fleschIndexEnglishLevel);
+    }
+
+    public String getFleschKincaidLevel() {
+        return fleschKincaidLevel.get();
+    }
+
+    public StringProperty fleschKincaidLevelProperty() {
+        return fleschKincaidLevel;
+    }
+
+    public void setFleschKincaidLevel(String fleschKincaidLevel) {
+        this.fleschKincaidLevel.set(fleschKincaidLevel);
+    }
+
+    public String getGunningFogLevel() {
+        return gunningFogLevel.get();
+    }
+
+    public StringProperty gunningFogLevelProperty() {
+        return gunningFogLevel;
+    }
+
+    public void setGunningFogLevel(String gunningFogLevel) {
+        this.gunningFogLevel.set(gunningFogLevel);
+    }
+
+    public String getAutomatedReadabilityIndexLevel() {
+        return automatedReadabilityIndexLevel.get();
+    }
+
+    public StringProperty automatedReadabilityIndexLevelProperty() {
+        return automatedReadabilityIndexLevel;
+    }
+
+    public void setAutomatedReadabilityIndexLevel(String automatedReadabilityIndexLevel) {
+        this.automatedReadabilityIndexLevel.set(automatedReadabilityIndexLevel);
+    }
+
+    public String getColemanLiauLevel() {
+        return colemanLiauLevel.get();
+    }
+
+    public StringProperty colemanLiauLevelProperty() {
+        return colemanLiauLevel;
+    }
+
+    public void setColemanLiauLevel(String colemanLiauLevel) {
+        this.colemanLiauLevel.set(colemanLiauLevel);
+    }
+
+    public String getSMOGLevel() {
+        return SMOGLevel.get();
+    }
+
+    public StringProperty SMOGLevelProperty() {
+        return SMOGLevel;
+    }
+
+    public void setSMOGLevel(String SMOGLevel) {
+        this.SMOGLevel.set(SMOGLevel);
     }
 }
