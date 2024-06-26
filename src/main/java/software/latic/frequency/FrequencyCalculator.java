@@ -20,7 +20,7 @@ public class FrequencyCalculator {
     private int highestFrequency;
     private static final List<Locale> SUPPORTED_LOCALES = List.of(SupportedLocales.GERMAN.getLocale());
 
-    private Locale currentLocale = Translation.getInstance().getLocale();
+    private Locale currentLocale;
 
     public double calculateAverageWordFrequencyClass(List<String> words) {
 
@@ -56,6 +56,7 @@ public class FrequencyCalculator {
         }
     }
     public void initialize() {
+        currentLocale = Translation.getInstance().getLocale();
         if (stopInitialize()) {
             return;
         }
