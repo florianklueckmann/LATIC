@@ -94,7 +94,7 @@ public class GermanTextItemData extends TextItemData {
         valueMap.put("wienerSachtextformel",String.valueOf(getWienerSachtextformel()));
         valueMap.put("wienerSachtextformelLevel", getWienerSachtextformelLevel());
         valueMap.put("gSMOG",String.valueOf(getGSMOG()));
-        valueMap.put("gSMOGLevel", getgSMOGLevel());
+        valueMap.put("gSMOGLevel", getGSMOGLevel());
 
         return valueMap;
     }
@@ -363,7 +363,7 @@ public class GermanTextItemData extends TextItemData {
         this.averageWordFrequencyClass.set(averageWordFrequency);
     }
 
-    public String getgSMOGLevel() {
+    public String getGSMOGLevel() {
         return gSMOGLevel.get();
     }
 
@@ -371,7 +371,7 @@ public class GermanTextItemData extends TextItemData {
         return gSMOGLevel;
     }
 
-    public void setgSMOGLevel(String gSMOGLevel) {
+    public void setGSMOGLevel(String gSMOGLevel) {
         this.gSMOGLevel.set(gSMOGLevel);
     }
 
