@@ -93,8 +93,12 @@ public class FrequencyCalculator {
         return (double) sumFrequency / totalWords;
     }
 
+    private double log2(double x) {
+        return Math.log(x) / Math.log(2);
+    }
+
     protected Integer calculateFrequencyClass(int currentFrequency, int highestFrequency) {
-        return (int) Math.round(Math.log((double) highestFrequency / currentFrequency) / Math.log(2));
+        return (int) Math.round(log2((double) highestFrequency / currentFrequency));
     }
 
     protected Integer calculateFrequencyClass(int currentFrequency) {
@@ -103,7 +107,7 @@ public class FrequencyCalculator {
     }
 
     protected double calculateFrequencyClassNotRounded(int currentFrequency, int highestFrequency) {
-        return Math.log((double) highestFrequency / currentFrequency) / Math.log(2);
+        return log2((double) highestFrequency / currentFrequency);
     }
 
     protected int getHighestFrequency() {
