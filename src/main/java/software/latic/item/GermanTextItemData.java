@@ -1,12 +1,7 @@
 package software.latic.item;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.collections.ObservableMap;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 public class GermanTextItemData extends TextItemData {
     IntegerProperty adjectives;
@@ -30,8 +25,11 @@ public class GermanTextItemData extends TextItemData {
 
     DoubleProperty averageWordFrequencyClass;
     DoubleProperty fleschIndexGerman;
+    StringProperty fleschIndexGermanLevel;
     DoubleProperty wienerSachtextformel;
+    StringProperty wienerSachtextformelLevel;
     DoubleProperty gSMOG;
+    StringProperty gSMOGLevel;
 
 
     public GermanTextItemData(String text) {
@@ -61,37 +59,11 @@ public class GermanTextItemData extends TextItemData {
 
         this.averageWordFrequencyClass = new RoundedDoubleProperty();
         this.fleschIndexGerman = new RoundedDoubleProperty();
+        this.fleschIndexGermanLevel = new SimpleStringProperty();
         this.wienerSachtextformel = new RoundedDoubleProperty();
+        this.wienerSachtextformelLevel = new SimpleStringProperty();
         this.gSMOG = new RoundedDoubleProperty();
-    }
-
-    @Override
-    public String[] getValues() {
-
-        String[] superValues = super.getValues();
-        String[] values = new String[]{
-                String.valueOf(getAdjectives()),
-                String.valueOf(getAdpositions()),
-                String.valueOf(getConjunctions()),
-                String.valueOf(getCoordinatingConjunctions()),
-                String.valueOf(getSubordinatingConjunctions()),
-                String.valueOf(getAdverbs()),
-                String.valueOf(getDeterminer()),
-                String.valueOf(getInterjections()),
-                String.valueOf(getModals()),
-                String.valueOf(getNouns()),
-                String.valueOf(getNumbers()),
-                String.valueOf(getParticles()),
-                String.valueOf(getPronouns()),
-                String.valueOf(getProperNouns()),
-                String.valueOf(getSymbols()),
-                String.valueOf(getVerbs()),
-                String.valueOf(getPunctuation()),
-                String.valueOf(getUnknown())
-        };
-
-        return Stream.concat(Arrays.stream(superValues), Arrays.stream(values))
-                .toArray(String[]::new);
+        this.gSMOGLevel = new SimpleStringProperty();
     }
 
     @Override
@@ -118,8 +90,11 @@ public class GermanTextItemData extends TextItemData {
 
         valueMap.put("averageWordFrequencyClass",String.valueOf(getAverageWordFrequencyClass()));
         valueMap.put("fleschIndexGerman",String.valueOf(getFleschIndexGerman()));
+        valueMap.put("fleschIndexGermanLevel", getFleschIndexGermanLevel());
         valueMap.put("wienerSachtextformel",String.valueOf(getWienerSachtextformel()));
+        valueMap.put("wienerSachtextformelLevel", getWienerSachtextformelLevel());
         valueMap.put("gSMOG",String.valueOf(getGSMOG()));
+        valueMap.put("gSMOGLevel", getGSMOGLevel());
 
         return valueMap;
     }
@@ -386,5 +361,41 @@ public class GermanTextItemData extends TextItemData {
 
     public void setAverageWordFrequencyClass(double averageWordFrequency) {
         this.averageWordFrequencyClass.set(averageWordFrequency);
+    }
+
+    public String getGSMOGLevel() {
+        return gSMOGLevel.get();
+    }
+
+    public StringProperty gSMOGLevelProperty() {
+        return gSMOGLevel;
+    }
+
+    public void setGSMOGLevel(String gSMOGLevel) {
+        this.gSMOGLevel.set(gSMOGLevel);
+    }
+
+    public String getWienerSachtextformelLevel() {
+        return wienerSachtextformelLevel.get();
+    }
+
+    public StringProperty wienerSachtextformelLevelProperty() {
+        return wienerSachtextformelLevel;
+    }
+
+    public void setWienerSachtextformelLevel(String wienerSachtextformelLevel) {
+        this.wienerSachtextformelLevel.set(wienerSachtextformelLevel);
+    }
+
+    public String getFleschIndexGermanLevel() {
+        return fleschIndexGermanLevel.get();
+    }
+
+    public StringProperty fleschIndexGermanLevelProperty() {
+        return fleschIndexGermanLevel;
+    }
+
+    public void setFleschIndexGermanLevel(String fleschIndexGermanLevel) {
+        this.fleschIndexGermanLevel.set(fleschIndexGermanLevel);
     }
 }

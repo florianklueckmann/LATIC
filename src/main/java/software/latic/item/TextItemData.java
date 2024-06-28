@@ -24,6 +24,7 @@ public abstract class TextItemData {
     DoubleProperty averageSentenceLengthWords;
     DoubleProperty lexicalDiversity;
     DoubleProperty lixReadabilityScore;
+    StringProperty lixReadabilityLevel;
     DoubleProperty averageSentenceLengthSyllables;
 
     IntegerProperty connectivesCount;
@@ -114,29 +115,8 @@ public abstract class TextItemData {
         this.averageSentenceLengthSyllables = new RoundedDoubleProperty();
         this.lexicalDiversity = new RoundedDoubleProperty();
         this.lixReadabilityScore = new RoundedDoubleProperty();
+        this.lixReadabilityLevel = new SimpleStringProperty();
         this.connectivesCount = new SimpleIntegerProperty();
-    }
-
-    public String[] getValues() {
-        return new String[] {
-                getText(),
-                getFileName(),
-                getTextAndPosTags(),
-                String.valueOf(getWordCount()),
-                String.valueOf(getSentenceCount()),
-                String.valueOf(getSyllableCount()),
-                String.valueOf(getWordsWithMoreThanTwoSyllablesCount()),
-                String.valueOf(getAverageWordLengthCharacters()),
-                String.valueOf(getAverageWordLengthSyllables()),
-                String.valueOf(getAverageSentenceLengthCharacters()),
-                String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()),
-                String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()),
-                String.valueOf(getAverageSentenceLengthWords()),
-                String.valueOf(getAverageSentenceLengthSyllables()),
-                String.valueOf(getLexicalDiversity()),
-                String.valueOf(getLexicalDiversity()),
-                String.valueOf(getConnectivesCount())
-        };
     }
 
     public ObservableMap<String, String> getIdValueMap() {
@@ -156,6 +136,7 @@ public abstract class TextItemData {
         valueMap.put("averageSentenceLengthSyllables",String.valueOf(getAverageSentenceLengthWords()));
         valueMap.put("lexicalDiversity",String.valueOf(getLexicalDiversity()));
         valueMap.put("lixReadabilityScore",String.valueOf(getLixReadabilityScore()));
+        valueMap.put("lixReadabilityLevel",String.valueOf(getLixReadabilityLevel()));
         valueMap.put("connectivesCount",String.valueOf(getConnectivesCount()));
 
         return FXCollections.observableMap(valueMap);
@@ -335,5 +316,17 @@ public abstract class TextItemData {
 
     public void setWordsWithMoreThanTwoSyllablesCount(int wordsWithMoreThanTwoSyllables) {
         this.wordsWithMoreThanTwoSyllablesCount.set(wordsWithMoreThanTwoSyllables);
+    }
+
+    public String getLixReadabilityLevel() {
+        return lixReadabilityLevel.get();
+    }
+
+    public StringProperty lixReadabilityLevelProperty() {
+        return lixReadabilityLevel;
+    }
+
+    public void setLixReadabilityLevel(String lixReadabilityLevel) {
+        this.lixReadabilityLevel.set(lixReadabilityLevel);
     }
 }
