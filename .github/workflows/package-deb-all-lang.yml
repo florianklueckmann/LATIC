@@ -50,7 +50,7 @@ jobs:
         cp ./src/main/resources/software/latic/documentation_de.pdf "deb/deutsch/LATIC ${{ env.project_version }} Dokumentation.pdf"
         cp "./supplemental-material/en/Instructions Installing and Starting LATIC on Ubuntu and Debian.docx" "deb/english/Instructions Installing and Starting LATIC on Ubuntu and Debian.docx"
         cp "./supplemental-material/de/Anleitung LATIC installieren und starten Ubuntu und Debian.docx" "deb/deutsch/Anleitung LATIC installieren und starten Ubuntu und Debian.docx"
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with: 
         name: LATIC-${{ env.project_version }}-Ubuntu-Debian-all-lang
         path: deb/*
@@ -73,7 +73,7 @@ jobs:
       - name: Get version
         run: echo project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
       - name: Download artifacts for build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: LATIC-${{ env.project_version }}-Ubuntu-Debian-all-lang
           path: LATIC-${{ env.project_version }}-Ubuntu-Debian-all-lang

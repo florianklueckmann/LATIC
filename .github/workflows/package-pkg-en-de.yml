@@ -47,7 +47,7 @@ jobs:
         cp ./src/main/resources/software/latic/documentation_en.pdf "pkg/english/LATIC ${{ env.project_version }} Documentation.pdf"
         cp ./src/main/resources/software/latic/documentation_de.pdf "pkg/deutsch/LATIC ${{ env.project_version }} Dokumentation.pdf"
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: LATIC-${{ env.project_version }}-macOS-EN-DE
         path: pkg/*
@@ -71,7 +71,7 @@ jobs:
       - name: Get version
         run: echo project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
       - name: Download artifacts for build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: LATIC-${{ env.project_version }}-macOS-EN-DE
           path: LATIC-${{ env.project_version }}-macOS-EN-DE

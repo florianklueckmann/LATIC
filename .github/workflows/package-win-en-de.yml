@@ -54,7 +54,7 @@ jobs:
           cp ./src/main/resources/software/latic/documentation_de.pdf "win/deutsch/LATIC ${{ env.project_version }} Dokumentation.pdf"
           cp "./supplemental-material/en/Instructions Installing and Starting LATIC on Windows.docx" "win/english/Instructions Installing and Starting LATIC on Windows.docx"
           cp "./supplemental-material/de/Anleitung LATIC installieren und starten Windows.docx" "win/deutsch/Anleitung LATIC installieren und starten Windows.docx"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: LATIC-${{ env.project_version }}-Windows-EN-DE
           path: win/*
@@ -78,7 +78,7 @@ jobs:
       - name: Get version
         run: echo project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) >> $GITHUB_ENV
       - name: Download artifacts for build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: LATIC-${{ env.project_version }}-Windows-EN-DE
           path: LATIC-${{ env.project_version }}-Windows-EN-DE
