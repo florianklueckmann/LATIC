@@ -8,6 +8,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import org.apache.commons.lang3.StringUtils;
 
@@ -65,6 +66,7 @@ public class PrimaryViewModel implements Initializable {
     @FXML private Button buttonDelete;
     @FXML private TableView<TextItemData> tableViewResults;
     @FXML private TextArea textAreaInput;
+    @FXML private TextFlow textFlowInput;
     @FXML private ChoiceBox<Locale> choiceBoxLanguage;
     @FXML private TreeView<Task> treeView;
     @FXML private Button buttonAnalyze;
@@ -277,6 +279,7 @@ public class PrimaryViewModel implements Initializable {
     private void initializeBindings() {
         Bindings.bindBidirectional(inputProperty(), textAreaInput.textProperty());
         Bindings.bindBidirectional(languageProperty(), choiceBoxLanguage.itemsProperty());
+//        textFlowInput.accessibleTextProperty().bindBidirectional(inputProperty());
     }
 
     private void initializeGui() {

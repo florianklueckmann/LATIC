@@ -10,7 +10,8 @@ public enum GermanGeneralItemCharacteristics implements ItemCharacteristics {
     gSMOG( "gSMOG", TaskLevel.TEXT_READABILITY),
     gSMOG_LEVEL( "gSMOGLevel", TaskLevel.TEXT_READABILITY),
     CONNECTIVES_COUNT("connectivesCount", TaskLevel.TEXT),
-    AVERAGE_WORD_FREQUENCY("averageWordFrequencyClass", TaskLevel.TEXT);
+    AVERAGE_WORD_FREQUENCY("averageWordFrequencyClass", TaskLevel.TEXT),
+    AVERAGE_WORD_FREQUENCY_SD("averageWordFrequencyClassStandardDeviation", TaskLevel.TEXT);
 
     private final TaskLevel level;
 

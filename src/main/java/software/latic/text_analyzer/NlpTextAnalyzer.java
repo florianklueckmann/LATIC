@@ -24,6 +24,22 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
     }
 
     public String textAndPosTags() {
+
+        var firstSent = doc.sentences().getFirst();
+
+        var parsed = doc.sentences().getFirst().parse();
+        System.out.println("PARSED" + parsed.toString());
+
+        var dep = firstSent.incomingDependencyLabels();
+
+        StringBuilder deps = new StringBuilder();
+
+        for (var s : dep) {
+            deps.append(s).append(" ");
+        }
+
+        System.out.println("DEP" + deps);
+
         StringBuilder sb = new StringBuilder();
         doc.sentences().forEach(sentence -> {
             TagMapper.getInstance().replaceTagsInTokenList(sentence.tokens()).forEach(token -> sb
