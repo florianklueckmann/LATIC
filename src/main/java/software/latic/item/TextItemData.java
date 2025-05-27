@@ -169,7 +169,7 @@ public abstract class TextItemData {
     }
 
     public String getFileName() {
-        return fileName.get();
+        return fileName.isNull().get() ? "" : fileName.get();
     }
 
     public StringProperty fileNameProperty() {
