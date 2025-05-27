@@ -50,7 +50,7 @@ jobs:
         cp ./src/main/resources/software/latic/documentation_de.pdf "deb/deutsch/LATIC ${{ env.project_version }} Dokumentation.pdf"
         cp "./supplemental-material/en/Instructions Installing and Starting LATIC on Ubuntu and Debian.docx" "deb/english/Instructions Installing and Starting LATIC on Ubuntu and Debian.docx"
         cp "./supplemental-material/de/Anleitung LATIC installieren und starten Ubuntu und Debian.docx" "deb/deutsch/Anleitung LATIC installieren und starten Ubuntu und Debian.docx"
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with: 
         name: LATIC-${{ env.project_version }}-Ubuntu-Debian-EN-DE
         path: deb/*
