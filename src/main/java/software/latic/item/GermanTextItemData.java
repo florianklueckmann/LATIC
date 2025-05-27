@@ -24,6 +24,7 @@ public class GermanTextItemData extends TextItemData {
     IntegerProperty unknown;
 
     DoubleProperty averageWordFrequencyClass;
+    DoubleProperty averageWordFrequencyClassStandardDeviation;
     DoubleProperty fleschIndexGerman;
     StringProperty fleschIndexGermanLevel;
     DoubleProperty wienerSachtextformel;
@@ -58,6 +59,7 @@ public class GermanTextItemData extends TextItemData {
         this.subordinatingConjunctions = new SimpleIntegerProperty();
 
         this.averageWordFrequencyClass = new RoundedDoubleProperty();
+        this.averageWordFrequencyClassStandardDeviation = new RoundedDoubleProperty();
         this.fleschIndexGerman = new RoundedDoubleProperty();
         this.fleschIndexGermanLevel = new SimpleStringProperty();
         this.wienerSachtextformel = new RoundedDoubleProperty();
@@ -89,6 +91,7 @@ public class GermanTextItemData extends TextItemData {
         valueMap.put("unknown",String.valueOf(getUnknown()));
 
         valueMap.put("averageWordFrequencyClass",String.valueOf(getAverageWordFrequencyClass()));
+        valueMap.put("averageWordFrequencyClassStandardDeviation",String.valueOf(getAverageWordFrequencyClassStandardDeviation()));
         valueMap.put("fleschIndexGerman",String.valueOf(getFleschIndexGerman()));
         valueMap.put("fleschIndexGermanLevel", getFleschIndexGermanLevel());
         valueMap.put("wienerSachtextformel",String.valueOf(getWienerSachtextformel()));
@@ -397,5 +400,17 @@ public class GermanTextItemData extends TextItemData {
 
     public void setFleschIndexGermanLevel(String fleschIndexGermanLevel) {
         this.fleschIndexGermanLevel.set(fleschIndexGermanLevel);
+    }
+
+    public double getAverageWordFrequencyClassStandardDeviation() {
+        return averageWordFrequencyClassStandardDeviation.get();
+    }
+
+    public DoubleProperty averageWordFrequencyClassStandardDeviationProperty() {
+        return averageWordFrequencyClassStandardDeviation;
+    }
+
+    public void setAverageWordFrequencyClassStandardDeviation(double averageWordFrequencyClassStandardDeviation) {
+        this.averageWordFrequencyClassStandardDeviation.set(averageWordFrequencyClassStandardDeviation);
     }
 }

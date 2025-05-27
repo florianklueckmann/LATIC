@@ -13,6 +13,7 @@ import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
 import javafx.collections.ObservableList;
 
+import static java.lang.Math.sqrt;
 import static java.lang.Math.toIntExact;
 
 import java.lang.reflect.InvocationTargetException;
@@ -62,7 +63,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
                     if (task.getId().toLowerCase().contains("average")
                             || task.getId().toLowerCase().contains("score")
-                            || task.getId().toLowerCase().equals("lexicaldiversity")
+                            || task.getId().toLowerCase().contains("typetokenratio")
                             || (task.getLevel().equals(TaskLevel.TEXT_READABILITY) &! task.getId().toLowerCase().endsWith("level"))) {
                         setter = textItemData.getClass().getMethod(setterName, double.class);
                         setter.invoke(textItemData, (double) simpleTextAnalyzerMethod.invoke(this));
@@ -174,8 +175,12 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
         return ((double) wordsWithMoreThanTwoSyllablesCount() / wordCount() * 100);
     }
 
-    public double lexicalDiversity() {
+    public double typeTokenRatio() {
         return (double) uniqueWords().size() / (double) wordCount();
+    }
+
+    public double rootedTypeTokenRatio() {
+        return (double) uniqueWords().size() / sqrt(wordCount());
     }
 
     public int textLengthCharacters(List<CharSequence> paragraphs) {
@@ -443,6 +448,10 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public double averageWordFrequencyClass() {
         return FrequencyCalculator.getInstance().calculateAverageWordFrequencyClass(doc.sentences().stream().flatMap(sentence -> sentence.words().stream()).toList());
+    }
+
+    public double averageWordFrequencyClassStandardDeviation() {
+        return FrequencyCalculator.getInstance().calculateStandardDeviation(doc.sentences().stream().flatMap(sentence -> sentence.words().stream()).toList());
     }
 }
 
