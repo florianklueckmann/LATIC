@@ -2,8 +2,6 @@ package software.latic.item;
 
 import software.latic.task.TaskLevel;
 
-import java.util.Optional;
-
 public enum EnglishGeneralItemCharacteristics implements ItemCharacteristics {
     FLESCH_INDEX( "fleschIndexEnglish", TaskLevel.TEXT_READABILITY),
     FLESCH_INDEX_LEVEL( "fleschIndexEnglishLevel", TaskLevel.TEXT_READABILITY),
@@ -37,25 +35,15 @@ public enum EnglishGeneralItemCharacteristics implements ItemCharacteristics {
 
     public boolean getIsBeta() {return isBeta;}
 
-    private final Class<?> valueClass;
-
-    @Override
-    public Optional<Class<?>> getValueClass() {
-        return Optional.ofNullable(valueClass);
-    }
-
-    EnglishGeneralItemCharacteristics(String id, TaskLevel level, boolean isBeta, Class<?> valueClass) {
+    EnglishGeneralItemCharacteristics(String id, TaskLevel level, boolean isBeta) {
         this.id = id;
         this.level = level;
         this.isBeta = isBeta;
-        this.valueClass = valueClass;
-    }
-
-    EnglishGeneralItemCharacteristics(String id, TaskLevel level, boolean isBeta) {
-        this( id, level, isBeta, null);
     }
 
     EnglishGeneralItemCharacteristics(String id, TaskLevel level) {
-        this( id, level, false);
+        this.id = id;
+        this.level = level;
+        this.isBeta = false;
     }
 }

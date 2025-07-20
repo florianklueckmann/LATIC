@@ -2,8 +2,6 @@ package software.latic.item;
 
 import software.latic.task.TaskLevel;
 
-import java.util.Optional;
-
 public enum GeneralItemCharacteristics implements ItemCharacteristics {
 
     WORD_COUNT("wordCount", TaskLevel.TEXT),
@@ -27,22 +25,9 @@ public enum GeneralItemCharacteristics implements ItemCharacteristics {
     public String getId() {
         return id;
     }
-    
-    private final Class<?> valueClass;
-    
-    @Override
-    public Optional<Class<?>> getValueClass() {
-        return Optional.ofNullable(valueClass);
-    }
 
-    GeneralItemCharacteristics(String id, TaskLevel level, Class<?> valueClass) {
+    GeneralItemCharacteristics(String id, TaskLevel level) {
         this.id = id;
         this.level = level;
-        this.valueClass = valueClass;
     }
-    
-    GeneralItemCharacteristics(String id, TaskLevel level) {
-        this(id, level, null);
-    }
-
 }
