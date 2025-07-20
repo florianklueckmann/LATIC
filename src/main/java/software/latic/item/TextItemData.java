@@ -13,6 +13,7 @@ public abstract class TextItemData {
     final StringProperty fileName;
     final StringProperty text;
     StringProperty textAndPosTags;
+    IntegerProperty passiveConstructionsCount;
     IntegerProperty wordCount;
     IntegerProperty sentenceCount;
     IntegerProperty syllableCount;
@@ -103,6 +104,7 @@ public abstract class TextItemData {
         this.fileName = new SimpleStringProperty();
         this.text = new SimpleStringProperty(text);
         this.textAndPosTags = new SimpleStringProperty();
+        this.passiveConstructionsCount = new SimpleIntegerProperty();
         this.wordCount = new SimpleIntegerProperty();
         this.sentenceCount = new SimpleIntegerProperty();
         this.syllableCount = new SimpleIntegerProperty();
@@ -124,6 +126,7 @@ public abstract class TextItemData {
         valueMap.put("fileName", getFileName());
         valueMap.put("text",getText());
         valueMap.put("textAndPosTags",getTextAndPosTags());
+        valueMap.put("passiveConstructionsCount", String.valueOf(getPassiveConstructionsCount()));
         valueMap.put("wordCount",String.valueOf(getWordCount()));
         valueMap.put("sentenceCount",String.valueOf(getSentenceCount()));
         valueMap.put("syllableCount",String.valueOf(getSyllableCount()));
@@ -328,5 +331,17 @@ public abstract class TextItemData {
 
     public void setLixReadabilityLevel(String lixReadabilityLevel) {
         this.lixReadabilityLevel.set(lixReadabilityLevel);
+    }
+
+    public Integer getPassiveConstructionsCount() {
+        return passiveConstructionsCount.get();
+    }
+
+    public IntegerProperty passiveConstructionsCountProperty() {
+        return passiveConstructionsCount;
+    }
+
+    public void setPassiveConstructionsCount(Integer passiveConstructionsCount) {
+        this.passiveConstructionsCount.set(passiveConstructionsCount);
     }
 }
