@@ -1,5 +1,6 @@
 package software.latic.text_analyzer;
 
+import software.latic.Logging;
 import software.latic.item.TextItemData;
 import software.latic.helper.TagMapper;
 import software.latic.linguistic_feature.LinguisticFeature;
@@ -11,8 +12,10 @@ import javafx.collections.ObservableList;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -43,14 +46,29 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
         return sb.toString().trim();
     }
 
-    public Integer passiveConstructionsCount() {
+    public int nounPhrasesCount() {
+        AtomicLong count = new AtomicLong(0);
+        doc.sentences().forEach(sentence -> {
+            var tree = sentence.parse();
+            var childTrees = tree.getChildrenAsList();
+            Logger.getLogger("NlpTextAnalyzer").log(Level.INFO, tree.toString() );
+            count.addAndGet(countOccurrences(tree.toString(), "(NP"));
+        });
+        return count.intValue();
+    }
+
+    private int countOccurrences(String text, String substring) {
+        return (text.length() - text.replace(substring, "").length()) / substring.length();
+    }
+
+    public int passiveConstructionsCount() {
         AtomicInteger count = new AtomicInteger(0);
 
         doc.sentences().forEach(sentence -> {
             var labels = sentence.incomingDependencyLabels().stream()
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .collect(Collectors.toList());
+                    .toList();
 
             int pairsInSentence = (int) Math.min(
                     labels.stream().filter("nsubj:pass"::equals).count(),
