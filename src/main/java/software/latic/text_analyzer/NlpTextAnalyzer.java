@@ -134,9 +134,7 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
                     setterName = setterName.substring(0, 1).toUpperCase() + setterName.substring(1);
                     setterName = "set" + setterName;
 
-                    var resultClass = task.getResultType().orElse(String.class);
-
-                    setter = textItemData.getClass().getMethod(setterName, resultClass);
+                    setter = textItemData.getClass().getMethod(setterName, nlpMethod.getReturnType());
 
                     setter.invoke(textItemData, nlpMethod.invoke(this));
 

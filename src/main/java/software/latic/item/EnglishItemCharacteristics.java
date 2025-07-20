@@ -2,8 +2,6 @@ package software.latic.item;
 
 import software.latic.task.TaskLevel;
 
-import java.util.Optional;
-
 public enum EnglishItemCharacteristics implements ItemCharacteristics {
     CONJUNCTIONS("conjunctions", TaskLevel.WORD_CLASS),
     EXISTENTIAL_THERE("existentialThere", TaskLevel.WORD_CLASS),
@@ -25,26 +23,15 @@ public enum EnglishItemCharacteristics implements ItemCharacteristics {
     private final TaskLevel level;
 
     public TaskLevel getLevel() { return level; }
-    
-    private final Class<?> valueClass;
-    
-    @Override
-    public Optional<Class<?>> getValueClass() {
-        return Optional.ofNullable(valueClass);
-    }
-
-    EnglishItemCharacteristics(String id, TaskLevel level, Class<?> valueClass) {
-        this.id = id;
-        this.level = level;
-        this.valueClass = valueClass;
-    }
 
     EnglishItemCharacteristics(String id, TaskLevel level) {
-        this(id, level, null);
+        this.id = id;
+        this.level = level;
     }
 
     EnglishItemCharacteristics(String id) {
-        this(id, TaskLevel.WORD);
+        this.id = id;
+        this.level = TaskLevel.WORD;
     }
 
 }

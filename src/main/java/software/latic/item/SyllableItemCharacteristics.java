@@ -2,8 +2,6 @@ package software.latic.item;
 
 import software.latic.task.TaskLevel;
 
-import java.util.Optional;
-
 public enum SyllableItemCharacteristics implements ItemCharacteristics {
 
     SYLLABLE_COUNT("syllableCount", TaskLevel.TEXT),
@@ -22,22 +20,10 @@ public enum SyllableItemCharacteristics implements ItemCharacteristics {
     public String getId() {
         return id;
     }
-    
-    private final Class<?> valueClass;
-    
-    @Override
-    public Optional<Class<?>> getValueClass() {
-        return Optional.ofNullable(valueClass);
-    }
 
-    SyllableItemCharacteristics(String id, TaskLevel level, Class<?> valueClass) {
+    SyllableItemCharacteristics(String id, TaskLevel level) {
         this.id = id;
         this.level = level;
-        this.valueClass = valueClass;
-    }
-    
-    SyllableItemCharacteristics(String id, TaskLevel level) {
-        this(id, level, null);
     }
 
 }

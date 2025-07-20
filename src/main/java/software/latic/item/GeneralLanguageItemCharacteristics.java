@@ -2,8 +2,6 @@ package software.latic.item;
 
 import software.latic.task.TaskLevel;
 
-import java.util.Optional;
-
 public enum GeneralLanguageItemCharacteristics implements ItemCharacteristics {
 
 
@@ -33,25 +31,14 @@ public enum GeneralLanguageItemCharacteristics implements ItemCharacteristics {
     public String getId() {
         return id;
     }
-    
-    private final Class<?> valueClass;
-    
-    @Override
-    public Optional<Class<?>> getValueClass() {
-        return Optional.ofNullable(valueClass);
-    }
-
-    GeneralLanguageItemCharacteristics(String id, TaskLevel level, Class<?> valueClass) {
-        this.id = id;
-        this.level = level;
-        this.valueClass = valueClass;
-    }
 
     GeneralLanguageItemCharacteristics(String id, TaskLevel level) {
-        this(id, level, null);
+        this.id = id;
+        this.level = level;
     }
 
     GeneralLanguageItemCharacteristics(String id) {
-        this(id, TaskLevel.WORD);
+        this.id = id;
+        this.level = TaskLevel.WORD;
     }
 }
