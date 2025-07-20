@@ -11,6 +11,11 @@ import javafx.collections.ObservableList;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
 
@@ -23,6 +28,8 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
     private NlpTextAnalyzer() {
     }
 
+    //TODO only parse sentence once and save data
+
     public String textAndPosTags() {
         StringBuilder sb = new StringBuilder();
         doc.sentences().forEach(sentence -> {
@@ -34,6 +41,69 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
             sb.append("\n");
         });
         return sb.toString().trim();
+    }
+
+    public Integer passiveConstructionsCount() {
+        AtomicInteger count = new AtomicInteger(0);
+
+        doc.sentences().forEach(sentence -> {
+            var labels = sentence.incomingDependencyLabels().stream()
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+
+            int pairsInSentence = (int) Math.min(
+                    labels.stream().filter("nsubj:pass"::equals).count(),
+                    labels.stream().filter("aux:pass"::equals).count()
+            );
+
+            count.addAndGet(pairsInSentence);
+
+            Logger.getLogger("NlpTextAnalyzer").log(Level.INFO,
+                    String.format("sentence: %s", sentence.text()));
+            Logger.getLogger("NlpTextAnalyzer").log(Level.INFO,
+                    String.format("pairs in sentence: %d", pairsInSentence));
+        });
+
+        Logger.getLogger("NlpTextAnalyzer").log(Level.INFO,
+                String.format("Total passive construction pairs: %d", count.get()));
+        return count.get();
+
+    }
+
+    public String passiveConstructions() {
+        StringBuilder sb = new StringBuilder();
+        AtomicInteger count = new AtomicInteger(0);
+
+        doc.sentences().forEach(sentence -> {
+            var labels = sentence.incomingDependencyLabels().stream()
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+
+            int pairsInSentence = (int) Math.min(
+                    labels.stream().filter("nsubj:pass"::equals).count(),
+                    labels.stream().filter("aux:pass"::equals).count()
+            );
+
+            count.addAndGet(pairsInSentence);
+
+            sentence.incomingDependencyLabels().forEach(label -> {
+                label.ifPresent(l -> sb.append(l).append(" "));
+            });
+            sb.append("\n");
+
+            Logger.getLogger("NlpTextAnalyzer").log(Level.INFO,
+                    String.format("sentence: %s", sentence.text()));
+            Logger.getLogger("NlpTextAnalyzer").log(Level.INFO,
+                    String.format("pairs in sentence: %d", pairsInSentence));
+        });
+
+        var result = sb.toString().trim();
+        Logger.getLogger("NlpTextAnalyzer").log(Level.INFO,
+                String.format("Total passive construction pairs: %d", count.get()));
+        return result.isEmpty() ? "" : result;
+
     }
 
     private List<String> replaceTags(List<Token> tokens) {
@@ -63,10 +133,12 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
                     var setterName = task.getId();
                     setterName = setterName.substring(0, 1).toUpperCase() + setterName.substring(1);
                     setterName = "set" + setterName;
-                    setter = textItemData.getClass().getMethod(setterName, String.class);
 
+                    var resultClass = task.getResultType().orElse(String.class);
 
-                    setter.invoke(textItemData, String.valueOf(nlpMethod.invoke(this)));
+                    setter = textItemData.getClass().getMethod(setterName, resultClass);
+
+                    setter.invoke(textItemData, nlpMethod.invoke(this));
 
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
