@@ -14,6 +14,7 @@ public abstract class TextItemData {
     final StringProperty text;
     StringProperty textAndPosTags;
     IntegerProperty passiveConstructionsCount;
+    IntegerProperty nounPhrasesCount;
     IntegerProperty wordCount;
     IntegerProperty sentenceCount;
     IntegerProperty syllableCount;
@@ -105,6 +106,7 @@ public abstract class TextItemData {
         this.text = new SimpleStringProperty(text);
         this.textAndPosTags = new SimpleStringProperty();
         this.passiveConstructionsCount = new SimpleIntegerProperty();
+        this.nounPhrasesCount = new SimpleIntegerProperty();
         this.wordCount = new SimpleIntegerProperty();
         this.sentenceCount = new SimpleIntegerProperty();
         this.syllableCount = new SimpleIntegerProperty();
@@ -127,6 +129,7 @@ public abstract class TextItemData {
         valueMap.put("text",getText());
         valueMap.put("textAndPosTags",getTextAndPosTags());
         valueMap.put("passiveConstructionsCount", String.valueOf(getPassiveConstructionsCount()));
+        valueMap.put("nounPhrasesCount", String.valueOf(getPassiveConstructionsCount()));
         valueMap.put("wordCount",String.valueOf(getWordCount()));
         valueMap.put("sentenceCount",String.valueOf(getSentenceCount()));
         valueMap.put("syllableCount",String.valueOf(getSyllableCount()));
@@ -333,7 +336,7 @@ public abstract class TextItemData {
         this.lixReadabilityLevel.set(lixReadabilityLevel);
     }
 
-    public Integer getPassiveConstructionsCount() {
+    public int getPassiveConstructionsCount() {
         return passiveConstructionsCount.get();
     }
 
@@ -341,7 +344,19 @@ public abstract class TextItemData {
         return passiveConstructionsCount;
     }
 
-    public void setPassiveConstructionsCount(Integer passiveConstructionsCount) {
+    public void setPassiveConstructionsCount(int passiveConstructionsCount) {
         this.passiveConstructionsCount.set(passiveConstructionsCount);
+    }
+
+    public int getNounPhrasesCount() {
+        return nounPhrasesCount.get();
+    }
+
+    public IntegerProperty nounPhrasesCountProperty() {
+        return nounPhrasesCount;
+    }
+
+    public void setNounPhrasesCount(int nounPhrasesCount) {
+        this.nounPhrasesCount.set(nounPhrasesCount);
     }
 }
