@@ -1,5 +1,7 @@
 package software.latic.text_analyzer;
 
+import edu.stanford.nlp.trees.Tree;
+import software.latic.Logging;
 import software.latic.item.TextItemData;
 import software.latic.helper.TagMapper;
 import software.latic.linguistic_feature.LinguisticFeature;
@@ -9,15 +11,23 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
+
+    final List<String> knownNounTags = List.of(
+            "NOUN",
+            "PROPN",
+            "MPN",
+            "NP",
+            "NNP"
+    );
 
     public static final NlpTextAnalyzer instance = new NlpTextAnalyzer();
 
@@ -43,14 +53,101 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
         return sb.toString().trim();
     }
 
-    public Integer passiveConstructionsCount() {
+    public int nounPhrasesCount() {
+        AtomicLong count = new AtomicLong(0);
+        var nounPhrases = new ArrayList<String>();
+
+        doc.sentences().forEach(sentence -> {
+            var tree = sentence.parse();
+            Logger.getLogger("NlpTextAnalyzer").log(Level.INFO, tree.toString());
+
+            int additionalNPs = findNounSequences(tree, new HashSet<>(), nounPhrases);
+
+            count.addAndGet(additionalNPs);
+        });
+        Logging.getInstance().debug("NlpTextAnalyzer", String.format("nounPhrases: %s", nounPhrases));
+        return count.intValue();
+    }
+
+    private boolean labelIsNounPhrase(String labelValue) {
+        return labelValue.equalsIgnoreCase("NP")
+                || labelValue.equalsIgnoreCase("NP-TMP")
+                || labelValue.equalsIgnoreCase("WHNP")
+                || labelValue.equalsIgnoreCase("NPS");
+    }
+
+    private boolean isSimpleNounPhrase(Tree tree) {
+        return labelIsNounPhrase(tree.label().value()) && doesNotContainNP(tree);
+    }
+
+    private boolean isPPWithNoun(Tree tree) {
+        return tree.label().value().equalsIgnoreCase("PP")
+                && containsNoun(tree) && doesNotContainNP(tree);
+    }
+
+    private int findNounSequences(Tree tree, Set<Tree> counted, List<String> nounPhrases) {
+        int count = 0;
+
+        if (counted.contains(tree) || tree.depth() <= 1) {
+            return 0;
+        }
+
+        //If we find a NP -> NP SBAR sequence, we assume that SBAR does always describe the Subject in NP
+        if ((tree.label().value().equalsIgnoreCase("NP") && (containsOnlyNPAndSBAR(tree) || (containsNoun(tree) && containsPP(tree))))) {
+            count++;
+            nounPhrases.add(tree.toString());
+            counted.addAll(Arrays.asList(tree.children()));
+        }
+        else if (isPPWithNoun(tree) || isSimpleNounPhrase(tree)) {
+            count++;
+            nounPhrases.add(tree.toString());
+            counted.add(tree);
+        }
+
+        for (Tree child : tree.children()) {
+            count += findNounSequences(child, counted, nounPhrases);
+        }
+
+        return count;
+    }
+
+    private boolean containsOnlyNPAndSBAR(Tree tree) {
+        var hasSBAR = new AtomicBoolean(false) ;
+        var hasNP = new AtomicBoolean(false);
+
+        if (tree.children().length == 2) {
+            Arrays.stream(tree.children()).forEach(child -> {
+                if (child.value().equalsIgnoreCase("NP")){
+                    hasNP.set(true);
+                }
+                else if (child.value().equalsIgnoreCase("SBAR")){
+                    hasSBAR.set(true);
+                }
+            });
+        }
+        return hasSBAR.get() && hasNP.get();
+    }
+
+    private boolean containsNoun(Tree tree) {
+        return Arrays.stream(tree.children()).anyMatch(child -> knownNounTags.contains(child.label().value()));
+    }
+
+    private boolean containsPP(Tree tree) {
+        return Arrays.stream(tree.children()).anyMatch(child -> child.label().value().equalsIgnoreCase("PP"));
+    }
+
+    private boolean doesNotContainNP(Tree tree) {
+        return Arrays.stream(tree.children()).noneMatch(child -> Objects.equals(child.label().value(), "NP"));
+    }
+
+    public int passiveConstructionsCount() {
         AtomicInteger count = new AtomicInteger(0);
 
         doc.sentences().forEach(sentence -> {
             var labels = sentence.incomingDependencyLabels().stream()
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .collect(Collectors.toList());
+                    .toList();
 
             int pairsInSentence = (int) Math.min(
                     labels.stream().filter("nsubj:pass"::equals).count(),
