@@ -97,8 +97,7 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
             count++;
             nounPhrases.add(tree.toString());
             counted.addAll(Arrays.asList(tree.children()));
-        }
-        else if (isPPWithNoun(tree) || isSimpleNounPhrase(tree)) {
+        } else if (isPPWithNoun(tree) || isSimpleNounPhrase(tree)) {
             count++;
             nounPhrases.add(tree.toString());
             counted.add(tree);
@@ -112,15 +111,14 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
     }
 
     private boolean containsOnlyNPAndSBAR(Tree tree) {
-        var hasSBAR = new AtomicBoolean(false) ;
+        var hasSBAR = new AtomicBoolean(false);
         var hasNP = new AtomicBoolean(false);
 
         if (tree.children().length == 2) {
             Arrays.stream(tree.children()).forEach(child -> {
-                if (child.value().equalsIgnoreCase("NP")){
+                if (child.value().equalsIgnoreCase("NP")) {
                     hasNP.set(true);
-                }
-                else if (child.value().equalsIgnoreCase("SBAR")){
+                } else if (child.value().equalsIgnoreCase("SBAR")) {
                     hasSBAR.set(true);
                 }
             });
@@ -149,21 +147,25 @@ public class NlpTextAnalyzer extends BaseTextAnalyzer implements TextAnalyzer {
                     .map(Optional::get)
                     .toList();
 
+            Logging.getInstance().debug("NlpTextAnalyzer", String.format("labels: %s", labels));
+
             int pairsInSentence = (int) Math.min(
                     labels.stream().filter("nsubj:pass"::equals).count(),
                     labels.stream().filter("aux:pass"::equals).count()
             );
 
-            count.addAndGet(pairsInSentence);
+            int agentsInSentence = (int) labels.stream().filter(e -> e.equalsIgnoreCase("obl:agent") || e.equalsIgnoreCase("obl:by")).count();
+
+            if (pairsInSentence > 0) {
+                count.addAndGet((int) Math.max(pairsInSentence, agentsInSentence));
+            }
 
             Logger.getLogger("NlpTextAnalyzer").log(Level.INFO,
-                    String.format("sentence: %s", sentence.text()));
-            Logger.getLogger("NlpTextAnalyzer").log(Level.INFO,
-                    String.format("pairs in sentence: %d", pairsInSentence));
+                    String.format("%d pairs and %d agents in sentence %s", pairsInSentence, agentsInSentence, sentence.text()));
         });
 
         Logger.getLogger("NlpTextAnalyzer").log(Level.INFO,
-                String.format("Total passive construction pairs: %d", count.get()));
+                String.format("Total passive constructions: %d", count.get()));
         return count.get();
 
     }

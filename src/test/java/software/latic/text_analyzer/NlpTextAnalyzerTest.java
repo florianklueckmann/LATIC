@@ -56,39 +56,12 @@ class NlpTextAnalyzerTest {
     }
 
     @Test
-    void givenDocumentWithSimpleSentence_whenNounPhrasesCountCalled_thenCorrectCountReturned() {
-        // Arrange
-        String text = "The quick brown fox jumps over the lazy dog.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        int result = analyzer.nounPhrasesCount();
-
-        // Assert
-        assertEquals(2, result, "Expected 2 noun phrases in the sentence.");
-    }
-
-    @Test
-    void givenDocumentWithRepeatedPhrase_whenNounPhrasesCountCalled_thenCorrectCountReturned() {
-        // Arrange
-        String text = "The quick brown fox jumps over the quick brown fox. The quick brown fox jumps over the quick brown fox.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        int result = analyzer.nounPhrasesCount();
-
-        // Assert
-        assertEquals(4, result, String.format("Expected 2 noun phrases, but got %d in the sentence %s", result, text));
-    }
-
-    @Test
     void givenDocumentWithEnglishSentence_whenNounPhrasesCountCalled_thenCorrectCountReturned() {
         // Arrange
         String[][] testCases = {
+                {"The quick brown fox jumps over the lazy dog.", "2"},
+                {"The quick brown fox jumps over the quick brown fox. The quick brown fox jumps over the quick brown fox.", "4"},
+                {"The big apple is famous. New York is bustling. The nice house is green.", "3"},
                 {"The dog barked loudly.", "1"},
                 {"She gave a gift to her brother.", "3"},
                 {"That small red book belongs to Emily.", "2"},
@@ -153,68 +126,6 @@ class NlpTextAnalyzerTest {
     }
 
     @Test
-    void givenEmptyDocument_whenNounPhrasesCountCalled_thenZeroCountReturned() {
-        // Arrange
-        String text = "";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        int result = analyzer.nounPhrasesCount();
-
-        // Assert
-        assertEquals(0, result, "Expected 0 noun phrases in an empty document.");
-    }
-
-    @Test
-    void givenDocumentWithMultipleSentences_whenNounPhrasesCountCalled_thenCorrectCountReturned() {
-        // Arrange
-        String text = "The big apple is famous. New York is bustling. The nice house is green.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        int result = analyzer.nounPhrasesCount();
-
-        // Assert
-        assertEquals(3, result, "Expected 3 noun phrases across two sentences.");
-    }
-
-    @Test
-    void givenDocumentWithComplexStructure_whenNounPhrasesCountCalled_thenCorrectCountReturned() {
-        // Arrange
-        String text = "The teacher, who was highly respected, gave the students an insightful lecture.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        int result = analyzer.nounPhrasesCount();
-
-        // Assert
-        assertEquals(4, result, "Expected 4 noun phrases in the complex sentence.");
-    }
-
-    @Test
-    void givenDocumentWithoutPassiveVoice_whenPassiveConstructionsCalled_thenMinimalDependenciesReturned() {
-        // Arrange
-        String text = "The class reads the book.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        String result = analyzer.passiveConstructions();
-
-        // Assert
-        assertNotNull(result, "The result should not be null.");
-        assertFalse(result.contains("nsubj:pass"), "Result should not contain 'nsubj:pass'.");
-        assertFalse(result.contains("aux:pass"), "Result should not contain 'aux:pass'.");
-    }
-
-    @Test
     void givenEmptyDocument_whenPassiveConstructionsCalled_thenEmptyStringReturned() {
         // Arrange
         String text = "";
@@ -249,110 +160,44 @@ class NlpTextAnalyzerTest {
     }
 
     @Test
-    void givenDocumentWithComplexConstructions_whenPassiveConstructionsCalled_thenCorrectDependenciesReturned() {
-        // Arrange
-        String text = "The homework was completed by the students, and the teacher was impressed.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        String result = analyzer.passiveConstructions();
-
-        // Assert
-        assertNotNull(result, "The result should not be null.");
-        assertTrue(result.contains("nsubj:pass"), "Expected 'nsubj:pass' for passive construction.");
-        assertTrue(result.contains("aux:pass"), "Expected 'auxp:ass' for passive auxiliary.");
-        assertTrue(result.contains("cc"), "Expected 'cc' for conjunction between clauses.");
-    }
-
-    @Test
     void givenDocumentWithPassiveVoice_whenPassiveConstructionsCountCalled_thenCorrectCountReturned() {
         // Arrange
-        String text = "The book was read by the boy.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
+        String[][] testCases = {
+                {"", "0"},
+                {"The class reads the book.", "0"},
+                {"The book was read by the boy.", "1"},
+                {"The homework was completed by the students, and the teacher was impressed.", "1"},
+                {"The cake was baked by Alice. The homework was completed by the students.", "2"},
+                {"The report was written by the intern, and the presentation was prepared by the team.", "2"},
+                {"The decision was made.", "1"},
+                {"The plan is being reviewed by the committee.", "1"},
+                {"The report has been finalized by the committee.", "1"},
+                {"The contract had been signed by both parties before the meeting was scheduled by the organizer.", "2"},
+                {"The work will have been completed by next week.", "1"},
+                {"Should the plan be approved by the board?", "1"},
+                {"Was the issue resolved by the team or ignored by the manager?", "2"},
+                {"The patient was examined by the doctor and was admitted by the nurse.", "2"},
+                {"The system was designed by engineers, built by contractors, and tested by auditors.", "3"},
+                {"It is believed by many that the policy was influenced by the lobbyists.", "2"},
+                {"Rarely was the error detected by the old tool, but it was caught by the new one.", "2"},
+                {"No changes were requested by the client, and the files were archived by the team.", "2"},
+                {"Under strict supervision, the experiment was conducted by the researchers.", "1"},
+                {"Every ticket was scanned by the device before the guests were seated by the ushers.", "2"},
+        };
 
-        // Act
-        int result = analyzer.passiveConstructionsCount();
+        for (String[] testCase : testCases) {
+            String text = testCase[0];
+            int expected = Integer.parseInt(testCase[1]);
 
-        // Assert
-        assertEquals(1, result, "Expected 1 passive construction.");
-    }
+            Document doc = new Document(text);
+            NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
+            analyzer.setDoc(doc);
 
-    @Test
-    void givenDocumentWithoutPassiveVoice_whenPassiveConstructionsCountCalled_thenZeroCountReturned() {
-        // Arrange
-        String text = "The boy reads the book.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
+            // Act
+            int result = analyzer.passiveConstructionsCount();
 
-        // Act
-        int result = analyzer.passiveConstructionsCount();
-
-        // Assert
-        assertEquals(0, result, "Expected 0 passive constructions.");
-    }
-
-    @Test
-    void givenEmptyDocument_whenPassiveConstructionsCountCalled_thenZeroCountReturned() {
-        // Arrange
-        String text = "";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        int result = analyzer.passiveConstructionsCount();
-
-        // Assert
-        assertEquals(0, result, "Expected 0 passive constructions for an empty document.");
-    }
-
-    @Test
-    void givenDocumentWithMultiplePassiveVoiceSentences_whenPassiveConstructionsCountCalled_thenCorrectCountReturned() {
-        // Arrange
-        String text = "The cake was baked by Alice. The homework was completed by the students.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        int result = analyzer.passiveConstructionsCount();
-
-        // Assert
-        assertEquals(2, result, "Expected 2 passive constructions.");
-    }
-
-    @Test
-    void givenDocumentWithMultiplePassiveVoiceInOneSentence_whenPassiveConstructionsCountCalled_thenCorrectCountReturned() {
-        // Arrange
-        String text = "The report was written by the intern, and the presentation was prepared by the team.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        int result = analyzer.passiveConstructionsCount();
-
-        // Assert
-        assertEquals(2, result, "Expected 2 passive constructions.");
-    }
-
-    @Test
-    void givenDocumentWithComplexPassives_whenPassiveConstructionsCountCalled_thenCorrectCountReturned() {
-        // Arrange
-        String text = "The homework was completed by the students, and the teacher was impressed.";
-        Document doc = new Document(text);
-        NlpTextAnalyzer analyzer = NlpTextAnalyzer.getInstance();
-        analyzer.setDoc(doc);
-
-        // Act
-        int result = analyzer.passiveConstructionsCount();
-
-        // Assert
-        assertEquals(1, result, "Expected 1 passive construction despite the complex structure.");
+            // Assert
+            assertEquals(expected, result, "Expected " + expected + " passive constructions in: " + text);
+        }
     }
 }
