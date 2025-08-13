@@ -22,13 +22,11 @@ import java.util.logging.Level;
 public class App extends Application {
 
     private static Scene scene;
-    protected static final Level loggingLevel = Level.INFO;
+    protected static final Level loggingLevel = Level.WARNING;
     protected static ResourceBundle bundle = null;
 
     @Override
     public void start(Stage stage) throws IOException {
-        Locale.setDefault(Locale.GERMAN);
-        Translation.getInstance().setLocale(Locale.GERMAN);
         prepareStage(stage);
         stage.show();
         UpdateHelper.getInstance().updateCheck();
