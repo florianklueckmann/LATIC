@@ -10,7 +10,8 @@ public enum GeneralItemCharacteristics implements ItemCharacteristics {
     AVERAGE_SENTENCE_LENGTH_CHARACTERS("averageSentenceLengthCharacters", TaskLevel.SENTENCE_LENGTH),
     AVERAGE_SENTENCE_LENGTH_CHARACTERS_WITHOUT_WHITESPACES("averageSentenceLengthCharactersWithoutWhitespaces", TaskLevel.SENTENCE_LENGTH),
     AVERAGE_SENTENCE_LENGTH_WORDS("averageSentenceLengthWords", TaskLevel.SENTENCE_LENGTH),
-    LEXICAL_DIVERSITY("lexicalDiversity", TaskLevel.TEXT),
+    TYPE_TOKEN_RATIO("typeTokenRatio", TaskLevel.TEXT),
+    ROOT_TYPE_TOKEN_RATIO("rootTypeTokenRatio", TaskLevel.TEXT),
     LIX_SCORE("lixReadabilityScore", TaskLevel.TEXT_READABILITY),
     LIX_SCORE_LEVEL("lixReadabilityLevel", TaskLevel.TEXT_READABILITY);
 

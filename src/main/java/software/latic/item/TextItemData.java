@@ -24,7 +24,8 @@ public abstract class TextItemData {
     DoubleProperty averageSentenceLengthCharacters;
     DoubleProperty averageSentenceLengthCharactersWithoutWhitespaces;
     DoubleProperty averageSentenceLengthWords;
-    DoubleProperty lexicalDiversity;
+    DoubleProperty typeTokenRatio;
+    DoubleProperty rootTypeTokenRatio;
     DoubleProperty lixReadabilityScore;
     StringProperty lixReadabilityLevel;
     DoubleProperty averageSentenceLengthSyllables;
@@ -46,19 +47,19 @@ public abstract class TextItemData {
 //    IntegerProperty unknown;
 
 
-    public double getLexicalDiversity()
+    public double getTypeTokenRatio()
     {
-        return lexicalDiversity.get();
+        return typeTokenRatio.get();
     }
 
-    public DoubleProperty lexicalDiversityProperty()
+    public DoubleProperty typeTokenRatioProperty()
     {
-        return lexicalDiversity;
+        return typeTokenRatio;
     }
 
-    public void setLexicalDiversity(double lexicalDiversity)
+    public void setTypeTokenRatio(double typeTokenRatio)
     {
-        this.lexicalDiversity.set(lexicalDiversity);
+        this.typeTokenRatio.set(typeTokenRatio);
     }
 
     public double getLixReadabilityScore()
@@ -117,7 +118,8 @@ public abstract class TextItemData {
         this.averageSentenceLengthCharactersWithoutWhitespaces = new RoundedDoubleProperty();
         this.averageSentenceLengthWords = new RoundedDoubleProperty();
         this.averageSentenceLengthSyllables = new RoundedDoubleProperty();
-        this.lexicalDiversity = new RoundedDoubleProperty();
+        this.typeTokenRatio = new RoundedDoubleProperty();
+        this.rootTypeTokenRatio = new RoundedDoubleProperty();
         this.lixReadabilityScore = new RoundedDoubleProperty();
         this.lixReadabilityLevel = new SimpleStringProperty();
         this.connectivesCount = new SimpleIntegerProperty();
@@ -140,7 +142,8 @@ public abstract class TextItemData {
         valueMap.put("averageSentenceLengthCharactersWithoutWhitespaces",String.valueOf(getAverageSentenceLengthCharactersWithoutWhitespaces()));
         valueMap.put("averageSentenceLengthWords",String.valueOf(getAverageSentenceLengthWords()));
         valueMap.put("averageSentenceLengthSyllables",String.valueOf(getAverageSentenceLengthWords()));
-        valueMap.put("lexicalDiversity",String.valueOf(getLexicalDiversity()));
+        valueMap.put("typeTokenRatio",String.valueOf(getTypeTokenRatio()));
+        valueMap.put("rootTypeTokenRatio",String.valueOf(getRootTypeTokenRatio()));
         valueMap.put("lixReadabilityScore",String.valueOf(getLixReadabilityScore()));
         valueMap.put("lixReadabilityLevel",String.valueOf(getLixReadabilityLevel()));
         valueMap.put("connectivesCount",String.valueOf(getConnectivesCount()));
@@ -358,5 +361,17 @@ public abstract class TextItemData {
 
     public void setNounPhrasesCount(int nounPhrasesCount) {
         this.nounPhrasesCount.set(nounPhrasesCount);
+    }
+
+    public double getRootTypeTokenRatio() {
+        return rootTypeTokenRatio.get();
+    }
+
+    public DoubleProperty rootTypeTokenRatioProperty() {
+        return rootTypeTokenRatio;
+    }
+
+    public void setRootTypeTokenRatio(double rootTypeTokenRatio) {
+        this.rootTypeTokenRatio.set(rootTypeTokenRatio);
     }
 }

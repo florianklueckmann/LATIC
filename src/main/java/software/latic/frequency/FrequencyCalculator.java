@@ -81,6 +81,30 @@ public class FrequencyCalculator {
                 ));
     }
 
+    public double calculateStandardDeviation(List<String> words) {
+
+        int sumFrequency = 0;
+        int totalWords = words.size();
+        List<Integer> freqListPerWord = new ArrayList<>();
+
+        for (String word : words) {
+            var wordFreqClass = calculateFrequencyClass(frequencyMap.getOrDefault(word, 1));
+
+            sumFrequency += wordFreqClass;
+            freqListPerWord.add(wordFreqClass);
+        }
+        // get the mean of array
+        double mean = (double) sumFrequency / totalWords;
+
+        // calculate the standard deviation
+        double standardDeviation = 0.0;
+        for (double num : freqListPerWord) {
+            standardDeviation += Math.pow(num - mean, 2);
+        }
+
+        return Math.sqrt(standardDeviation / freqListPerWord.size());
+    }
+
     public double calculateAverageWordFrequency(List<String> words, Map<String, Integer> frequencyMap) {
 
         int sumFrequency = 0;
