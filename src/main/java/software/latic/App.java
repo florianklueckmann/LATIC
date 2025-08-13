@@ -10,7 +10,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -64,11 +63,6 @@ public class App extends Application {
         stage.setTitle("LATIC " + UpdateHelper.getInstance().getCurrentVersion());
         stage.setScene(scene);
 
-    }
-
-    private static String getAppVersion() {
-        var appBundle = ResourceBundle.getBundle("software.latic.app");
-        return appBundle.getString("version");
     }
 
     public static void main(String[] args) {
