@@ -25,7 +25,7 @@ public abstract class TextItemData {
     DoubleProperty averageSentenceLengthCharactersWithoutWhitespaces;
     DoubleProperty averageSentenceLengthWords;
     DoubleProperty typeTokenRatio;
-    DoubleProperty rootedTypeTokenRatio;
+    DoubleProperty rootTypeTokenRatio;
     DoubleProperty lixReadabilityScore;
     StringProperty lixReadabilityLevel;
     DoubleProperty averageSentenceLengthSyllables;
@@ -119,7 +119,7 @@ public abstract class TextItemData {
         this.averageSentenceLengthWords = new RoundedDoubleProperty();
         this.averageSentenceLengthSyllables = new RoundedDoubleProperty();
         this.typeTokenRatio = new RoundedDoubleProperty();
-        this.rootedTypeTokenRatio = new RoundedDoubleProperty();
+        this.rootTypeTokenRatio = new RoundedDoubleProperty();
         this.lixReadabilityScore = new RoundedDoubleProperty();
         this.lixReadabilityLevel = new SimpleStringProperty();
         this.connectivesCount = new SimpleIntegerProperty();
@@ -143,7 +143,7 @@ public abstract class TextItemData {
         valueMap.put("averageSentenceLengthWords",String.valueOf(getAverageSentenceLengthWords()));
         valueMap.put("averageSentenceLengthSyllables",String.valueOf(getAverageSentenceLengthWords()));
         valueMap.put("typeTokenRatio",String.valueOf(getTypeTokenRatio()));
-        valueMap.put("rootedTypeTokenRatio",String.valueOf(getRootedTypeTokenRatio()));
+        valueMap.put("rootTypeTokenRatio",String.valueOf(getRootTypeTokenRatio()));
         valueMap.put("lixReadabilityScore",String.valueOf(getLixReadabilityScore()));
         valueMap.put("lixReadabilityLevel",String.valueOf(getLixReadabilityLevel()));
         valueMap.put("connectivesCount",String.valueOf(getConnectivesCount()));
@@ -363,15 +363,15 @@ public abstract class TextItemData {
         this.nounPhrasesCount.set(nounPhrasesCount);
     }
 
-    public double getRootedTypeTokenRatio() {
-        return rootedTypeTokenRatio.get();
+    public double getRootTypeTokenRatio() {
+        return rootTypeTokenRatio.get();
     }
 
-    public DoubleProperty rootedTypeTokenRatioProperty() {
-        return rootedTypeTokenRatio;
+    public DoubleProperty rootTypeTokenRatioProperty() {
+        return rootTypeTokenRatio;
     }
 
-    public void setRootedTypeTokenRatio(double rootedTypeTokenRatio) {
-        this.rootedTypeTokenRatio.set(rootedTypeTokenRatio);
+    public void setRootTypeTokenRatio(double rootTypeTokenRatio) {
+        this.rootTypeTokenRatio.set(rootTypeTokenRatio);
     }
 }

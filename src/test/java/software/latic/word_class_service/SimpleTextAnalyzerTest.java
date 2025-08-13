@@ -133,6 +133,11 @@ class SimpleTextAnalyzerTest {
     }
 
     @Test
+    void getRootTypeTokenRatio() {
+        Assertions.assertEquals(4.15, simpleTextAnalyzer.rootTypeTokenRatio(), 0.01);
+    }
+
+    @Test
     void getTextLength() {
         List<CharSequence> testParagraphs = new ArrayList<>(Arrays.asList(
                 "Die Erde dreht sich um die Sonne. Wie lange dauert diese Umlaufzeit ca.?",

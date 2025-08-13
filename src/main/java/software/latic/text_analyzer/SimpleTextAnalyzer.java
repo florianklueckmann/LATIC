@@ -179,7 +179,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
         return (double) uniqueWords().size() / (double) wordCount();
     }
 
-    public double rootedTypeTokenRatio() {
+    public double rootTypeTokenRatio() {
         return (double) uniqueWords().size() / sqrt(wordCount());
     }
 
