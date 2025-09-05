@@ -128,8 +128,13 @@ class SimpleTextAnalyzerTest {
     }
 
     @Test
-    void getLexicalDiversity() {
-        Assertions.assertEquals(0.90, simpleTextAnalyzer.lexicalDiversity(), 0.01);
+    void getTypeTokenRatio() {
+        Assertions.assertEquals(0.90, simpleTextAnalyzer.typeTokenRatio(), 0.01);
+    }
+
+    @Test
+    void getRootTypeTokenRatio() {
+        Assertions.assertEquals(4.15, simpleTextAnalyzer.rootTypeTokenRatio(), 0.01);
     }
 
     @Test

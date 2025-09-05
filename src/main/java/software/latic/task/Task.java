@@ -18,7 +18,7 @@ public class Task {
         this.id.set(taskLevel.name());
         this.level = taskLevel;
 
-        setSelected(true);
+        this.selected.set(true);
     }
 
     public Task(String name, String id, TaskLevel taskLevel) {
@@ -26,7 +26,7 @@ public class Task {
         this.id.set(id);
         this.level = taskLevel;
 
-        setSelected(true);
+        this.selected.set(true);
     }
 
     public Task(String name, String id, TaskLevel taskLevel, boolean isBeta) {
@@ -35,7 +35,7 @@ public class Task {
         this.level = taskLevel;
         this.isBeta = isBeta;
 
-        setSelected(true);
+        this.selected.set(true);
     }
 
     public String getId() {
@@ -61,7 +61,10 @@ public class Task {
     public TaskLevel getLevel() {return this.level;}
 
     public boolean getIsBeta() {return this.isBeta;}
-    public void setIsBeta(boolean isBeta) {this.isBeta = isBeta;}
+    public Task setIsBeta(boolean isBeta) {
+        this.isBeta = isBeta;
+        return this;
+    }
 
     public BooleanProperty selectedProperty() {
         return selected;
@@ -69,8 +72,9 @@ public class Task {
     public boolean isSelected() {
         return selected.get();
     }
-    public void setSelected(boolean selected) {
+    public Task setSelected(boolean selected) {
         this.selected.set(selected);
+        return this;
     }
 
     public boolean equals(Task task) {

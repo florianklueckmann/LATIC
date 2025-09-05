@@ -18,16 +18,25 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class UpdateHelper {
     private static final UpdateHelper updateHelper = new UpdateHelper();
 
     public static UpdateHelper getInstance() {
         return updateHelper;
+    }
+
+
+    private String currentVersion = "";
+
+    public String getCurrentVersion() {
+        return currentVersion;
+    }
+
+    public UpdateHelper() {
+        var appBundle = ResourceBundle.getBundle("software.latic.app");
+        this.currentVersion = appBundle.getString("version");
     }
 
     private boolean shouldCheckForUpdate(String latestReleaseTag) {
