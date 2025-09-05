@@ -18,6 +18,10 @@
 
 }
 
+#version {
+    -fx-text-alignment: bottom-center;
+}
+
 .font-weight-bolder {
     -fx-font-weight: bolder
 }

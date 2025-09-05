@@ -59,7 +59,10 @@ public class App extends Application {
         if (imageResourceStream != null) {
             stage.getIcons().add(new Image(imageResourceStream));
         }
+
+        stage.setTitle("LATIC " + UpdateHelper.getInstance().getCurrentVersion());
         stage.setScene(scene);
+
     }
 
     public static void main(String[] args) {

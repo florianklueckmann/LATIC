@@ -3,7 +3,9 @@ package software.latic.item;
 import software.latic.task.TaskLevel;
 
 public enum TextInformationItemCharacteristics implements ItemCharacteristics {
-    TEXT_AND_POS_TAGS("textAndPosTags", TaskLevel.TEXT);
+    TEXT_AND_POS_TAGS("textAndPosTags", TaskLevel.TEXT),
+    PASSIVE_CONSTRUCTIONS_COUNT("passiveConstructionsCount", TaskLevel.TEXT),
+    NOUN_PHRASES_COUNT("nounPhrasesCount", TaskLevel.TEXT);
 //    POS_TAGS_PER_SENTENCE("posTagsPerSentence", TaskLevel.TEXT);
 
 
