@@ -51,6 +51,7 @@ public class PrimaryViewModel implements Initializable {
     @FXML private TextField filePathTextField;
     @FXML private CheckBox analyzeHeadersCheckbox;
     @FXML private CheckBox analyzeFootersCheckbox;
+    @FXML private CheckBox brelixCheckbox;
     @FXML private Button buttonSelectFile;
     @FXML private Tab fileTab;
     @FXML private Tab textTab;
@@ -75,7 +76,7 @@ public class PrimaryViewModel implements Initializable {
     private final ListProperty<Locale> languages = new SimpleListProperty<>();
 
     private final ListProperty<CharSequence>  importedDocumentContent = new SimpleListProperty<>(FXCollections.observableArrayList());
-    private final MapProperty<String, List<CharSequence>>  importedDocumentsContent = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
+    private final MapProperty<String, FileContent>  importedDocumentsContent = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
     private final ListProperty<File> importedFiles = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     private final FileChooser.ExtensionFilter excelFilter = new FileChooser.ExtensionFilter("Excel 2007-365", "*.xlsx");
@@ -291,6 +292,7 @@ public class PrimaryViewModel implements Initializable {
     private void applyPreferences() {
         analyzeHeadersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeHeaders", "true")));
         analyzeFootersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeFooters", "true")));
+        brelixCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("brelixEnabled", "false")));
     }
 
     private void addBoxToParent(List<CheckBoxTreeItem<Task>> rootBoxes, CheckBoxTreeItem<Task> subBox) {
@@ -358,6 +360,18 @@ public class PrimaryViewModel implements Initializable {
             ));
             languageSpecificTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
                     Arrays.stream(GermanItemCharacteristics.values())
+                            .map(ic -> new CheckBoxTreeItem<Task>(
+                                    new Task(Translation.getInstance().getTranslation(ic.getId()),
+                                            ic.getId(),
+                                            ic.getLevel()
+                                    ), null, true))
+                            .collect(Collectors.toList())
+            ));
+        }
+
+        if (brelixCheckbox.isSelected()) {
+            generalTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
+                    Arrays.stream(BrelixItemCharacteristics.values())
                             .map(ic -> new CheckBoxTreeItem<Task>(
                                     new Task(Translation.getInstance().getTranslation(ic.getId()),
                                             ic.getId(),
@@ -466,10 +480,7 @@ public class PrimaryViewModel implements Initializable {
         if (fileTab.isSelected() && !importedFiles.isEmpty()) {
             for (var importedFile : importedFiles) {
                 try {
-                    ObservableList<CharSequence> content = FXCollections
-                            .observableList(FileContentProvider
-                                    .getContent(importedFile.getPath()));
-
+                    FileContent content = FileContentProvider.getContent(importedFile.getPath());
                     importedDocumentsContent.put(importedFile.getName(), content);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -626,6 +637,11 @@ public class PrimaryViewModel implements Initializable {
 
     public void handleAnalyzeFootersCheckboxValueChanged(ActionEvent actionEvent) {
         Settings.userPreferences.put("analyzeFooters", String.valueOf(((CheckBox) actionEvent.getTarget()).isSelected()));
+    }
+
+    public void handleBrelixCheckboxValueChanged(ActionEvent actionEvent) {
+        Settings.userPreferences.put("brelixEnabled", String.valueOf(brelixCheckbox.isSelected()));
+        createCheckboxes();
     }
 
     public void cleanCsv(ActionEvent actionEvent) {

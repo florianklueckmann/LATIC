@@ -54,7 +54,7 @@ public class FrequencyListCleaner {
         try {
             content = FXCollections
                     .observableList(FileContentProvider
-                            .getContent(importedFile.getPath()));
+                            .getContent(importedFile.getPath()).getContent());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -108,7 +108,7 @@ public class FrequencyListCleaner {
         try {
             content = FXCollections
                     .observableList(FileContentProvider
-                            .getContent(importedFile.getPath()));
+                            .getContent(importedFile.getPath()).getContent());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

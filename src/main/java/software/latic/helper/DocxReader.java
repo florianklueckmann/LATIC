@@ -19,7 +19,7 @@ public class DocxReader implements FileReader {
         return reader;
     }
 
-    public List<CharSequence> getContent(String fileName) throws IOException {
+    public FileContent getContent(String fileName) throws IOException {
         Path filePath = Paths.get(fileName);
 
         XWPFDocument document = new XWPFDocument(Files.newInputStream(filePath));
@@ -35,9 +35,12 @@ public class DocxReader implements FileReader {
             content.addAll(getFooters(document));
         }
 
+        int pages = document.getProperties().getExtendedProperties().getUnderlyingProperties().getPages();
+        if (pages == 0) pages = 1;
+
         document.close();
 
-        return content;
+        return new FileContent(content, pages, 6.0);
 
     }
 

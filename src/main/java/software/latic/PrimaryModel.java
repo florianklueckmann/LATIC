@@ -49,6 +49,16 @@ public class PrimaryModel {
         this.setLanguage(Translation.getInstance().getLocale());
     }
 
+    private int pages = 1;
+    private double fontSizeMm = 6.0;
+
+    public PrimaryModel initializeDocument(software.latic.helper.FileContent fileContent) {
+        initializeDocument(fileContent.getContent());
+        this.pages = fileContent.getPages();
+        this.fontSizeMm = fileContent.getFontSizeMm();
+        return this;
+    }
+
     public PrimaryModel initializeDocument(List<CharSequence> paragraphs) {
         var text = paragraphs.stream()
                 .map(charSequence -> charSequence.toString().trim())
@@ -170,9 +180,16 @@ public class PrimaryModel {
             textItemData = new EnglishTextItemData(doc.text());
         }
 
+        textItemData.setPagesCount(this.pages);
+        textItemData.setFontSizeMm(this.fontSizeMm);
+
         nlp.processTasks(textItemData, textTasks);
         simpleTextAnalyzer.processTasks(textItemData, generalTasks);
         processLanguageTasks(textItemData, languageTasks);
+
+        if (generalTasks.stream().anyMatch(t -> t.getId().startsWith("brelix") || t.getId().equals("lixPlusScore") || t.getId().equals("pagesCount"))) {
+            software.latic.brelix.BrelixAnalyzer.getInstance().analyze(textItemData, doc);
+        }
 
         return textItemData;
     }

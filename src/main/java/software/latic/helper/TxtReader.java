@@ -12,13 +12,14 @@ public class TxtReader implements FileReader {
         return reader;
     }
     @Override
-    public List<CharSequence> getContent(String filePath) throws IOException {
+    public FileContent getContent(String filePath) throws IOException {
         try (var inputStream = new FileInputStream(filePath)) {
             var detector = new CharsetDetector();
             detector.setText(inputStream.readAllBytes());
             var detected = detector.detect();
             var reader= new BufferedReader(new InputStreamReader(new FileInputStream(filePath), detected.getName()));
-            return reader.lines().collect(Collectors.toList());
+            List<CharSequence> lines = reader.lines().collect(Collectors.toList());
+            return new FileContent(lines, 1, 6.0);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

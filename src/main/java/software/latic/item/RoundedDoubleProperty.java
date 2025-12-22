@@ -6,6 +6,14 @@ import java.math.RoundingMode;
 
 public class RoundedDoubleProperty extends SimpleDoubleProperty {
 
+    public RoundedDoubleProperty() {
+        super();
+    }
+
+    public RoundedDoubleProperty(double initialValue) {
+        super(initialValue);
+    }
+
     @Override
     public double get() {
         var raw = super.get();

@@ -78,6 +78,7 @@
                               <children>
                                  <CheckBox fx:id="analyzeHeadersCheckbox" mnemonicParsing="false" onAction="#handleAnalyzeHeadersCheckboxValueChanged" text="%analyzeHeaders" />
                                  <CheckBox fx:id="analyzeFootersCheckbox" mnemonicParsing="false" onAction="#handleAnalyzeFootersCheckboxValueChanged" text="%analyzeFooters" />
+                                 <CheckBox fx:id="brelixCheckbox" mnemonicParsing="false" onAction="#handleBrelixCheckboxValueChanged" text="BRELIX (Beta)" />
                               </children>
                               <padding>
                                  <Insets top="15.0" />
