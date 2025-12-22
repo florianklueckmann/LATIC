@@ -41,6 +41,14 @@ public abstract class TextItemData {
     DoubleProperty brelix4Score;
     DoubleProperty brelix5Score;
 
+    IntegerProperty lixPlusLevel;
+    IntegerProperty brelix0Level;
+    IntegerProperty brelix1Level;
+    IntegerProperty brelix2Level;
+    IntegerProperty brelix3Level;
+    IntegerProperty brelix4Level;
+    IntegerProperty brelix5Level;
+
     IntegerProperty connectivesCount;
 
 //    IntegerProperty advers;
@@ -139,6 +147,13 @@ public abstract class TextItemData {
         this.brelix3Score = new RoundedDoubleProperty();
         this.brelix4Score = new RoundedDoubleProperty();
         this.brelix5Score = new RoundedDoubleProperty();
+        this.lixPlusLevel = new SimpleIntegerProperty();
+        this.brelix0Level = new SimpleIntegerProperty();
+        this.brelix1Level = new SimpleIntegerProperty();
+        this.brelix2Level = new SimpleIntegerProperty();
+        this.brelix3Level = new SimpleIntegerProperty();
+        this.brelix4Level = new SimpleIntegerProperty();
+        this.brelix5Level = new SimpleIntegerProperty();
         this.typeTokenRatio = new RoundedDoubleProperty();
         this.rootTypeTokenRatio = new RoundedDoubleProperty();
         this.lixReadabilityScore = new RoundedDoubleProperty();
@@ -171,12 +186,19 @@ public abstract class TextItemData {
         valueMap.put("fontSizeMm", String.valueOf(getFontSizeMm()));
         valueMap.put("subordinateClausesCount", String.valueOf(getSubordinateClausesCount()));
         valueMap.put("lixPlusScore", String.valueOf(getLixPlusScore()));
+        valueMap.put("lixPlusLevel", String.valueOf(getLixPlusLevel()));
         valueMap.put("brelix0Score", String.valueOf(getBrelix0Score()));
+        valueMap.put("brelix0Level", String.valueOf(getBrelix0Level()));
         valueMap.put("brelix1Score", String.valueOf(getBrelix1Score()));
+        valueMap.put("brelix1Level", String.valueOf(getBrelix1Level()));
         valueMap.put("brelix2Score", String.valueOf(getBrelix2Score()));
+        valueMap.put("brelix2Level", String.valueOf(getBrelix2Level()));
         valueMap.put("brelix3Score", String.valueOf(getBrelix3Score()));
+        valueMap.put("brelix3Level", String.valueOf(getBrelix3Level()));
         valueMap.put("brelix4Score", String.valueOf(getBrelix4Score()));
+        valueMap.put("brelix4Level", String.valueOf(getBrelix4Level()));
         valueMap.put("brelix5Score", String.valueOf(getBrelix5Score()));
+        valueMap.put("brelix5Level", String.valueOf(getBrelix5Level()));
         valueMap.put("connectivesCount",String.valueOf(getConnectivesCount()));
 
         return FXCollections.observableMap(valueMap);
@@ -445,4 +467,32 @@ public abstract class TextItemData {
     public double getBrelix5Score() { return brelix5Score.get(); }
     public DoubleProperty brelix5ScoreProperty() { return brelix5Score; }
     public void setBrelix5Score(double brelix5Score) { this.brelix5Score.set(brelix5Score); }
+
+    public int getLixPlusLevel() { return lixPlusLevel.get(); }
+    public IntegerProperty lixPlusLevelProperty() { return lixPlusLevel; }
+    public void setLixPlusLevel(int lixPlusLevel) { this.lixPlusLevel.set(lixPlusLevel); }
+
+    public int getBrelix0Level() { return brelix0Level.get(); }
+    public IntegerProperty brelix0LevelProperty() { return brelix0Level; }
+    public void setBrelix0Level(int brelix0Level) { this.brelix0Level.set(brelix0Level); }
+
+    public int getBrelix1Level() { return brelix1Level.get(); }
+    public IntegerProperty brelix1LevelProperty() { return brelix1Level; }
+    public void setBrelix1Level(int brelix1Level) { this.brelix1Level.set(brelix1Level); }
+
+    public int getBrelix2Level() { return brelix2Level.get(); }
+    public IntegerProperty brelix2LevelProperty() { return brelix2Level; }
+    public void setBrelix2Level(int brelix2Level) { this.brelix2Level.set(brelix2Level); }
+
+    public int getBrelix3Level() { return brelix3Level.get(); }
+    public IntegerProperty brelix3LevelProperty() { return brelix3Level; }
+    public void setBrelix3Level(int brelix3Level) { this.brelix3Level.set(brelix3Level); }
+
+    public int getBrelix4Level() { return brelix4Level.get(); }
+    public IntegerProperty brelix4LevelProperty() { return brelix4Level; }
+    public void setBrelix4Level(int brelix4Level) { this.brelix4Level.set(brelix4Level); }
+
+    public int getBrelix5Level() { return brelix5Level.get(); }
+    public IntegerProperty brelix5LevelProperty() { return brelix5Level; }
+    public void setBrelix5Level(int brelix5Level) { this.brelix5Level.set(brelix5Level); }
 }

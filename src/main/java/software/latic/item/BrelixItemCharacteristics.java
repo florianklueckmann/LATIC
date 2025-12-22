@@ -11,7 +11,14 @@ public enum BrelixItemCharacteristics implements ItemCharacteristics {
     BRELIX2_SCORE("brelix2Score", TaskLevel.TEXT_READABILITY),
     BRELIX3_SCORE("brelix3Score", TaskLevel.TEXT_READABILITY),
     BRELIX4_SCORE("brelix4Score", TaskLevel.TEXT_READABILITY),
-    BRELIX5_SCORE("brelix5Score", TaskLevel.TEXT_READABILITY);
+    BRELIX5_SCORE("brelix5Score", TaskLevel.TEXT_READABILITY),
+    LIX_PLUS_LEVEL("lixPlusLevel", TaskLevel.TEXT_READABILITY),
+    BRELIX0_LEVEL("brelix0Level", TaskLevel.TEXT_READABILITY),
+    BRELIX1_LEVEL("brelix1Level", TaskLevel.TEXT_READABILITY),
+    BRELIX2_LEVEL("brelix2Level", TaskLevel.TEXT_READABILITY),
+    BRELIX3_LEVEL("brelix3Level", TaskLevel.TEXT_READABILITY),
+    BRELIX4_LEVEL("brelix4Level", TaskLevel.TEXT_READABILITY),
+    BRELIX5_LEVEL("brelix5Level", TaskLevel.TEXT_READABILITY);
 
     private final TaskLevel level;
     private final String id;

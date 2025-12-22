@@ -88,5 +88,33 @@ public class BrelixAnalyzerTest {
         // "strandtest": start "str" (3) -> count++, end "test" -> end "st" (2) -> no. Total 1.
         assertEquals(1, analyzer.countConsonantClusters("strandtest"));
         assertEquals(2, analyzer.countConsonantClusters("sprichst")); // spr(3) start, chst(4) end. Total 2.
+        
+        // Neue Tests für Wortmitte
+        assertEquals(1, analyzer.countConsonantClusters("fenster"), "st at syllable start in middle");
+        assertEquals(0, analyzer.countConsonantClusters("garten"), "no clusters in middle");
+        assertEquals(1, analyzer.countConsonantClusters("wurst"), "rst at end (>=3)");
+    }
+
+    @Test
+    void testLevelAssignment() {
+        String text = "Dies ist ein Test.";
+        Document doc = new Document(text);
+        TextItemData data = new GermanTextItemData(text);
+
+        data.setAverageSentenceLengthWords(4.0);
+        data.setWordCount(4);
+        data.setSentenceCount(1);
+        data.setAverageWordLengthCharacters(4.0);
+        data.setPagesCount(1);
+        data.setFontSizeMm(6.0);
+        data.setTypeTokenRatio(0.4);
+
+        BrelixAnalyzer.getInstance().analyze(data, doc);
+
+        // Prüfe ob Level gesetzt wurden (Stufe 1-6)
+        assertTrue(data.getBrelix0Level() >= 1 && data.getBrelix0Level() <= 6);
+        assertTrue(data.getBrelix1Level() >= 1 && data.getBrelix1Level() <= 6);
+        assertTrue(data.getBrelix2Level() >= 1 && data.getBrelix2Level() <= 6);
+        assertNotNull(data.getLixReadabilityLevel());
     }
 }
