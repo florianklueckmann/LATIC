@@ -133,9 +133,10 @@ public class BrelixAnalyzer {
                 index = temp.indexOf(c);
             }
         }
-        // Dehnungs-h: h nach Vokal (a, e, i, o, u, ä, ö, ü) und vor Konsonant oder am Ende
-        Pattern hPattern = Pattern.compile("[aeiouäöü]h([bcdfghjklmnpqrstvwxyzß]|$)");
-        Matcher hMatcher = hPattern.matcher(word);
+        // Dehnungs-h: h nach Vokal (a, e, i, o, u, ä, ö, ü) und vor Konsonant oder am Ende, aber nicht nach c (ch)
+        // Wir suchen in temp, damit bereits ersetzte mehrgliedrige Grapheme (wie ch) nicht mehr stören
+        Pattern hPattern = Pattern.compile("(?<!c)[aeiouäöü]h([bcdfghjklmnpqrstvwxyzß]|$)");
+        Matcher hMatcher = hPattern.matcher(temp);
         while (hMatcher.find()) {
             count++;
         }
@@ -175,11 +176,17 @@ public class BrelixAnalyzer {
         if (word == null || word.length() < 2) return 0;
 
         int count = 0;
-        String vocalsRegex = "[aeiouäöüéàáy]";
+
+        // Umwandlung von mehrgliedrigen Graphemen (1 Laut) in Platzhalter, um Laute zu zählen
+        String processedWord = word.toLowerCase()
+                .replace("sch", "§")
+                .replace("ch", "§")
+                .replace("ck", "§")
+                .replace("ng", "§");
 
         // Finde alle Konsonanten-Sequenzen
         Pattern p = Pattern.compile("[^aeiouäöüéàáy]+");
-        Matcher m = p.matcher(word.toLowerCase());
+        Matcher m = p.matcher(processedWord);
 
         while (m.find()) {
             String cluster = m.group();
@@ -189,7 +196,7 @@ public class BrelixAnalyzer {
             if (start == 0) {
                 // Wortanfang = Silbenanfang der 1. Silbe
                 if (cluster.length() >= 2) count++;
-            } else if (end == word.length()) {
+            } else if (end == processedWord.length()) {
                 // Wortende = Silbenende der letzten Silbe
                 if (cluster.length() >= 3) count++;
             } else {

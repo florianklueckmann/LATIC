@@ -117,4 +117,54 @@ public class BrelixAnalyzerTest {
         assertTrue(data.getBrelix2Level() >= 1 && data.getBrelix2Level() <= 6);
         assertNotNull(data.getLixReadabilityLevel());
     }
+
+    @Test
+    void testManualBrelixExample() {
+        // Beispieltext aus brelix-beispiel.md
+        String text = "Flora spielt mit Mama Ball. Opa sitzt im Schaukelstuhl und lacht.";
+        Document doc = new Document(text);
+        TextItemData data = new GermanTextItemData(text);
+
+        // Manuelle Setzung der Basisdaten wie im Beispiel
+        data.setWordCount(11);
+        data.setSentenceCount(2);
+        data.setAverageSentenceLengthWords(5.5);
+        data.setPagesCount(1);
+        data.setFontSizeMm(6.0); // diff = 0
+        data.setTypeTokenRatio(1.0); // Alle 11 Wörter verschieden
+
+        BrelixAnalyzer.getInstance().analyze(data, doc);
+
+        // Erwartete Werte basierend auf der präzisen Graphem-Zählung (inkl. Dehnungs-h in Stuhl)
+        // LIX = 14.59
+        // Wortschwierigkeit (WSC) = multiGraphemsMinusC (4) + rare (2) + clusters (4) = 10
+        // proz_wortschw_minus_c = 10/11 * 100 = 90.91
+        
+        // BRELIX 0: 14.59 + 90.91/5 = 32.77
+        assertEquals(32.77, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
+        
+        // BRELIX 1: 27.5 + 33 + (100/100 * 50) = 110.5
+        assertEquals(110.5, data.getBrelix1Score(), 0.1, "BRELIX 1 mismatch");
+        
+        // BRELIX 2: 60.5 + 100 = 160.5
+        assertEquals(160.5, data.getBrelix2Score(), 0.1, "BRELIX 2 mismatch");
+        
+        // BRELIX 3: 160.5
+        assertEquals(160.5, data.getBrelix3Score(), 0.1, "BRELIX 3 mismatch");
+        
+        // BRELIX 4: 160.5 + (2 Sätze + 0 Nebensätze) * 5 = 170.5
+        assertEquals(170.5, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
+        
+        // BRELIX 5: 170.5 + 100 (TTR) = 270.5
+        assertEquals(270.5, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
+
+        // Verifikation der Niveaus (Levels)
+        assertEquals("2", data.getLixReadabilityLevel(), "LIX Level mismatch");
+        assertEquals(2, data.getBrelix0Level(), "BRELIX 0 Level mismatch");
+        assertEquals(6, data.getBrelix1Level(), "BRELIX 1 Level mismatch");
+        assertEquals(6, data.getBrelix2Level(), "BRELIX 2 Level mismatch");
+        assertEquals(4, data.getBrelix3Level(), "BRELIX 3 Level mismatch");
+        assertEquals(4, data.getBrelix4Level(), "BRELIX 4 Level mismatch");
+        assertEquals(5, data.getBrelix5Level(), "BRELIX 5 Level mismatch");
+    }
 }
