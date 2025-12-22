@@ -13,6 +13,15 @@ public class BrelixAnalyzer {
 
     private static final BrelixAnalyzer instance = new BrelixAnalyzer();
 
+    private static final double[] LIX_THRESHOLDS = {10, 15, 20, 25, 30};
+    private static final double[] LIX_PLUS_THRESHOLDS = {50, 70, 90, 110, 130};
+    private static final double[] BRELIX0_THRESHOLDS = {30, 40, 50, 60, 70};
+    private static final double[] BRELIX1_THRESHOLDS = {50, 65, 80, 95, 110};
+    private static final double[] BRELIX2_THRESHOLDS = {70, 90, 110, 130, 150};
+    private static final double[] BRELIX3_THRESHOLDS = {90, 120, 150, 180, 210};
+    private static final double[] BRELIX4_THRESHOLDS = {90, 125, 160, 200, 240};
+    private static final double[] BRELIX5_THRESHOLDS = {100, 150, 200, 250, 300};
+
     public static BrelixAnalyzer getInstance() {
         return instance;
     }
@@ -82,7 +91,7 @@ public class BrelixAnalyzer {
         double brelix2 = (satzlaenge * 5) + (woerter_seite * 3) + ((proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100);
         double brelix3 = (schriftgroesse_diff * 20) + brelix2;
         double brelix4 = brelix3 + (data.getSentenceCount() + subordinateClauses) * 5;
-        double brelix5 = brelix4 + data.getTypeTokenRatio();
+        double brelix5 = brelix4 + (data.getTypeTokenRatio() * 100.0);
 
         data.setLixPlusScore(lixPlus);
         data.setBrelix0Score(brelix0);
@@ -91,6 +100,24 @@ public class BrelixAnalyzer {
         data.setBrelix3Score(brelix3);
         data.setBrelix4Score(brelix4);
         data.setBrelix5Score(brelix5);
+
+        data.setLixReadabilityLevel(String.valueOf(calculateLevel(lix, LIX_THRESHOLDS)));
+        data.setLixPlusLevel(calculateLevel(lixPlus, LIX_PLUS_THRESHOLDS));
+        data.setBrelix0Level(calculateLevel(brelix0, BRELIX0_THRESHOLDS));
+        data.setBrelix1Level(calculateLevel(brelix1, BRELIX1_THRESHOLDS));
+        data.setBrelix2Level(calculateLevel(brelix2, BRELIX2_THRESHOLDS));
+        data.setBrelix3Level(calculateLevel(brelix3, BRELIX3_THRESHOLDS));
+        data.setBrelix4Level(calculateLevel(brelix4, BRELIX4_THRESHOLDS));
+        data.setBrelix5Level(calculateLevel(brelix5, BRELIX5_THRESHOLDS));
+    }
+
+    private int calculateLevel(double score, double[] thresholds) {
+        for (int i = 0; i < thresholds.length; i++) {
+            if (score <= thresholds[i]) {
+                return i + 1;
+            }
+        }
+        return 6;
     }
 
     int countMultiGraphems(String word) {
@@ -145,18 +172,47 @@ public class BrelixAnalyzer {
     }
 
     int countConsonantClusters(String word) {
-        // TODO: Verbesserte Implementierung mit Silbenzerlegung
-        // Aktuell: Nur Wortanfang (>=2) und Wortende (>=3)
+        if (word == null || word.length() < 2) return 0;
+
         int count = 0;
-        Pattern startPattern = Pattern.compile("^[^aeiouäöüéàáy]{2,}");
-        Pattern endPattern = Pattern.compile("[^aeiouäöüéàáy]{3,}$");
-        
-        Matcher sm = startPattern.matcher(word);
-        if (sm.find()) count++;
-        
-        Matcher em = endPattern.matcher(word);
-        if (em.find()) count++;
-        
+        String vocalsRegex = "[aeiouäöüéàáy]";
+
+        // Finde alle Konsonanten-Sequenzen
+        Pattern p = Pattern.compile("[^aeiouäöüéàáy]+");
+        Matcher m = p.matcher(word.toLowerCase());
+
+        while (m.find()) {
+            String cluster = m.group();
+            int start = m.start();
+            int end = m.end();
+
+            if (start == 0) {
+                // Wortanfang = Silbenanfang der 1. Silbe
+                if (cluster.length() >= 2) count++;
+            } else if (end == word.length()) {
+                // Wortende = Silbenende der letzten Silbe
+                if (cluster.length() >= 3) count++;
+            } else {
+                // Wortmitte: Trennung nach einer Heuristik:
+                // Wenn 'st' oder 'sp' enthalten, gehen sie nach rechts (Silbenanfang).
+                // Ansonsten geht der letzte Konsonant nach rechts.
+                int splitPoint;
+                if (cluster.contains("st")) {
+                    splitPoint = cluster.indexOf("st");
+                } else if (cluster.contains("sp")) {
+                    splitPoint = cluster.indexOf("sp");
+                } else {
+                    splitPoint = cluster.length() - 1;
+                }
+
+                String left = cluster.substring(0, splitPoint);
+                String right = cluster.substring(splitPoint);
+
+                if (left.length() >= 3) count++; // Silbenende >= 3
+                if (right.length() >= 2) count++; // Silbenanfang >= 2
+            }
+        }
+
         return count;
     }
 
