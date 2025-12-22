@@ -30,6 +30,17 @@ public abstract class TextItemData {
     StringProperty lixReadabilityLevel;
     DoubleProperty averageSentenceLengthSyllables;
 
+    IntegerProperty pagesCount;
+    DoubleProperty fontSizeMm;
+    IntegerProperty subordinateClausesCount;
+    DoubleProperty lixPlusScore;
+    DoubleProperty brelix0Score;
+    DoubleProperty brelix1Score;
+    DoubleProperty brelix2Score;
+    DoubleProperty brelix3Score;
+    DoubleProperty brelix4Score;
+    DoubleProperty brelix5Score;
+
     IntegerProperty connectivesCount;
 
 //    IntegerProperty advers;
@@ -118,6 +129,16 @@ public abstract class TextItemData {
         this.averageSentenceLengthCharactersWithoutWhitespaces = new RoundedDoubleProperty();
         this.averageSentenceLengthWords = new RoundedDoubleProperty();
         this.averageSentenceLengthSyllables = new RoundedDoubleProperty();
+        this.pagesCount = new SimpleIntegerProperty(1);
+        this.fontSizeMm = new RoundedDoubleProperty(6.0);
+        this.subordinateClausesCount = new SimpleIntegerProperty();
+        this.lixPlusScore = new RoundedDoubleProperty();
+        this.brelix0Score = new RoundedDoubleProperty();
+        this.brelix1Score = new RoundedDoubleProperty();
+        this.brelix2Score = new RoundedDoubleProperty();
+        this.brelix3Score = new RoundedDoubleProperty();
+        this.brelix4Score = new RoundedDoubleProperty();
+        this.brelix5Score = new RoundedDoubleProperty();
         this.typeTokenRatio = new RoundedDoubleProperty();
         this.rootTypeTokenRatio = new RoundedDoubleProperty();
         this.lixReadabilityScore = new RoundedDoubleProperty();
@@ -146,6 +167,16 @@ public abstract class TextItemData {
         valueMap.put("rootTypeTokenRatio",String.valueOf(getRootTypeTokenRatio()));
         valueMap.put("lixReadabilityScore",String.valueOf(getLixReadabilityScore()));
         valueMap.put("lixReadabilityLevel",String.valueOf(getLixReadabilityLevel()));
+        valueMap.put("pagesCount", String.valueOf(getPagesCount()));
+        valueMap.put("fontSizeMm", String.valueOf(getFontSizeMm()));
+        valueMap.put("subordinateClausesCount", String.valueOf(getSubordinateClausesCount()));
+        valueMap.put("lixPlusScore", String.valueOf(getLixPlusScore()));
+        valueMap.put("brelix0Score", String.valueOf(getBrelix0Score()));
+        valueMap.put("brelix1Score", String.valueOf(getBrelix1Score()));
+        valueMap.put("brelix2Score", String.valueOf(getBrelix2Score()));
+        valueMap.put("brelix3Score", String.valueOf(getBrelix3Score()));
+        valueMap.put("brelix4Score", String.valueOf(getBrelix4Score()));
+        valueMap.put("brelix5Score", String.valueOf(getBrelix5Score()));
         valueMap.put("connectivesCount",String.valueOf(getConnectivesCount()));
 
         return FXCollections.observableMap(valueMap);
@@ -374,4 +405,44 @@ public abstract class TextItemData {
     public void setRootTypeTokenRatio(double rootTypeTokenRatio) {
         this.rootTypeTokenRatio.set(rootTypeTokenRatio);
     }
+
+    public int getPagesCount() { return pagesCount.get(); }
+    public IntegerProperty pagesCountProperty() { return pagesCount; }
+    public void setPagesCount(int pagesCount) { this.pagesCount.set(pagesCount); }
+
+    public double getFontSizeMm() { return fontSizeMm.get(); }
+    public DoubleProperty fontSizeMmProperty() { return fontSizeMm; }
+    public void setFontSizeMm(double fontSizeMm) { this.fontSizeMm.set(fontSizeMm); }
+
+    public int getSubordinateClausesCount() { return subordinateClausesCount.get(); }
+    public IntegerProperty subordinateClausesCountProperty() { return subordinateClausesCount; }
+    public void setSubordinateClausesCount(int subordinateClausesCount) { this.subordinateClausesCount.set(subordinateClausesCount); }
+
+    public double getLixPlusScore() { return lixPlusScore.get(); }
+    public DoubleProperty lixPlusScoreProperty() { return lixPlusScore; }
+    public void setLixPlusScore(double lixPlusScore) { this.lixPlusScore.set(lixPlusScore); }
+
+    public double getBrelix0Score() { return brelix0Score.get(); }
+    public DoubleProperty brelix0ScoreProperty() { return brelix0Score; }
+    public void setBrelix0Score(double brelix0Score) { this.brelix0Score.set(brelix0Score); }
+
+    public double getBrelix1Score() { return brelix1Score.get(); }
+    public DoubleProperty brelix1ScoreProperty() { return brelix1Score; }
+    public void setBrelix1Score(double brelix1Score) { this.brelix1Score.set(brelix1Score); }
+
+    public double getBrelix2Score() { return brelix2Score.get(); }
+    public DoubleProperty brelix2ScoreProperty() { return brelix2Score; }
+    public void setBrelix2Score(double brelix2Score) { this.brelix2Score.set(brelix2Score); }
+
+    public double getBrelix3Score() { return brelix3Score.get(); }
+    public DoubleProperty brelix3ScoreProperty() { return brelix3Score; }
+    public void setBrelix3Score(double brelix3Score) { this.brelix3Score.set(brelix3Score); }
+
+    public double getBrelix4Score() { return brelix4Score.get(); }
+    public DoubleProperty brelix4ScoreProperty() { return brelix4Score; }
+    public void setBrelix4Score(double brelix4Score) { this.brelix4Score.set(brelix4Score); }
+
+    public double getBrelix5Score() { return brelix5Score.get(); }
+    public DoubleProperty brelix5ScoreProperty() { return brelix5Score; }
+    public void setBrelix5Score(double brelix5Score) { this.brelix5Score.set(brelix5Score); }
 }

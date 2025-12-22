@@ -12,17 +12,18 @@ public class PDFReader implements FileReader {
         return reader;
     }
 
-    public List<CharSequence> getContent(String fileName) throws IOException {
+    public FileContent getContent(String fileName) throws IOException {
         PDDocument document = PDDocument.load(new File(fileName));
 
         String text = "";
+        int pages = document.getNumberOfPages();
 
         if (!document.isEncrypted()) {
             PDFTextStripper textStripper = new PDFTextStripper();
             text = textStripper.getText(document);
-            document.close();
         }
+        document.close();
 
-        return List.of(text);
+        return new FileContent(List.of(text), pages, 6.0);
     }
 }
