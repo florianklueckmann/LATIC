@@ -187,10 +187,6 @@ public class PrimaryModel {
         simpleTextAnalyzer.processTasks(textItemData, generalTasks);
         processLanguageTasks(textItemData, languageTasks);
 
-        if (generalTasks.stream().anyMatch(t -> t.getId().startsWith("brelix") || t.getId().equals("lixPlusScore") || t.getId().equals("pagesCount"))) {
-            software.latic.brelix.BrelixAnalyzer.getInstance().analyze(textItemData, doc);
-        }
-
         return textItemData;
     }
 
