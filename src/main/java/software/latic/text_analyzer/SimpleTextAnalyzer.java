@@ -1,5 +1,6 @@
 package software.latic.text_analyzer;
 
+import software.latic.brelix.BrelixAnalyzer;
 import software.latic.connectives.BaseConnectives;
 import software.latic.frequency.FrequencyCalculator;
 import software.latic.helper.TagMapper;
@@ -46,7 +47,11 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
 
+    private TextItemData textItemData;
+
     public void processTasks(TextItemData textItemData, ObservableList<Task> tasks) {
+        this.textItemData = textItemData;
+        this.brelixAnalyzed = false;
         setDoc(doc);
 
         for (var task : tasks) {
@@ -60,14 +65,12 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
                 try {
                     simpleTextAnalyzerMethod = this.getClass().getMethod(task.getId());
+                    var returnType = simpleTextAnalyzerMethod.getReturnType();
 
-                    if (task.getId().toLowerCase().contains("average")
-                            || task.getId().toLowerCase().contains("score")
-                            || task.getId().toLowerCase().contains("typetokenratio")
-                            || (task.getLevel().equals(TaskLevel.TEXT_READABILITY) &! task.getId().toLowerCase().endsWith("level"))) {
+                    if (returnType.equals(double.class) || returnType.equals(Double.class)) {
                         setter = textItemData.getClass().getMethod(setterName, double.class);
                         setter.invoke(textItemData, (double) simpleTextAnalyzerMethod.invoke(this));
-                    } else if (task.getId().toLowerCase().contains("count")) {
+                    } else if (returnType.equals(int.class) || returnType.equals(Integer.class)) {
                         setter = textItemData.getClass().getMethod(setterName, int.class);
                         setter.invoke(textItemData, (int) simpleTextAnalyzerMethod.invoke(this));
                     } else {
@@ -452,6 +455,93 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
 
     public double averageWordFrequencyClassStandardDeviation() {
         return FrequencyCalculator.getInstance().calculateStandardDeviation(doc.sentences().stream().flatMap(sentence -> sentence.words().stream()).toList());
+    }
+
+    private boolean brelixAnalyzed = false;
+
+    private void ensureBrelixAnalyzed() {
+        if (!brelixAnalyzed) {
+            BrelixAnalyzer.getInstance().analyze(textItemData, doc);
+            brelixAnalyzed = true;
+        }
+    }
+
+    public int pagesCount() {
+        return textItemData.getPagesCount();
+    }
+
+    public double fontSizeMm() {
+        return textItemData.getFontSizeMm();
+    }
+
+    public double lixPlusScore() {
+        ensureBrelixAnalyzed();
+        return textItemData.getLixPlusScore();
+    }
+
+    public int lixPlusLevel() {
+        ensureBrelixAnalyzed();
+        return textItemData.getLixPlusLevel();
+    }
+
+    public double brelix0Score() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix0Score();
+    }
+
+    public int brelix0Level() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix0Level();
+    }
+
+    public double brelix1Score() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix1Score();
+    }
+
+    public int brelix1Level() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix1Level();
+    }
+
+    public double brelix2Score() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix2Score();
+    }
+
+    public int brelix2Level() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix2Level();
+    }
+
+    public double brelix3Score() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix3Score();
+    }
+
+    public int brelix3Level() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix3Level();
+    }
+
+    public double brelix4Score() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix4Score();
+    }
+
+    public int brelix4Level() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix4Level();
+    }
+
+    public double brelix5Score() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix5Score();
+    }
+
+    public int brelix5Level() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix5Level();
     }
 }
 
