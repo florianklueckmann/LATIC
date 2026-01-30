@@ -3,6 +3,7 @@ package software.latic.brelix;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.trees.Tree;
+import software.latic.Logging;
 import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
 
@@ -59,10 +60,18 @@ public class BrelixAnalyzer {
 
         double wortschw_minus_c = (double) (multiGraphemsMinusC + rareLetters + consonantClusters) / wordCount;
         
+        Logging.getInstance().debug("BrelixAnalyzer", String.format(
+            "Base metrics: wordCount=%d, multiGraphems=%d, rareLetters=%d, consonantClusters=%d, multiGraphemsMinusC=%d, syllablesGe3=%d",
+            wordCount, multiGraphems, rareLetters, consonantClusters, multiGraphemsMinusC, syllablesGe3));
+
         // Prozentsätze
         double proz_mehrsilber = (double) syllablesGe3 / wordCount * 100;
         double proz_wortschw_minus_c = wortschw_minus_c * 100; // Laut Formel ist es oft ein Prozentsatz oder gewichteter Wert
         
+        Logging.getInstance().debug("BrelixAnalyzer", String.format(
+            "Calculated rates: wortschw_minus_c=%.4f, proz_mehrsilber=%.2f%%, proz_wortschw_minus_c=%.2f%%",
+            wortschw_minus_c, proz_mehrsilber, proz_wortschw_minus_c));
+
         // Nebensätze
         int subordinateClauses = countSubordinateClauses(doc);
         data.setSubordinateClausesCount(subordinateClauses);
@@ -81,6 +90,10 @@ public class BrelixAnalyzer {
         double satzlaenge = data.getAverageSentenceLengthWords();
         double woerter_seite = (double) wordCount / Math.max(1, data.getPagesCount());
         double schriftgroesse_diff = 6.0 - data.getFontSizeMm();
+
+        Logging.getInstance().debug("BrelixAnalyzer", String.format(
+            "Text properties: satzlaenge=%.2f, woerter_seite=%.2f, schriftgroesse_diff=%.2f, longWords=%d, anteil_lange_woerter=%.2f%%, subordinateClauses=%d",
+            satzlaenge, woerter_seite, schriftgroesse_diff, longWords, anteil_lange_woerter, subordinateClauses));
         
         // Indizes berechnen
         double lix = satzlaenge + anteil_lange_woerter;
@@ -92,6 +105,10 @@ public class BrelixAnalyzer {
         double brelix3 = (schriftgroesse_diff * 20) + brelix2;
         double brelix4 = brelix3 + (data.getSentenceCount() + subordinateClauses) * 5;
         double brelix5 = brelix4 + (data.getTypeTokenRatio() * 100.0);
+
+        Logging.getInstance().debug("BrelixAnalyzer", String.format(
+            "Final Scores: LIX=%.2f, LIX+=%.2f, BRELIX0=%.2f, BRELIX1=%.2f, BRELIX2=%.2f, BRELIX3=%.2f, BRELIX4=%.2f, BRELIX5=%.2f",
+            lix, lixPlus, brelix0, brelix1, brelix2, brelix3, brelix4, brelix5));
 
         data.setLixPlusScore(lixPlus);
         data.setBrelix0Score(brelix0);
@@ -167,6 +184,7 @@ public class BrelixAnalyzer {
         for (char c : word.toCharArray()) {
             if (rare.indexOf(c) != -1) {
                 count++;
+                break;
             }
         }
         return count;
@@ -174,8 +192,6 @@ public class BrelixAnalyzer {
 
     int countConsonantClusters(String word) {
         if (word == null || word.length() < 2) return 0;
-
-        int count = 0;
 
         // Umwandlung von mehrgliedrigen Graphemen (1 Laut) in Platzhalter, um Laute zu zählen
         String processedWord = word.toLowerCase()
@@ -195,10 +211,10 @@ public class BrelixAnalyzer {
 
             if (start == 0) {
                 // Wortanfang = Silbenanfang der 1. Silbe
-                if (cluster.length() >= 2) count++;
+                if (cluster.length() >= 2) return 1;
             } else if (end == processedWord.length()) {
                 // Wortende = Silbenende der letzten Silbe
-                if (cluster.length() >= 3) count++;
+                if (cluster.length() >= 3) return 1;
             } else {
                 // Wortmitte: Trennung nach einer Heuristik:
                 // Wenn 'st' oder 'sp' enthalten, gehen sie nach rechts (Silbenanfang).
@@ -215,12 +231,12 @@ public class BrelixAnalyzer {
                 String left = cluster.substring(0, splitPoint);
                 String right = cluster.substring(splitPoint);
 
-                if (left.length() >= 3) count++; // Silbenende >= 3
-                if (right.length() >= 2) count++; // Silbenanfang >= 2
+                if (left.length() >= 3) return 1; // Silbenende >= 3
+                if (right.length() >= 2) return 1; // Silbenanfang >= 2
             }
         }
 
-        return count;
+        return 0;
     }
 
     int countSubordinateClauses(Document doc) {

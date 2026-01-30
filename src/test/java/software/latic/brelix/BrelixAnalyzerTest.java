@@ -76,7 +76,7 @@ public class BrelixAnalyzerTest {
     void testRareLetters() {
         BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
         assertEquals(1, analyzer.countRareLetters("taxi")); // x
-        assertEquals(2, analyzer.countRareLetters("äußerst")); // ä, ß
+        assertEquals(1, analyzer.countRareLetters("äußerst")); // ä, ß -> but once per word
         assertEquals(0, analyzer.countRareLetters("haus"));
     }
 
@@ -87,7 +87,7 @@ public class BrelixAnalyzerTest {
         assertEquals(1, analyzer.countConsonantClusters("herbst"), "rbst at end (>=3)");
         // "strandtest": start "str" (3) -> count++, end "test" -> end "st" (2) -> no. Total 1.
         assertEquals(1, analyzer.countConsonantClusters("strandtest"));
-        assertEquals(2, analyzer.countConsonantClusters("sprichst")); // spr(3) start, chst(4) end. Total 2.
+        assertEquals(1, analyzer.countConsonantClusters("sprichst")); // spr(3) start, chst(4) end. Total now 1 (once per word).
         
         // Neue Tests für Wortmitte
         assertEquals(1, analyzer.countConsonantClusters("fenster"), "st at syllable start in middle");
@@ -135,7 +135,6 @@ public class BrelixAnalyzerTest {
 
         BrelixAnalyzer.getInstance().analyze(data, doc);
 
-        // Erwartete Werte basierend auf der präzisen Graphem-Zählung (inkl. Dehnungs-h in Stuhl)
         // LIX = 14.59
         // Wortschwierigkeit (WSC) = multiGraphemsMinusC (4) + rare (2) + clusters (4) = 10
         // proz_wortschw_minus_c = 10/11 * 100 = 90.91
