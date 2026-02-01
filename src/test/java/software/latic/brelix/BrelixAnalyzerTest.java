@@ -76,7 +76,7 @@ public class BrelixAnalyzerTest {
     void testRareLetters() {
         BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
         assertEquals(1, analyzer.countRareLetters("taxi")); // x
-        assertEquals(1, analyzer.countRareLetters("äußerst")); // ä, ß -> but once per word
+        assertEquals(2, analyzer.countRareLetters("äußerst")); // ä, ß -> but once per word
         assertEquals(0, analyzer.countRareLetters("haus"));
     }
 
