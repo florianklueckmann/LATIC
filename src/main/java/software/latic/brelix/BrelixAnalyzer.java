@@ -87,15 +87,15 @@ public class BrelixAnalyzer {
         Logging.getInstance().debug("BrelixAnalyzer", String.format("Words with rare letters: %s", wordsRareLetters));
         Logging.getInstance().debug("BrelixAnalyzer", String.format("Words with consonant clusters: %s", wordsConsonantClusters));
 
-        long wortschw_minus_c = multiGraphems - multiGraphemsMinusC + rareLetters + consonantClusters;
+        long wortschw_minus_c = calculateWortschwMinusC(multiGraphems, multiGraphemsMinusC, rareLetters, consonantClusters);
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
             "Base metrics: wordCount=%d, multiGraphems=%d, rareLetters=%d, consonantClusters=%d, multiGraphemsMinusC=%d, syllablesGe3=%d, wortschw_minus_c=%d",
             wordCount, multiGraphems, rareLetters, consonantClusters, multiGraphemsMinusC, syllablesGe3, wortschw_minus_c));
 
         // Prozentsätze
-        double proz_mehrsilber = (double) syllablesGe3 / wordCount * 100;
-        double proz_wortschw_minus_c = (double) wortschw_minus_c / wordCount * 100; // Laut Formel ist es oft ein Prozentsatz oder gewichteter Wert
+        double proz_mehrsilber = calculateProzMehrsilber(syllablesGe3, wordCount);
+        double proz_wortschw_minus_c = calculateProzWortschwMinusC(wortschw_minus_c, wordCount);
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
             "Calculated rates: wortschw_minus_c=%d, proz_mehrsilber=%.2f%%, proz_wortschw_minus_c=%.2f%%",
@@ -106,12 +106,11 @@ public class BrelixAnalyzer {
         data.setSubordinateClausesCount(subordinateClauses);
 
         // Lange Wörter (> 6 Buchstaben)
-        int longWords = 0;
+        int longWords = countLongWords(doc);
         var listLongWords = new ArrayList<String>();
         for (Sentence sent : doc.sentences()) {
             for (String word : sent.words()) {
                 if (word.length() > 6 && !word.matches("\\W+")) {
-                    longWords++;
                     listLongWords.add(word);
                 }
             }
@@ -119,26 +118,27 @@ public class BrelixAnalyzer {
 
         Logging.getInstance().debug("BrelixAnalyzer", String.format("Long words (more than 6 Characters): %s", listLongWords));
 
-        double anteil_lange_woerter = (double) longWords / wordCount * 100;
+        double anteil_lange_woerter = calculateAnteilLangeWoerter(longWords, wordCount);
         
         double satzlaenge = data.getAverageSentenceLengthWords();
-        double woerter_seite = (double) wordCount / Math.max(1, data.getPagesCount());
-        double schriftgroesse_diff = 6.0 - data.getFontSizeMm();
+        double woerter_seite = calculateWoerterSeite(wordCount, data.getPagesCount());
+        double schriftgroesse_diff = calculateSchriftgroesseDiff(data.getFontSizeMm());
 
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
             "Text properties: satzlaenge=%.2f, woerter_seite=%.2f, schriftgroesse_diff=%.2f, longWords=%d, anteil_lange_woerter=%.2f%%, subordinateClauses=%d",
             satzlaenge, woerter_seite, schriftgroesse_diff, longWords, anteil_lange_woerter, subordinateClauses));
         
         // Indizes berechnen
-        double lix = satzlaenge + anteil_lange_woerter;
-        double lixPlus = lix + (schriftgroesse_diff * 20) + (woerter_seite * 3);
+//        var liiix = SimpleTextAnalyzer.getInstance().setDoc(doc);
+        double lix = calculateLix(satzlaenge, anteil_lange_woerter);
+        double lixPlus = calculateLixPlus(lix, schriftgroesse_diff, woerter_seite);
         
-        double brelix0 = lix + proz_wortschw_minus_c / 5.0;
-        double brelix1 = (satzlaenge * 5) + (woerter_seite * 3) + ((proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 50);
-        double brelix2 = (satzlaenge * 5) + (woerter_seite * 3) + ((proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100);
-        double brelix3 = (schriftgroesse_diff * 20) + brelix2;
-        double brelix4 = brelix3 + (data.getSentenceCount() + subordinateClauses) * 5;
-        double brelix5 = brelix4 + (data.getTypeTokenRatio() * 100.0);
+        double brelix0 = calculateBrelix0(lix, proz_wortschw_minus_c);
+        double brelix1 = calculateBrelix1(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
+        double brelix2 = calculateBrelix2(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
+        double brelix3 = calculateBrelix3(schriftgroesse_diff, brelix2);
+        double brelix4 = calculateBrelix4(brelix3, data.getSentenceCount(), subordinateClauses);
+        double brelix5 = calculateBrelix5(brelix4, data.getTypeTokenRatio());
 
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
             "Final Scores: LIX=%.2f, LIX+=%.2f, BRELIX0=%.2f, BRELIX1=%.2f, BRELIX2=%.2f, BRELIX3=%.2f, BRELIX4=%.2f, BRELIX5=%.2f",
@@ -160,6 +160,130 @@ public class BrelixAnalyzer {
         data.setBrelix3Level(calculateLevel(brelix3, BRELIX3_THRESHOLDS));
         data.setBrelix4Level(calculateLevel(brelix4, BRELIX4_THRESHOLDS));
         data.setBrelix5Level(calculateLevel(brelix5, BRELIX5_THRESHOLDS));
+    }
+
+    // --- Extracted calculation functions ---
+
+    /**
+     * Calculates the word difficulty score excluding C-related multi-graphemes.
+     */
+    long calculateWortschwMinusC(long multiGraphems, long multiGraphemsMinusC, long rareLetters, long consonantClusters) {
+        return multiGraphems - multiGraphemsMinusC + rareLetters + consonantClusters;
+    }
+
+    /**
+     * Calculates the percentage of polysyllabic words (words with 3+ syllables).
+     */
+    double calculateProzMehrsilber(int syllablesGe3, int wordCount) {
+        return (double) syllablesGe3 / wordCount * 100;
+    }
+
+    /**
+     * Calculates the percentage of word difficulty minus C.
+     */
+    double calculateProzWortschwMinusC(long wortschw_minus_c, int wordCount) {
+        return (double) wortschw_minus_c / wordCount * 100;
+    }
+
+    /**
+     * Counts the number of long words (more than 6 characters) in the document.
+     */
+    int countLongWords(Document doc) {
+        int longWords = 0;
+        for (Sentence sent : doc.sentences()) {
+            for (String word : sent.words()) {
+                if (word.length() > 6 && !word.matches("\\W+")) {
+                    longWords++;
+                }
+            }
+        }
+        return longWords;
+    }
+
+    /**
+     * Calculates the percentage of long words (more than 6 characters).
+     */
+    double calculateAnteilLangeWoerter(int longWords, int wordCount) {
+        return (double) longWords / wordCount * 100;
+    }
+
+    /**
+     * Calculates the number of words per page.
+     */
+    double calculateWoerterSeite(int wordCount, int pagesCount) {
+        return (double) wordCount / Math.max(1, pagesCount);
+    }
+
+    /**
+     * Calculates the font size difference from the baseline (6.0 mm).
+     */
+    double calculateSchriftgroesseDiff(double fontSizeMm) {
+        return 6.0 - fontSizeMm;
+    }
+
+    /**
+     * Calculates the LIX (Läsbarhetsindex) score.
+     * LIX = average sentence length + percentage of long words
+     */
+    double calculateLix(double satzlaenge, double anteil_lange_woerter) {
+//        return SimpleTextAnalyzer.getInstance().lixReadabilityScore();
+        return satzlaenge + anteil_lange_woerter;
+    }
+
+    /**
+     * Calculates the LIX+ score.
+     * LIX+ = LIX + (font size difference * 20) + (words per page * 3)
+     */
+    double calculateLixPlus(double lix, double schriftgroesse_diff, double woerter_seite) {
+        return lix + (schriftgroesse_diff * 20) + (woerter_seite * 3);
+    }
+
+    /**
+     * Calculates the BRELIX0 score.
+     * BRELIX0 = LIX + (percentage word difficulty minus C / 5)
+     */
+    double calculateBrelix0(double lix, double proz_wortschw_minus_c) {
+        return lix + proz_wortschw_minus_c / 5.0;
+    }
+
+    /**
+     * Calculates the BRELIX1 score.
+     * BRELIX1 = (sentence length * 5) + (words per page * 3) + ((polysyllabic % + word difficulty %) / 100 * 50)
+     */
+    double calculateBrelix1(double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c) {
+        return (satzlaenge * 5) + (woerter_seite * 3) + ((proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 50);
+    }
+
+    /**
+     * Calculates the BRELIX2 score.
+     * BRELIX2 = (sentence length * 5) + (words per page * 3) + ((polysyllabic % + word difficulty %) / 100 * 100)
+     */
+    double calculateBrelix2(double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c) {
+        return (satzlaenge * 5) + (woerter_seite * 3) + ((proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100);
+    }
+
+    /**
+     * Calculates the BRELIX3 score.
+     * BRELIX3 = (font size difference * 20) + BRELIX2
+     */
+    double calculateBrelix3(double schriftgroesse_diff, double brelix2) {
+        return (schriftgroesse_diff * 20) + brelix2;
+    }
+
+    /**
+     * Calculates the BRELIX4 score.
+     * BRELIX4 = BRELIX3 + (sentence count + subordinate clauses) * 5
+     */
+    double calculateBrelix4(double brelix3, int sentenceCount, int subordinateClauses) {
+        return brelix3 + (sentenceCount + subordinateClauses) * 5;
+    }
+
+    /**
+     * Calculates the BRELIX5 score.
+     * BRELIX5 = BRELIX4 + (type-token ratio * 100)
+     */
+    double calculateBrelix5(double brelix4, double typeTokenRatio) {
+        return brelix4 + (typeTokenRatio * 100.0);
     }
 
     private int calculateLevel(double score, double[] thresholds) {
