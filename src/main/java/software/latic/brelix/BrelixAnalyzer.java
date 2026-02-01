@@ -7,6 +7,7 @@ import software.latic.Logging;
 import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,28 +42,56 @@ public class BrelixAnalyzer {
         long multiGraphemsMinusC = 0;
         int syllablesGe3 = 0;
 
+        var wordsMultiGrapheme = new ArrayList<String>();
+        var wordsMultiGraphemeMinusC = new ArrayList<String>();
+        var wordsRareLetters = new ArrayList<String>();
+        var wordsConsonantClusters = new ArrayList<String>();
+        var wordsLongSyllables = new ArrayList<String>();
+
         for (Sentence sent : doc.sentences()) {
             for (String word : sent.words()) {
                 if (word.matches("\\W+")) continue;
                 
                 String lowerWord = word.toLowerCase();
-                multiGraphems += countMultiGraphems(lowerWord);
-                rareLetters += countRareLetters(lowerWord);
-                consonantClusters += countConsonantClusters(lowerWord);
-                
-                multiGraphemsMinusC += countMultiGraphemsMinusC(lowerWord);
-                
+                if (containsMultiGrapheme(lowerWord)) {
+                    wordsMultiGrapheme.add(lowerWord);
+                    multiGraphems++;
+                }
+                if (containsRareLetter(lowerWord)) {
+                    wordsRareLetters.add(lowerWord);
+                    rareLetters++;
+                }
+                if (containsConsonantCluster(lowerWord)) {
+                    wordsConsonantClusters.add(lowerWord);
+                    consonantClusters++;
+                }
+
+                if (!lowerWord.contains("c") && containsMultiGrapheme(lowerWord)) {
+                    wordsMultiGraphemeMinusC.add(lowerWord);
+                    multiGraphemsMinusC ++;
+                }
+
                 if (SyllableProvider.getInstance().syllablesPerWord(lowerWord) >= 3) {
+                    wordsLongSyllables.add(lowerWord);
                     syllablesGe3++;
                 }
             }
         }
 
+        Logging.getInstance().debug("BrelixAnalyzer", String.format(
+            "Word counts: multiGraphems=%d, rareLetters=%d, consonantClusters=%d, multiGraphemsMinusC=%d, syllablesGe3=%d",
+            multiGraphems, rareLetters, consonantClusters, multiGraphemsMinusC, syllablesGe3));
+        Logging.getInstance().debug("BrelixAnalyzer", String.format("Words with long syllables: %s", wordsLongSyllables));
+        Logging.getInstance().debug("BrelixAnalyzer", String.format("Words with multiGraphems: %s", wordsMultiGrapheme));
+        Logging.getInstance().debug("BrelixAnalyzer", String.format("Words with multiGraphems-c: %s", wordsMultiGraphemeMinusC));
+        Logging.getInstance().debug("BrelixAnalyzer", String.format("Words with rare letters: %s", wordsRareLetters));
+        Logging.getInstance().debug("BrelixAnalyzer", String.format("Words with consonant clusters: %s", wordsConsonantClusters));
+
         double wortschw_minus_c = (double) (multiGraphemsMinusC + rareLetters + consonantClusters) / wordCount;
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
-            "Base metrics: wordCount=%d, multiGraphems=%d, rareLetters=%d, consonantClusters=%d, multiGraphemsMinusC=%d, syllablesGe3=%d",
-            wordCount, multiGraphems, rareLetters, consonantClusters, multiGraphemsMinusC, syllablesGe3));
+            "Base metrics: wordCount=%d, multiGraphems=%d, rareLetters=%d, consonantClusters=%d, multiGraphemsMinusC=%d, syllablesGe3=%d, wortschw_minus_c=%.4f",
+            wordCount, multiGraphems, rareLetters, consonantClusters, multiGraphemsMinusC, syllablesGe3, wortschw_minus_c));
 
         // Prozentsätze
         double proz_mehrsilber = (double) syllablesGe3 / wordCount * 100;
@@ -78,13 +107,18 @@ public class BrelixAnalyzer {
 
         // Lange Wörter (> 6 Buchstaben)
         int longWords = 0;
+        var listLongWords = new ArrayList<String>();
         for (Sentence sent : doc.sentences()) {
             for (String word : sent.words()) {
                 if (word.length() > 6 && !word.matches("\\W+")) {
                     longWords++;
+                    listLongWords.add(word);
                 }
             }
         }
+
+        Logging.getInstance().debug("BrelixAnalyzer", String.format("Long words (more than 6 Characters): %s", listLongWords));
+
         double anteil_lange_woerter = (double) longWords / wordCount * 100;
         
         double satzlaenge = data.getAverageSentenceLengthWords();
@@ -137,6 +171,17 @@ public class BrelixAnalyzer {
         return 6;
     }
 
+    boolean containsMultiGrapheme(String word) {
+        // <ch>, <ck>, <sch>, <sp>, <st>, <ng>, Dehnungs-h
+        String[] clusters = {"sch", "ch", "ck", "sp", "st", "ng"};
+        for (String c : clusters) {
+            if (word.contains(c)) {
+                return true;
+            }
+        }
+        return GraphemeUtils.containsDehnungsH(word);
+    }
+
     int countMultiGraphems(String word) {
         int count = 0;
         // <ch>, <ck>, <sch>, <sp>, <st>, <ng>, <ie>, <ei>, <eu>, <äu>, Dehnungs-h
@@ -150,14 +195,7 @@ public class BrelixAnalyzer {
                 index = temp.indexOf(c);
             }
         }
-        // Dehnungs-h: h nach Vokal (a, e, i, o, u, ä, ö, ü) und vor Konsonant oder am Ende, aber nicht nach c (ch)
-        // Wir suchen in temp, damit bereits ersetzte mehrgliedrige Grapheme (wie ch) nicht mehr stören
-        Pattern hPattern = Pattern.compile("(?<!c)[aeiouäöü]h([bcdfghjklmnpqrstvwxyzß]|$)");
-        Matcher hMatcher = hPattern.matcher(temp);
-        while (hMatcher.find()) {
-            count++;
-        }
-        return count;
+        return count + GraphemeUtils.countDehnungsH(temp);
     }
 
     int countMultiGraphemsMinusC(String word) {
@@ -177,6 +215,16 @@ public class BrelixAnalyzer {
         return count - c_mehr;
     }
 
+    boolean containsRareLetter(String word) {
+        String rareLetters = "cqßxyäöü";
+        for (char c : word.toCharArray()) {
+            if (rareLetters.indexOf(c) != -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     int countRareLetters(String word) {
         int count = 0;
         // <c>, <q>, <ß>, <x>, <y>, <ä>, <ö>, <ü>
@@ -184,10 +232,58 @@ public class BrelixAnalyzer {
         for (char c : word.toCharArray()) {
             if (rare.indexOf(c) != -1) {
                 count++;
-                break;
             }
         }
         return count;
+    }
+
+    boolean containsConsonantCluster(String word) {
+        if (word == null || word.length() < 2) return false;
+
+        // Umwandlung von mehrgliedrigen Graphemen (1 Laut) in Platzhalter, um Laute zu zählen
+        String processedWord = word.toLowerCase()
+                .replace("sch", "§")
+                .replace("ch", "§")
+                .replace("ck", "§")
+                .replace("ng", "§");
+
+        // Finde alle Konsonanten-Sequenzen
+        Pattern p = Pattern.compile("[^aeiouäöüéàáy]+");
+        Matcher m = p.matcher(processedWord);
+
+        while (m.find()) {
+            String cluster = m.group();
+            int start = m.start();
+            int end = m.end();
+
+            if (start == 0) {
+                // Wortanfang = Silbenanfang der 1. Silbe
+                if (cluster.length() >= 2) return true;
+            } else if (end == processedWord.length()) {
+                // Wortende = Silbenende der letzten Silbe
+                if (cluster.length() >= 3) return true;
+            } else {
+                // Wortmitte: Trennung nach einer Heuristik:
+                // Wenn 'st' oder 'sp' enthalten, gehen sie nach rechts (Silbenanfang).
+                // Ansonsten geht der letzte Konsonant nach rechts.
+                int splitPoint;
+                if (cluster.contains("st")) {
+                    splitPoint = cluster.indexOf("st");
+                } else if (cluster.contains("sp")) {
+                    splitPoint = cluster.indexOf("sp");
+                } else {
+                    splitPoint = cluster.length() - 1;
+                }
+
+                String left = cluster.substring(0, splitPoint);
+                String right = cluster.substring(splitPoint);
+
+                if (left.length() >= 3) return true; // Silbenende >= 3
+                if (right.length() >= 2) return true; // Silbenanfang >= 2
+            }
+        }
+
+        return false;
     }
 
     int countConsonantClusters(String word) {
