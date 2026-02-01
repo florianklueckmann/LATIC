@@ -87,18 +87,18 @@ public class BrelixAnalyzer {
         Logging.getInstance().debug("BrelixAnalyzer", String.format("Words with rare letters: %s", wordsRareLetters));
         Logging.getInstance().debug("BrelixAnalyzer", String.format("Words with consonant clusters: %s", wordsConsonantClusters));
 
-        double wortschw_minus_c = (double) (multiGraphemsMinusC + rareLetters + consonantClusters) / wordCount;
+        long wortschw_minus_c = multiGraphems - multiGraphemsMinusC + rareLetters + consonantClusters;
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
-            "Base metrics: wordCount=%d, multiGraphems=%d, rareLetters=%d, consonantClusters=%d, multiGraphemsMinusC=%d, syllablesGe3=%d, wortschw_minus_c=%.4f",
+            "Base metrics: wordCount=%d, multiGraphems=%d, rareLetters=%d, consonantClusters=%d, multiGraphemsMinusC=%d, syllablesGe3=%d, wortschw_minus_c=%d",
             wordCount, multiGraphems, rareLetters, consonantClusters, multiGraphemsMinusC, syllablesGe3, wortschw_minus_c));
 
         // Prozentsätze
         double proz_mehrsilber = (double) syllablesGe3 / wordCount * 100;
-        double proz_wortschw_minus_c = wortschw_minus_c * 100; // Laut Formel ist es oft ein Prozentsatz oder gewichteter Wert
+        double proz_wortschw_minus_c = (double) wortschw_minus_c / wordCount * 100; // Laut Formel ist es oft ein Prozentsatz oder gewichteter Wert
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
-            "Calculated rates: wortschw_minus_c=%.4f, proz_mehrsilber=%.2f%%, proz_wortschw_minus_c=%.2f%%",
+            "Calculated rates: wortschw_minus_c=%d, proz_mehrsilber=%.2f%%, proz_wortschw_minus_c=%.2f%%",
             wortschw_minus_c, proz_mehrsilber, proz_wortschw_minus_c));
 
         // Nebensätze
@@ -133,7 +133,7 @@ public class BrelixAnalyzer {
         double lix = satzlaenge + anteil_lange_woerter;
         double lixPlus = lix + (schriftgroesse_diff * 20) + (woerter_seite * 3);
         
-        double brelix0 = lix + (proz_wortschw_minus_c / 5.0);
+        double brelix0 = lix + proz_wortschw_minus_c / 5.0;
         double brelix1 = (satzlaenge * 5) + (woerter_seite * 3) + ((proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 50);
         double brelix2 = (satzlaenge * 5) + (woerter_seite * 3) + ((proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100);
         double brelix3 = (schriftgroesse_diff * 20) + brelix2;
@@ -172,8 +172,8 @@ public class BrelixAnalyzer {
     }
 
     boolean containsMultiGrapheme(String word) {
-        // <ch>, <ck>, <sch>, <sp>, <st>, <ng>, Dehnungs-h
-        String[] clusters = {"sch", "ch", "ck", "sp", "st", "ng"};
+        // <ch>, <ck>, <sch>, <sp>, <st>, <ng>,  <ei>, <eu>, <äu>, Dehnungs-h
+        String[] clusters = {"sch", "ch", "ck", "sp", "st", "ng", "ei", "eu", "äu"};
         for (String c : clusters) {
             if (word.contains(c)) {
                 return true;

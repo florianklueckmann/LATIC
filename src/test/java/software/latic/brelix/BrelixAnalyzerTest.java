@@ -136,11 +136,11 @@ public class BrelixAnalyzerTest {
         BrelixAnalyzer.getInstance().analyze(data, doc);
 
         // LIX = 14.59
-        // Wortschwierigkeit (WSC) = multiGraphemsMinusC (4) + rare (2) + clusters (4) = 10
-        // proz_wortschw_minus_c = 10/11 * 100 = 90.91
+        // Wortschwierigkeit (WSC) = multigraphems (3) - multiGraphemsMinusC (1) + rare (2) + clusters (4) = 8
+        // proz_wortschw_minus_c = 8/11 * 100 = 72.72
         
-        // BRELIX 0: 14.59 + 90.91/5 = 32.77
-        assertEquals(32.77, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
+        // BRELIX 0: 14.59 + 72.72/5 = 29.134
+        assertEquals(29.13, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
         
         // BRELIX 1: 27.5 + 33 + (100/100 * 50) = 110.5
         assertEquals(110.5, data.getBrelix1Score(), 0.1, "BRELIX 1 mismatch");
