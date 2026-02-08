@@ -52,6 +52,14 @@ public class PrimaryModel {
     private int pages = 1;
     private double fontSizeMm = 6.0;
 
+    public void setPages(int pages) {
+        this.pages = pages;
+    }
+
+    public void setFontSizeMm(double fontSizeMm) {
+        this.fontSizeMm = fontSizeMm;
+    }
+
     public PrimaryModel initializeDocument(software.latic.helper.FileContent fileContent) {
         initializeDocument(fileContent.getContent());
         this.pages = fileContent.getPages();

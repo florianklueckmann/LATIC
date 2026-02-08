@@ -22,6 +22,8 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TitledPane?>
 <BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="software.latic.PrimaryViewModel">
    <center>
        <GridPane id="mainGridPane" BorderPane.alignment="CENTER">
@@ -79,6 +81,23 @@
                                  <CheckBox fx:id="analyzeHeadersCheckbox" mnemonicParsing="false" onAction="#handleAnalyzeHeadersCheckboxValueChanged" text="%analyzeHeaders" />
                                  <CheckBox fx:id="analyzeFootersCheckbox" mnemonicParsing="false" onAction="#handleAnalyzeFootersCheckboxValueChanged" text="%analyzeFooters" />
                                  <CheckBox fx:id="brelixCheckbox" mnemonicParsing="false" onAction="#handleBrelixCheckboxValueChanged" text="BRELIX (Beta)" />
+                                 <TitledPane fx:id="brelixSettingsPane" animated="true" expanded="false" text="BRELIX Settings" visible="false" managed="false">
+                                    <content>
+                                       <VBox spacing="10.0">
+                                          <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                             <Label text="Seitenanzahl (Pages):" />
+                                             <Spinner fx:id="pagesCountSpinner" prefWidth="80.0" />
+                                          </HBox>
+                                          <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                             <Label text="Schriftgröße (mm):" />
+                                             <Spinner fx:id="fontSizeMmSpinner" prefWidth="80.0" />
+                                          </HBox>
+                                       </VBox>
+                                    </content>
+                                    <padding>
+                                       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                    </padding>
+                                 </TitledPane>
                               </children>
                               <padding>
                                  <Insets top="15.0" />

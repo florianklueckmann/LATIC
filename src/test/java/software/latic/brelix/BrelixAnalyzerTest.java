@@ -51,6 +51,25 @@ public class BrelixAnalyzerTest {
     }
 
     @Test
+    void testMultiGraphemsMinusC() {
+        BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
+        // schach: sch(1), ch(1). c_mehr: sch(1), ch(1). 2 - 2 = 0.
+        int count = analyzer.countMultiGraphems("schach");
+        int c_mehr = analyzer.countCInMultiGraphems("schach");
+        assertEquals(0, count - c_mehr);
+        
+        // bahn: 1 - 0 = 1.
+        count = analyzer.countMultiGraphems("bahn");
+        c_mehr = analyzer.countCInMultiGraphems("bahn");
+        assertEquals(1, count - c_mehr);
+        
+        // spiel: sp(1), ie(1). c_mehr: 0. 2 - 0 = 2.
+        count = analyzer.countMultiGraphems("spiel");
+        c_mehr = analyzer.countCInMultiGraphems("spiel");
+        assertEquals(2, count - c_mehr);
+    }
+
+    @Test
     void testSubordinateClauses() {
         // Use English for the test document to ensure the default parser works as expected
         String text = "I know that you are here.";
@@ -62,22 +81,12 @@ public class BrelixAnalyzerTest {
     }
 
     @Test
-    void testMultiGraphemsMinusC() {
-        BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
-        // schach: sch(1), ch(1). c_mehr: sch(1), ch(1). 2 - 2 = 0.
-        assertEquals(0, analyzer.countMultiGraphemsMinusC("schach"));
-        // bahn: 1 - 0 = 1.
-        assertEquals(1, analyzer.countMultiGraphemsMinusC("bahn"));
-        // spiel: sp(1), ie(1). c_mehr: 0. 2 - 0 = 2.
-        assertEquals(2, analyzer.countMultiGraphemsMinusC("spiel"));
-    }
-
-    @Test
     void testRareLetters() {
         BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
         assertEquals(1, analyzer.countRareLetters("taxi")); // x
-        assertEquals(2, analyzer.countRareLetters("äußerst")); // ä, ß -> but once per word
+        assertEquals(2, analyzer.countRareLetters("äußerst")); // ä, ß
         assertEquals(0, analyzer.countRareLetters("haus"));
+        assertEquals(1, analyzer.countRareLetters("lacht")); // c
     }
 
     @Test
@@ -85,14 +94,16 @@ public class BrelixAnalyzerTest {
         BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
         assertEquals(1, analyzer.countConsonantClusters("straße"), "str at start (>=2)");
         assertEquals(1, analyzer.countConsonantClusters("herbst"), "rbst at end (>=3)");
-        // "strandtest": start "str" (3) -> count++, end "test" -> end "st" (2) -> no. Total 1.
+        // "strandtest": start "str" (3) -> count++, end "st" (2) -> no. Total 1.
         assertEquals(1, analyzer.countConsonantClusters("strandtest"));
-        assertEquals(1, analyzer.countConsonantClusters("sprichst")); // spr(3) start, chst(4) end. Total now 1 (once per word).
+        // "sprichst": spr at start (3, >=2) -> count++; after ch->§: "§  i§ t" end cluster "t" length 1 < 3 -> no extra. Total 1.
+        assertEquals(1, analyzer.countConsonantClusters("sprichst"));
         
-        // Neue Tests für Wortmitte
+        // Multiple clusters per word
         assertEquals(1, analyzer.countConsonantClusters("fenster"), "st at syllable start in middle");
         assertEquals(0, analyzer.countConsonantClusters("garten"), "no clusters in middle");
         assertEquals(1, analyzer.countConsonantClusters("wurst"), "rst at end (>=3)");
+        assertEquals(1, analyzer.countConsonantClusters("sitzt"), "tzt at end (>=3)");
     }
 
     @Test
@@ -135,26 +146,31 @@ public class BrelixAnalyzerTest {
 
         BrelixAnalyzer.getInstance().analyze(data, doc);
 
-        // LIX = 14.59
-        // Wortschwierigkeit (WSC) = multigraphems (3) - multiGraphemsMinusC (1) + rare (2) + clusters (4) = 8
-        // proz_wortschw_minus_c = 8/11 * 100 = 72.72
+        // Occurrence-based counts:
+        // multiGraphems=6 (spielt: sp,ie; schaukelstuhl: sch,st,Dehnungs-h; lacht: ch)
+        // cInMultiGraphems=2 (schaukelstuhl: sch; lacht: ch)
+        // rareLetters=2 (schaukelstuhl: c; lacht: c)
+        // consonantClusters=4 (flora: Fl; spielt: sp; sitzt: tzt; schaukelstuhl: st)
+        // wortschw_minus_c = 6 - 2 + 2 + 4 = 10
+        // proz_wortschw_minus_c = 10/11 * 100 = 90.91%
+        // LIX = 5.5 + 9.09 = 14.59
+
+        // BRELIX 0: 14.59 + 90.91/5 = 32.77
+        assertEquals(32.77, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
         
-        // BRELIX 0: 14.59 + 72.72/5 = 29.134
-        assertEquals(29.13, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
-        
-        // BRELIX 1: 27.5 + 33 + (100/100 * 50) = 110.5
+        // BRELIX 1: 27.5 + 33 + ((9.09+90.91)/100*50) = 110.5
         assertEquals(110.5, data.getBrelix1Score(), 0.1, "BRELIX 1 mismatch");
         
-        // BRELIX 2: 60.5 + 100 = 160.5
+        // BRELIX 2: 27.5 + 33 + ((9.09+90.91)/100*100) = 160.5
         assertEquals(160.5, data.getBrelix2Score(), 0.1, "BRELIX 2 mismatch");
         
-        // BRELIX 3: 160.5
+        // BRELIX 3: (0*20) + 160.5 = 160.5
         assertEquals(160.5, data.getBrelix3Score(), 0.1, "BRELIX 3 mismatch");
         
-        // BRELIX 4: 160.5 + (2 Sätze + 0 Nebensätze) * 5 = 170.5
+        // BRELIX 4: 160.5 + (2+0)*5 = 170.5
         assertEquals(170.5, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
         
-        // BRELIX 5: 170.5 + 100 (TTR) = 270.5
+        // BRELIX 5: 170.5 + 100 (TTR*100) = 270.5
         assertEquals(270.5, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
 
         // Verifikation der Niveaus (Levels)
