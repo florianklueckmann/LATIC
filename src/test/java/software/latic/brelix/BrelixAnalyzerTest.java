@@ -30,6 +30,7 @@ public class BrelixAnalyzerTest {
         assertTrue(data.getBrelix1Score() > 0, "BRELIX 1 should be > 0");
         assertTrue(data.getBrelix2Score() > 0, "BRELIX 2 should be > 0");
         assertTrue(data.getBrelix3Score() > 0, "BRELIX 3 should be > 0");
+        assertTrue(data.getBrelix3NeuScore() > 0, "BRELIX 3 Neu should be > 0");
         assertTrue(data.getBrelix4Score() > 0, "BRELIX 4 should be > 0");
         assertTrue(data.getBrelix5Score() > 0, "BRELIX 5 should be > 0");
         
@@ -37,6 +38,7 @@ public class BrelixAnalyzerTest {
         System.out.println("BRELIX 1: " + data.getBrelix1Score());
         System.out.println("BRELIX 2: " + data.getBrelix2Score());
         System.out.println("BRELIX 3: " + data.getBrelix3Score());
+        System.out.println("BRELIX 3 Neu: " + data.getBrelix3NeuScore());
         System.out.println("BRELIX 4: " + data.getBrelix4Score());
         System.out.println("BRELIX 5: " + data.getBrelix5Score());
     }
@@ -143,6 +145,7 @@ public class BrelixAnalyzerTest {
         data.setPagesCount(1);
         data.setFontSizeMm(6.0); // diff = 0
         data.setTypeTokenRatio(1.0); // Alle 11 Wörter verschieden
+        data.setLixReadabilityScore(14.59); // LIX = 5.5 + 9.09
 
         BrelixAnalyzer.getInstance().analyze(data, doc);
 
@@ -166,12 +169,17 @@ public class BrelixAnalyzerTest {
         
         // BRELIX 3: (0*20) + 160.5 = 160.5
         assertEquals(160.5, data.getBrelix3Score(), 0.1, "BRELIX 3 mismatch");
+
+        // BRELIX 3 Neu: (0*20) + 5.5*5 + 11*3 + ((9.09 + 109.09)/100*100) = 0 + 27.5 + 33 + 118.18 = 178.68
+        // wortschw_additiv = multiGraphems(6) + rareLetters(2) + consonantClusters(4) = 12
+        // proz_wortschw_additiv = 12/11*100 = 109.09%
+        assertEquals(178.68, data.getBrelix3NeuScore(), 0.1, "BRELIX 3 Neu mismatch");
+
+        // BRELIX 4: 160.5 + 0*5 = 160.5 (SPSS: brelix4 = brelix3 + Nebensätze*5)
+        assertEquals(160.5, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
         
-        // BRELIX 4: 160.5 + (2+0)*5 = 170.5
-        assertEquals(170.5, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
-        
-        // BRELIX 5: 170.5 + 100 (TTR*100) = 270.5
-        assertEquals(270.5, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
+        // BRELIX 5: 160.5 + 100 (TTR*100) = 260.5
+        assertEquals(260.5, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
 
         // Verifikation der Niveaus (Levels)
         assertEquals("2", data.getLixReadabilityLevel(), "LIX Level mismatch");

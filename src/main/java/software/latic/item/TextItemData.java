@@ -38,6 +38,7 @@ public abstract class TextItemData {
     DoubleProperty brelix1Score;
     DoubleProperty brelix2Score;
     DoubleProperty brelix3Score;
+    DoubleProperty brelix3NeuScore;
     DoubleProperty brelix4Score;
     DoubleProperty brelix5Score;
 
@@ -46,6 +47,7 @@ public abstract class TextItemData {
     IntegerProperty brelix1Level;
     IntegerProperty brelix2Level;
     IntegerProperty brelix3Level;
+    IntegerProperty brelix3NeuLevel;
     IntegerProperty brelix4Level;
     IntegerProperty brelix5Level;
 
@@ -145,6 +147,7 @@ public abstract class TextItemData {
         this.brelix1Score = new RoundedDoubleProperty();
         this.brelix2Score = new RoundedDoubleProperty();
         this.brelix3Score = new RoundedDoubleProperty();
+        this.brelix3NeuScore = new RoundedDoubleProperty();
         this.brelix4Score = new RoundedDoubleProperty();
         this.brelix5Score = new RoundedDoubleProperty();
         this.lixPlusLevel = new SimpleIntegerProperty();
@@ -152,6 +155,7 @@ public abstract class TextItemData {
         this.brelix1Level = new SimpleIntegerProperty();
         this.brelix2Level = new SimpleIntegerProperty();
         this.brelix3Level = new SimpleIntegerProperty();
+        this.brelix3NeuLevel = new SimpleIntegerProperty();
         this.brelix4Level = new SimpleIntegerProperty();
         this.brelix5Level = new SimpleIntegerProperty();
         this.typeTokenRatio = new RoundedDoubleProperty();
@@ -195,6 +199,8 @@ public abstract class TextItemData {
         valueMap.put("brelix2Level", String.valueOf(getBrelix2Level()));
         valueMap.put("brelix3Score", String.valueOf(getBrelix3Score()));
         valueMap.put("brelix3Level", String.valueOf(getBrelix3Level()));
+        valueMap.put("brelix3NeuScore", String.valueOf(getBrelix3NeuScore()));
+        valueMap.put("brelix3NeuLevel", String.valueOf(getBrelix3NeuLevel()));
         valueMap.put("brelix4Score", String.valueOf(getBrelix4Score()));
         valueMap.put("brelix4Level", String.valueOf(getBrelix4Level()));
         valueMap.put("brelix5Score", String.valueOf(getBrelix5Score()));
@@ -460,6 +466,10 @@ public abstract class TextItemData {
     public DoubleProperty brelix3ScoreProperty() { return brelix3Score; }
     public void setBrelix3Score(double brelix3Score) { this.brelix3Score.set(brelix3Score); }
 
+    public double getBrelix3NeuScore() { return brelix3NeuScore.get(); }
+    public DoubleProperty brelix3NeuScoreProperty() { return brelix3NeuScore; }
+    public void setBrelix3NeuScore(double brelix3NeuScore) { this.brelix3NeuScore.set(brelix3NeuScore); }
+
     public double getBrelix4Score() { return brelix4Score.get(); }
     public DoubleProperty brelix4ScoreProperty() { return brelix4Score; }
     public void setBrelix4Score(double brelix4Score) { this.brelix4Score.set(brelix4Score); }
@@ -487,6 +497,10 @@ public abstract class TextItemData {
     public int getBrelix3Level() { return brelix3Level.get(); }
     public IntegerProperty brelix3LevelProperty() { return brelix3Level; }
     public void setBrelix3Level(int brelix3Level) { this.brelix3Level.set(brelix3Level); }
+
+    public int getBrelix3NeuLevel() { return brelix3NeuLevel.get(); }
+    public IntegerProperty brelix3NeuLevelProperty() { return brelix3NeuLevel; }
+    public void setBrelix3NeuLevel(int brelix3NeuLevel) { this.brelix3NeuLevel.set(brelix3NeuLevel); }
 
     public int getBrelix4Level() { return brelix4Level.get(); }
     public IntegerProperty brelix4LevelProperty() { return brelix4Level; }
