@@ -6,8 +6,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.util.Duration;
 import org.apache.commons.lang3.StringUtils;
 
@@ -52,6 +55,9 @@ public class PrimaryViewModel implements Initializable {
     @FXML private CheckBox analyzeHeadersCheckbox;
     @FXML private CheckBox analyzeFootersCheckbox;
     @FXML private CheckBox brelixCheckbox;
+    @FXML private TitledPane brelixSettingsPane;
+    @FXML private Spinner<Integer> pagesCountSpinner;
+    @FXML private Spinner<Double> fontSizeMmSpinner;
     @FXML private Button buttonSelectFile;
     @FXML private Tab fileTab;
     @FXML private Tab textTab;
@@ -189,6 +195,7 @@ public class PrimaryViewModel implements Initializable {
         initializeBindings();
         initializeFileChooser();
         setupTaskLevelStructure();
+        initializeBrelixSpinners();
         initializeGui();
     }
 
@@ -289,10 +296,19 @@ public class PrimaryViewModel implements Initializable {
         }
     }
 
+    private void initializeBrelixSpinners() {
+        pagesCountSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 9999, 1));
+        fontSizeMmSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(1.0, 50.0, 6.0, 0.5));
+        pagesCountSpinner.setEditable(true);
+        fontSizeMmSpinner.setEditable(true);
+    }
+
     private void applyPreferences() {
         analyzeHeadersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeHeaders", "true")));
         analyzeFootersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeFooters", "true")));
         brelixCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("brelixEnabled", "false")));
+        brelixSettingsPane.setVisible(brelixCheckbox.isSelected());
+        brelixSettingsPane.setManaged(brelixCheckbox.isSelected());
     }
 
     private void addBoxToParent(List<CheckBoxTreeItem<Task>> rootBoxes, CheckBoxTreeItem<Task> subBox) {
@@ -494,7 +510,12 @@ public class PrimaryViewModel implements Initializable {
             }
         } else if (textTab.isSelected()) {
             //TODO We could split the input in multiple items
-            currentItems.add(new PrimaryModel()
+            var model = new PrimaryModel();
+            if (brelixCheckbox.isSelected()) {
+                model.setPages(pagesCountSpinner.getValue());
+                model.setFontSizeMm(fontSizeMmSpinner.getValue());
+            }
+            currentItems.add(model
                     .initializeDocument(textAreaInput.getParagraphs())
                     .processTasks(textTasks, generalTasks, wordLevelTasks));
 
@@ -641,6 +662,8 @@ public class PrimaryViewModel implements Initializable {
 
     public void handleBrelixCheckboxValueChanged(ActionEvent actionEvent) {
         Settings.userPreferences.put("brelixEnabled", String.valueOf(brelixCheckbox.isSelected()));
+        brelixSettingsPane.setVisible(brelixCheckbox.isSelected());
+        brelixSettingsPane.setManaged(brelixCheckbox.isSelected());
         createCheckboxes();
     }
 
