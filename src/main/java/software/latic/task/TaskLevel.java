@@ -11,7 +11,8 @@ public enum TaskLevel {
     SENTENCE(2),
     SENTENCE_LENGTH,
     TEXT(3),
-    TEXT_READABILITY;
+    TEXT_READABILITY,
+    BRELIX;
 
     private final int priority;
 

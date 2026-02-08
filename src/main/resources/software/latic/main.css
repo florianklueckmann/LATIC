@@ -179,6 +179,15 @@
     -fx-border-color: -primary-darker;
 }
 
+.tab-pane .tab-content-area .scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.tab-pane .tab-content-area .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
 .tab-pane:top .tab-container .focus-indicator {
     -fx-border-width: 0 0 0 0;
 }
@@ -213,6 +222,7 @@
     -fx-border-radius: 2px;
     -fx-border-width: 1px;
     -fx-border-color: -primary;
+    -fx-alignment: center-left;
 }
 
 .text-field-no-border {
@@ -220,19 +230,21 @@
     -fx-border-width: 0px;
     -fx-background-radius: 0px;
     -fx-background-color: white;
+    -fx-padding: 0.5em 1em;
 }
 
 .btn-no-bg-radius {
     -fx-background-radius: 0px;
     -fx-border-width: 0px;
-    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
-    /*-fx-background-insets: 0 0 -1 0, 0, 1, 2;*/
+    -fx-background-insets: 0;
+    -fx-padding: 0.5em 1.5em;
 }
 .btn-no-bg-radius:focused {
     /*-fx-background-color: none, none, none, none, none;*/
     -fx-background-radius: 0px;
     /*-fx-background-insets: -0.2, 1, 2, -1.4, 2.6;*/
-    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-insets: 0;
+    -fx-padding: 0.5em 1.5em;
     /*-fx-background-radius: 3, 2, 1, 4, 1;*/
 }
 
