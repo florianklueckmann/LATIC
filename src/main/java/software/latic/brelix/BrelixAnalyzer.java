@@ -21,6 +21,7 @@ public class BrelixAnalyzer {
     private static final double[] BRELIX1_THRESHOLDS = {50, 65, 80, 95, 110};
     private static final double[] BRELIX2_THRESHOLDS = {70, 90, 110, 130, 150};
     private static final double[] BRELIX3_THRESHOLDS = {90, 120, 150, 180, 210};
+    private static final double[] BRELIX3_NEU_THRESHOLDS = {90, 120, 150, 180, 210};
     private static final double[] BRELIX4_THRESHOLDS = {90, 125, 160, 200, 240};
     private static final double[] BRELIX5_THRESHOLDS = {100, 150, 200, 250, 300};
 
@@ -63,6 +64,7 @@ public class BrelixAnalyzer {
             multiGraphems, rareLetters, consonantClusters, cInMultiGraphems, syllablesGe3));
 
         long wortschw_minus_c = calculateWortschwMinusC(multiGraphems, cInMultiGraphems, rareLetters, consonantClusters);
+        long wortschw_additiv = calculateWortschwAdditiv(multiGraphems, rareLetters, consonantClusters);
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
             "Base metrics: wordCount=%d, multiGraphems=%d, rareLetters=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d, wortschw_minus_c=%d",
@@ -113,18 +115,21 @@ public class BrelixAnalyzer {
         double brelix1 = calculateBrelix1(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
         double brelix2 = calculateBrelix2(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
         double brelix3 = calculateBrelix3(schriftgroesse_diff, brelix2);
-        double brelix4 = calculateBrelix4(brelix3, data.getSentenceCount(), subordinateClauses);
+        double proz_wortschw_additiv = calculateProzWortschwMinusC(wortschw_additiv, wordCount);
+        double brelix3Neu = calculateBrelix3Neu(schriftgroesse_diff, satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_additiv);
+        double brelix4 = calculateBrelix4(brelix3, subordinateClauses);
         double brelix5 = calculateBrelix5(brelix4, data.getTypeTokenRatio());
 
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
-            "Final Scores: LIX=%.2f, LIX+=%.2f, BRELIX0=%.2f, BRELIX1=%.2f, BRELIX2=%.2f, BRELIX3=%.2f, BRELIX4=%.2f, BRELIX5=%.2f",
-            lix, lixPlus, brelix0, brelix1, brelix2, brelix3, brelix4, brelix5));
+            "Final Scores: LIX=%.2f, LIX+=%.2f, BRELIX0=%.2f, BRELIX1=%.2f, BRELIX2=%.2f, BRELIX3=%.2f, BRELIX3_NEU=%.2f, BRELIX4=%.2f, BRELIX5=%.2f",
+            lix, lixPlus, brelix0, brelix1, brelix2, brelix3, brelix3Neu, brelix4, brelix5));
 
         data.setLixPlusScore(lixPlus);
         data.setBrelix0Score(brelix0);
         data.setBrelix1Score(brelix1);
         data.setBrelix2Score(brelix2);
         data.setBrelix3Score(brelix3);
+        data.setBrelix3NeuScore(brelix3Neu);
         data.setBrelix4Score(brelix4);
         data.setBrelix5Score(brelix5);
 
@@ -134,6 +139,7 @@ public class BrelixAnalyzer {
         data.setBrelix1Level(calculateLevel(brelix1, BRELIX1_THRESHOLDS));
         data.setBrelix2Level(calculateLevel(brelix2, BRELIX2_THRESHOLDS));
         data.setBrelix3Level(calculateLevel(brelix3, BRELIX3_THRESHOLDS));
+        data.setBrelix3NeuLevel(calculateLevel(brelix3Neu, BRELIX3_NEU_THRESHOLDS));
         data.setBrelix4Level(calculateLevel(brelix4, BRELIX4_THRESHOLDS));
         data.setBrelix5Level(calculateLevel(brelix5, BRELIX5_THRESHOLDS));
     }
@@ -142,9 +148,18 @@ public class BrelixAnalyzer {
 
     /**
      * Calculates the word difficulty score excluding C-related multi-graphemes.
+     * wortschw_minus_c = mehrgliedrig - c_mehr + Buchst_selten + Konshfg
      */
     long calculateWortschwMinusC(long multiGraphems, long cInMultiGraphems, long rareLetters, long consonantClusters) {
         return multiGraphems - cInMultiGraphems + rareLetters + consonantClusters;
+    }
+
+    /**
+     * Calculates the additive word difficulty score (without C correction).
+     * wortschw_additiv = mehrgliedrig + Buchst_selten + Konshfg
+     */
+    long calculateWortschwAdditiv(long multiGraphems, long rareLetters, long consonantClusters) {
+        return multiGraphems + rareLetters + consonantClusters;
     }
 
     /**
@@ -252,12 +267,24 @@ public class BrelixAnalyzer {
     }
 
     /**
+     * Calculates the BRELIX3 Neu score.
+     * SPSS Code:
+     * compute brelix3_neu = (schriftgröße_diff*20)+ (Wörter/Sätze)*5  +  (Wörter/Seiten)*3 + (Mehrsilber+wortschw_additiv)/Wörter*100.
+     * Same as BRELIX3 but uses wortschw_additiv (without C correction) instead of wortschw_minus_c.
+     */
+    double calculateBrelix3Neu(double schriftgroesse_diff, double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschw_additiv) {
+        return (schriftgroesse_diff * 20) + satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_additiv) / 100.0 * 100;
+    }
+
+    /**
      * Calculates the BRELIX4 score.
      * SPSS Code:
      * compute brelix4 = (schriftgröße_diff*20)+ (Wörter/Sätze+Nebensätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100.
+     * In SPSS, division has higher precedence than addition, so Wörter/Sätze+Nebensätze = (Wörter/Sätze)+Nebensätze.
+     * Therefore: brelix4 = brelix3 + Nebensätze*5
      */
-    double calculateBrelix4(double brelix3, int sentenceCount, int subordinateClauses) {
-        return brelix3 + (sentenceCount + subordinateClauses) * 5;
+    double calculateBrelix4(double brelix3, int subordinateClauses) {
+        return brelix3 + subordinateClauses * 5;
     }
 
     /**

@@ -20,6 +20,7 @@ public class BrelixReferenceTest {
         data.setSentenceCount(2);
         data.setAverageSentenceLengthWords(5.5);
         data.setTypeTokenRatio(1.0); // All 11 words are unique
+        data.setLixReadabilityScore(14.59); // LIX = 5.5 + 9.09
 
         Document doc = new Document(text);
         BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
@@ -54,10 +55,15 @@ public class BrelixReferenceTest {
         // BRELIX 3 = (0*20) + 160.5 = 160.5 (font size diff = 0)
         assertEquals(160.5, data.getBrelix3Score(), 0.1, "BRELIX 3");
 
-        // BRELIX 4 = 160.5 + (2+0)*5 = 170.5
-        assertEquals(170.5, data.getBrelix4Score(), 0.1, "BRELIX 4");
+        // BRELIX 3 Neu: uses wortschw_additiv (no C correction) = 6 + 2 + 4 = 12
+        // proz_wortschw_additiv = 12/11*100 = 109.09%
+        // (0*20) + 5.5*5 + 11*3 + ((9.09+109.09)/100*100) = 0 + 27.5 + 33 + 118.18 = 178.68
+        assertEquals(178.68, data.getBrelix3NeuScore(), 0.1, "BRELIX 3 Neu");
 
-        // BRELIX 5 = 170.5 + (1.0 * 100) = 270.5
-        assertEquals(270.5, data.getBrelix5Score(), 0.1, "BRELIX 5");
+        // BRELIX 4 = 160.5 + 0*5 = 160.5 (SPSS: brelix4 = brelix3 + Nebensätze*5)
+        assertEquals(160.5, data.getBrelix4Score(), 0.1, "BRELIX 4");
+
+        // BRELIX 5 = 160.5 + (1.0 * 100) = 260.5
+        assertEquals(260.5, data.getBrelix5Score(), 0.1, "BRELIX 5");
     }
 }

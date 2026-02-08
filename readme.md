@@ -18,6 +18,18 @@ You can find our evaluation in the documentation.
     * Lexical diversity/type-token ratio
     * Word count
     * Syllable count
+* **BRELIX (Beta) — German text analysis**
+    * Bremer Erstlese-Index for assessing reading difficulty of German texts aimed at beginning readers
+    * Multiple index variants (BRELIX 0–5) with increasing analytical depth:
+        * **BRELIX 0**: LIX corrected by orthographic word difficulty
+        * **BRELIX 1**: Adds text density (words per page)
+        * **BRELIX 2**: Stronger weighting of word difficulty
+        * **BRELIX 3**: Includes typographic factors (font size)
+        * **BRELIX 4**: Includes sentence complexity (subordinate clauses)
+        * **BRELIX 5**: Includes lexical variety (type-token ratio), suited for general children's literature
+    * Analyzes multi-graphemes, rare letters, consonant clusters, and Dehnungs-h
+    * Configurable page count and font size via a collapsible settings panel
+    * Enable via the "BRELIX (Beta)" checkbox in the file tab
 
 A detailed description of the text and item characteristics and instructions on how to use LATIC are provided in the documentation.
 
