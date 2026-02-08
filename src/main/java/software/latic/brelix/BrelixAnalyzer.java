@@ -208,7 +208,8 @@ public class BrelixAnalyzer {
 
     /**
      * Calculates the LIX+ score.
-     * LIX+ = LIX + (font size difference * 20) + (words per page * 3)
+     * SPSS Code:
+     * compute LIX_Plus = LIX + (schriftgröße_diff*20) + (Wörter/Seiten)*3.
      */
     double calculateLixPlus(double lix, double schriftgroesse_diff, double woerter_seite) {
         return lix + (schriftgroesse_diff * 20) + (woerter_seite * 3);
@@ -216,7 +217,8 @@ public class BrelixAnalyzer {
 
     /**
      * Calculates the BRELIX0 score.
-     * BRELIX0 = LIX + (percentage word difficulty minus C / 5)
+     * SPSS Code:
+     * compute brelix0 = LIX + proz_wortschw_minus_c/5.
      */
     double calculateBrelix0(double lix, double proz_wortschw_minus_c) {
         return lix + proz_wortschw_minus_c / 5.0;
@@ -224,23 +226,26 @@ public class BrelixAnalyzer {
 
     /**
      * Calculates the BRELIX1 score.
-     * BRELIX1 = (sentence length * 5) + (words per page * 3) + ((polysyllabic % + word difficulty %) / 100 * 50)
+     * SPSS Code:
+     * compute brelix1 = (Wörter/Sätze)*5  +  (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*50.
      */
     double calculateBrelix1(double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c) {
-        return (satzlaenge * 5) + (woerter_seite * 3) + ((proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 50);
+        return satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 50;
     }
 
     /**
      * Calculates the BRELIX2 score.
-     * BRELIX2 = (sentence length * 5) + (words per page * 3) + ((polysyllabic % + word difficulty %) / 100 * 100)
+     * SPSS Code:
+     * compute brelix2 = (Wörter/Sätze)*5  +  (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100.
      */
     double calculateBrelix2(double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c) {
-        return (satzlaenge * 5) + (woerter_seite * 3) + ((proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100);
+        return satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100;
     }
 
     /**
      * Calculates the BRELIX3 score.
-     * BRELIX3 = (font size difference * 20) + BRELIX2
+     * SPSS Code:
+     * compute brelix3 = (schriftgröße_diff*20)+ (Wörter/Sätze)*5  +  (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100.
      */
     double calculateBrelix3(double schriftgroesse_diff, double brelix2) {
         return (schriftgroesse_diff * 20) + brelix2;
@@ -248,7 +253,8 @@ public class BrelixAnalyzer {
 
     /**
      * Calculates the BRELIX4 score.
-     * BRELIX4 = BRELIX3 + (sentence count + subordinate clauses) * 5
+     * SPSS Code:
+     * compute brelix4 = (schriftgröße_diff*20)+ (Wörter/Sätze+Nebensätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100.
      */
     double calculateBrelix4(double brelix3, int sentenceCount, int subordinateClauses) {
         return brelix3 + (sentenceCount + subordinateClauses) * 5;
