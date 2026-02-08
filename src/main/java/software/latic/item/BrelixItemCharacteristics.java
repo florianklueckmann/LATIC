@@ -3,24 +3,24 @@ package software.latic.item;
 import software.latic.task.TaskLevel;
 
 public enum BrelixItemCharacteristics implements ItemCharacteristics {
-    PAGES_COUNT("pagesCount", TaskLevel.TEXT),
-    FONT_SIZE_MM("fontSizeMm", TaskLevel.TEXT),
-    LIX_PLUS_SCORE("lixPlusScore", TaskLevel.TEXT_READABILITY),
-    BRELIX0_SCORE("brelix0Score", TaskLevel.TEXT_READABILITY),
-    BRELIX1_SCORE("brelix1Score", TaskLevel.TEXT_READABILITY),
-    BRELIX2_SCORE("brelix2Score", TaskLevel.TEXT_READABILITY),
-    BRELIX3_SCORE("brelix3Score", TaskLevel.TEXT_READABILITY),
-    BRELIX3_NEU_SCORE("brelix3NeuScore", TaskLevel.TEXT_READABILITY),
-    BRELIX4_SCORE("brelix4Score", TaskLevel.TEXT_READABILITY),
-    BRELIX5_SCORE("brelix5Score", TaskLevel.TEXT_READABILITY),
-    LIX_PLUS_LEVEL("lixPlusLevel", TaskLevel.TEXT_READABILITY),
-    BRELIX0_LEVEL("brelix0Level", TaskLevel.TEXT_READABILITY),
-    BRELIX1_LEVEL("brelix1Level", TaskLevel.TEXT_READABILITY),
-    BRELIX2_LEVEL("brelix2Level", TaskLevel.TEXT_READABILITY),
-    BRELIX3_LEVEL("brelix3Level", TaskLevel.TEXT_READABILITY),
-    BRELIX3_NEU_LEVEL("brelix3NeuLevel", TaskLevel.TEXT_READABILITY),
-    BRELIX4_LEVEL("brelix4Level", TaskLevel.TEXT_READABILITY),
-    BRELIX5_LEVEL("brelix5Level", TaskLevel.TEXT_READABILITY);
+    PAGES_COUNT("pagesCount", TaskLevel.BRELIX),
+    FONT_SIZE_MM("fontSizeMm", TaskLevel.BRELIX),
+    LIX_PLUS_SCORE("lixPlusScore", TaskLevel.BRELIX),
+    BRELIX0_SCORE("brelix0Score", TaskLevel.BRELIX),
+    BRELIX1_SCORE("brelix1Score", TaskLevel.BRELIX),
+    BRELIX2_SCORE("brelix2Score", TaskLevel.BRELIX),
+    BRELIX3_SCORE("brelix3Score", TaskLevel.BRELIX),
+    BRELIX3_NEU_SCORE("brelix3NeuScore", TaskLevel.BRELIX),
+    BRELIX4_SCORE("brelix4Score", TaskLevel.BRELIX),
+    BRELIX5_SCORE("brelix5Score", TaskLevel.BRELIX),
+    LIX_PLUS_LEVEL("lixPlusLevel", TaskLevel.BRELIX),
+    BRELIX0_LEVEL("brelix0Level", TaskLevel.BRELIX),
+    BRELIX1_LEVEL("brelix1Level", TaskLevel.BRELIX),
+    BRELIX2_LEVEL("brelix2Level", TaskLevel.BRELIX),
+    BRELIX3_LEVEL("brelix3Level", TaskLevel.BRELIX),
+    BRELIX3_NEU_LEVEL("brelix3NeuLevel", TaskLevel.BRELIX),
+    BRELIX4_LEVEL("brelix4Level", TaskLevel.BRELIX),
+    BRELIX5_LEVEL("brelix5Level", TaskLevel.BRELIX);
 
     private final TaskLevel level;
     private final String id;

@@ -52,7 +52,7 @@ public class App extends Application {
     }
 
     private static void prepareStage(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("PrimaryView"), 1000, 600);
+        scene = new Scene(loadFXML("PrimaryView"), 1024, 640);
         scene.getStylesheets().add("/software/latic/main.css");
 
         var imageResourceStream = App.class.getResourceAsStream("latic-square-256.png");
