@@ -14,17 +14,17 @@ public class BrelixAnalyzerTest {
         String text = "Dies ist ein Test. Der Herbst ist da. Wir gehen auf der Strasse.";
         Document doc = new Document(text);
         TextItemData data = new GermanTextItemData(text);
-        
+
         // Simuliere einige Daten
-        data.setWordCount(13); 
+        data.setWordCount(13);
         data.setSentenceCount(3);
         data.setAverageSentenceLengthWords(4.33);
         data.setPagesCount(1);
         data.setFontSizeMm(6.0);
         data.setTypeTokenRatio(0.8);
-        
+
         BrelixAnalyzer.getInstance().analyze(data, doc);
-        
+
         assertTrue(data.getLixPlusScore() > 0, "LIX Plus should be > 0");
         assertTrue(data.getBrelix0Score() > 0, "BRELIX 0 should be > 0");
         assertTrue(data.getBrelix1Score() > 0, "BRELIX 1 should be > 0");
@@ -33,7 +33,7 @@ public class BrelixAnalyzerTest {
         assertTrue(data.getBrelix3NeuScore() > 0, "BRELIX 3 Neu should be > 0");
         assertTrue(data.getBrelix4Score() > 0, "BRELIX 4 should be > 0");
         assertTrue(data.getBrelix5Score() > 0, "BRELIX 5 should be > 0");
-        
+
         System.out.println("BRELIX 0: " + data.getBrelix0Score());
         System.out.println("BRELIX 1: " + data.getBrelix1Score());
         System.out.println("BRELIX 2: " + data.getBrelix2Score());
@@ -46,7 +46,8 @@ public class BrelixAnalyzerTest {
     @Test
     void testMultiGraphems() {
         BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
-        assertEquals(2, analyzer.countMultiGraphems("schach"));
+        assertEquals(2, analyzer.countMultiGraphems("schach")); // sch, ch
+        assertEquals(3, analyzer.countMultiGraphems("schaukelstuhl")); //sch, st, uh (Dehnungs-h)
         assertEquals(4, analyzer.countMultiGraphems("schachspiel")); // sch, ch, sp, ie
         assertEquals(1, analyzer.countMultiGraphems("bahn"), "Dehnungs-h should count as 1");
         assertEquals(0, analyzer.countMultiGraphems("halt"), "h at start is not Dehnungs-h");
@@ -59,12 +60,12 @@ public class BrelixAnalyzerTest {
         int count = analyzer.countMultiGraphems("schach");
         int c_mehr = analyzer.countCInMultiGraphems("schach");
         assertEquals(0, count - c_mehr);
-        
+
         // bahn: 1 - 0 = 1.
         count = analyzer.countMultiGraphems("bahn");
         c_mehr = analyzer.countCInMultiGraphems("bahn");
         assertEquals(1, count - c_mehr);
-        
+
         // spiel: sp(1), ie(1). c_mehr: 0. 2 - 0 = 2.
         count = analyzer.countMultiGraphems("spiel");
         c_mehr = analyzer.countCInMultiGraphems("spiel");
@@ -100,7 +101,7 @@ public class BrelixAnalyzerTest {
         assertEquals(1, analyzer.countConsonantClusters("strandtest"));
         // "sprichst": spr at start (3, >=2) -> count++; after ch->§: "§  i§ t" end cluster "t" length 1 < 3 -> no extra. Total 1.
         assertEquals(1, analyzer.countConsonantClusters("sprichst"));
-        
+
         // Multiple clusters per word
         assertEquals(1, analyzer.countConsonantClusters("fenster"), "st at syllable start in middle");
         assertEquals(0, analyzer.countConsonantClusters("garten"), "no clusters in middle");
@@ -160,13 +161,13 @@ public class BrelixAnalyzerTest {
 
         // BRELIX 0: 14.59 + 90.91/5 = 32.77
         assertEquals(32.77, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
-        
+
         // BRELIX 1: 27.5 + 33 + ((9.09+90.91)/100*50) = 110.5
         assertEquals(110.5, data.getBrelix1Score(), 0.1, "BRELIX 1 mismatch");
-        
+
         // BRELIX 2: 27.5 + 33 + ((9.09+90.91)/100*100) = 160.5
         assertEquals(160.5, data.getBrelix2Score(), 0.1, "BRELIX 2 mismatch");
-        
+
         // BRELIX 3: (0*20) + 160.5 = 160.5
         assertEquals(160.5, data.getBrelix3Score(), 0.1, "BRELIX 3 mismatch");
 
@@ -177,7 +178,7 @@ public class BrelixAnalyzerTest {
 
         // BRELIX 4: 160.5 + 0*5 = 160.5 (SPSS: brelix4 = brelix3 + Nebensätze*5)
         assertEquals(160.5, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
-        
+
         // BRELIX 5: 160.5 + 100 (TTR*100) = 260.5
         assertEquals(260.5, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
 

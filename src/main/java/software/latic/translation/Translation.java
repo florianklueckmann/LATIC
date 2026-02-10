@@ -51,6 +51,10 @@ public class Translation {
                 || getLocale().equals(SupportedLocales.GERMAN.getLocale());
     }
 
+    public boolean canAnalyzeBrelixForLocale() {
+        return getLocale().equals(SupportedLocales.GERMAN.getLocale());
+    }
+
     public String getTranslation(final String key){
         ResourceBundle bundle = ResourceBundle.getBundle("software.latic.messages", getLocale());
         try {
