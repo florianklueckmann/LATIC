@@ -295,7 +295,7 @@ public class BrelixAnalyzer {
         return brelix4 + (typeTokenRatio * 100.0);
     }
 
-    private int calculateLevel(double score, double[] thresholds) {
+    int calculateLevel(double score, double[] thresholds) {
         for (int i = 0; i < thresholds.length; i++) {
             if (score <= thresholds[i]) {
                 return i + 1;
@@ -322,6 +322,7 @@ public class BrelixAnalyzer {
         for (String c : CLUSTERS) {
             int index = temp.indexOf(c);
             while (index != -1) {
+                Logging.getInstance().debug("BrelixAnalyzer", String.format("Found %s at index %d in word %s", c, index, word));
                 count++;
                 temp = temp.substring(0, index) + " ".repeat(c.length()) + temp.substring(index + c.length());
                 index = temp.indexOf(c);

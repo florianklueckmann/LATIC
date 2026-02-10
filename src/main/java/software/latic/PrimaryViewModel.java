@@ -122,6 +122,17 @@ public class PrimaryViewModel implements Initializable {
         );
         analyzeHeadersCheckbox.disableProperty().bind(isDocxFileBinding);
         analyzeFootersCheckbox.disableProperty().bind(isDocxFileBinding);
+
+        var canAnalyzeBrelixBinding = Bindings.createBooleanBinding(
+                () -> Translation.getInstance().canAnalyzeBrelixForLocale(),
+                Translation.getInstance().localeProperty()
+        );
+        brelixCheckbox.visibleProperty().bind(canAnalyzeBrelixBinding);
+        brelixCheckbox.managedProperty().bind(canAnalyzeBrelixBinding);
+
+        var brelixAllowedAndSelected = brelixCheckbox.selectedProperty().and(canAnalyzeBrelixBinding);
+        brelixSettingsPane.visibleProperty().bind(brelixAllowedAndSelected);
+        brelixSettingsPane.managedProperty().bind(brelixAllowedAndSelected);
     }
 
     public void setLanguages() {
@@ -307,8 +318,6 @@ public class PrimaryViewModel implements Initializable {
         analyzeHeadersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeHeaders", "true")));
         analyzeFootersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeFooters", "true")));
         brelixCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("brelixEnabled", "false")));
-        brelixSettingsPane.setVisible(brelixCheckbox.isSelected());
-        brelixSettingsPane.setManaged(brelixCheckbox.isSelected());
     }
 
     private void addBoxToParent(List<CheckBoxTreeItem<Task>> rootBoxes, CheckBoxTreeItem<Task> subBox) {
@@ -385,7 +394,7 @@ public class PrimaryViewModel implements Initializable {
             ));
         }
 
-        if (brelixCheckbox.isSelected()) {
+        if (brelixCheckbox.isSelected() && Translation.getInstance().canAnalyzeBrelixForLocale()) {
             generalTaskCheckBoxItems.addAll(FXCollections.observableArrayList(
                     Arrays.stream(BrelixItemCharacteristics.values())
                             .map(ic -> new CheckBoxTreeItem<Task>(
@@ -511,7 +520,7 @@ public class PrimaryViewModel implements Initializable {
         } else if (textTab.isSelected()) {
             //TODO We could split the input in multiple items
             var model = new PrimaryModel();
-            if (brelixCheckbox.isSelected()) {
+            if (brelixCheckbox.isSelected() && Translation.getInstance().canAnalyzeBrelixForLocale()) {
                 model.setPages(pagesCountSpinner.getValue());
                 model.setFontSizeMm(fontSizeMmSpinner.getValue());
             }
@@ -662,8 +671,6 @@ public class PrimaryViewModel implements Initializable {
 
     public void handleBrelixCheckboxValueChanged(ActionEvent actionEvent) {
         Settings.userPreferences.put("brelixEnabled", String.valueOf(brelixCheckbox.isSelected()));
-        brelixSettingsPane.setVisible(brelixCheckbox.isSelected());
-        brelixSettingsPane.setManaged(brelixCheckbox.isSelected());
         createCheckboxes();
     }
 
