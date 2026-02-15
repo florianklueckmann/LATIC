@@ -19,7 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class BrelixPdfTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {".testfiles/Die kleine Eule Lili.pdf"})
+    @ValueSource(strings = {
+            ".testfiles/Die kleine Eule Lili.pdf",
+            ".testfiles/No-Title-Die kleine Eule Lili-1.pdf",
+            ".testfiles/EuleLiliShortNoImg.pdf"
+    })
     void testBrelixWithPdf(String pdfPath) throws IOException {
         FileContent fileContent = PDFReader.getInstance().getContent(pdfPath);
         
@@ -32,6 +36,7 @@ public class BrelixPdfTest {
         assertNotNull(text, "Text should not be null for " + pdfPath);
         System.out.println("[DEBUG_LOG] Testing file: " + pdfPath);
         System.out.println("[DEBUG_LOG] Extracted text length: " + text.length());
+        System.out.println("[DEBUG_LOG] Extracted font size (mm): " + fileContent.getFontSizeMm());
         
         Properties props = new Properties();
         try {
