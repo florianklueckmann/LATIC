@@ -55,12 +55,12 @@ public class PrimaryViewModel implements Initializable {
     @FXML private CheckBox analyzeHeadersCheckbox;
     @FXML private CheckBox analyzeFootersCheckbox;
     @FXML private CheckBox brelixCheckbox;
-    @FXML private TitledPane brelixSettingsPane;
     @FXML private Spinner<Integer> pagesCountSpinner;
     @FXML private Spinner<Double> fontSizeMmSpinner;
     @FXML private Button buttonSelectFile;
     @FXML private Tab fileTab;
     @FXML private Tab textTab;
+    @FXML private Tab brelixTab;
     @FXML private TabPane tabPane;
     @FXML private MenuItem menuItemImportTestFile;
     @FXML private MenuItem menuItemSyllablesPerWordToCsv;
@@ -69,6 +69,7 @@ public class PrimaryViewModel implements Initializable {
     @FXML private Menu menuDebug;
     @FXML private MenuItem menuItemDocumentation;
     @FXML private MenuItem menuItemContact;
+    @FXML private MenuItem menuItemCheckForUpdate;
     @FXML private Button buttonDelete;
     @FXML private TableView<TextItemData> tableViewResults;
     @FXML private TextArea textAreaInput;
@@ -94,6 +95,7 @@ public class PrimaryViewModel implements Initializable {
         menuHelp.textProperty().bind(Translation.getInstance().createStringBinding("help"));
         menuItemDocumentation.textProperty().bind(Translation.getInstance().createStringBinding("documentation"));
         menuItemContact.textProperty().bind(Translation.getInstance().createStringBinding("contact"));
+        menuItemCheckForUpdate.textProperty().bind(Translation.getInstance().createStringBinding("checkForUpdate"));
 
         buttonAnalyze.textProperty().bind(Translation.getInstance().createStringBinding("analyze"));
 
@@ -130,9 +132,22 @@ public class PrimaryViewModel implements Initializable {
         brelixCheckbox.visibleProperty().bind(canAnalyzeBrelixBinding);
         brelixCheckbox.managedProperty().bind(canAnalyzeBrelixBinding);
 
-        var brelixAllowedAndSelected = brelixCheckbox.selectedProperty().and(canAnalyzeBrelixBinding);
-        brelixSettingsPane.visibleProperty().bind(brelixAllowedAndSelected);
-        brelixSettingsPane.managedProperty().bind(brelixAllowedAndSelected);
+        brelixTab.textProperty().bind(Translation.getInstance().createStringBinding("BRELIX"));
+        brelixTab.disableProperty().bind(brelixCheckbox.selectedProperty().not());
+
+        if (!canAnalyzeBrelixBinding.get()) {
+            tabPane.getTabs().remove(brelixTab);
+        }
+
+        canAnalyzeBrelixBinding.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                if (!tabPane.getTabs().contains(brelixTab)) {
+                    tabPane.getTabs().add(brelixTab);
+                }
+            } else {
+                tabPane.getTabs().remove(brelixTab);
+            }
+        });
     }
 
     public void setLanguages() {
@@ -513,7 +528,12 @@ public class PrimaryViewModel implements Initializable {
             }
 
             for( var importedDocumentContent : importedDocumentsContent.entrySet()) {
-                currentItems.add(new PrimaryModel()
+                var model = new PrimaryModel();
+                if (brelixCheckbox.isSelected() && Translation.getInstance().canAnalyzeBrelixForLocale()) {
+                    model.setPages(pagesCountSpinner.getValue());
+                    model.setFontSizeMm(fontSizeMmSpinner.getValue());
+                }
+                currentItems.add(model
                         .initializeDocument(importedDocumentContent.getValue())
                         .processTasks(textTasks, generalTasks, wordLevelTasks, importedDocumentContent.getKey()));
             }
@@ -625,6 +645,10 @@ public class PrimaryViewModel implements Initializable {
                 }
             }, "E-Mail-Thread").start();
         }
+    }
+
+    public void handleCheckForUpdateClicked() {
+        UpdateHelper.getInstance().manualUpdateCheck();
     }
 
     public void handleSyllablesPerWordToCsv() {

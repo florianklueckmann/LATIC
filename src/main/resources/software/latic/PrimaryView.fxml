@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -76,23 +77,6 @@
                                              <CheckBox fx:id="brelixCheckbox" mnemonicParsing="false" onAction="#handleBrelixCheckboxValueChanged" text="BRELIX (Beta)" />
                                           </children>
                                        </HBox>
-                                       <TitledPane fx:id="brelixSettingsPane" animated="true" expanded="false" text="BRELIX Settings" visible="false" managed="false">
-                                          <content>
-                                             <VBox spacing="10.0">
-                                                <HBox spacing="10.0" alignment="CENTER_LEFT">
-                                                   <Label text="Seitenanzahl (Pages):" />
-                                                   <Spinner fx:id="pagesCountSpinner" prefWidth="80.0" />
-                                                </HBox>
-                                                <HBox spacing="10.0" alignment="CENTER_LEFT">
-                                                   <Label text="Schriftgröße (mm):" />
-                                                   <Spinner fx:id="fontSizeMmSpinner" prefWidth="80.0" />
-                                                </HBox>
-                                             </VBox>
-                                          </content>
-                                          <padding>
-                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                          </padding>
-                                       </TitledPane>
                                     </children>
                                     <padding>
                                        <Insets top="15.0" />
@@ -103,6 +87,27 @@
                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                               </padding>
                      </GridPane>
+                        </content>
+                     </ScrollPane>
+                  </content>
+               </Tab>
+               <Tab fx:id="brelixTab" text="BRELIX">
+                  <content>
+                     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                        <content>
+                           <VBox spacing="10.0">
+                              <padding>
+                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              </padding>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <Label text="%pagesCount" />
+                                 <Spinner fx:id="pagesCountSpinner" prefWidth="80.0" />
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <Label text="%fontSizeMm" />
+                                 <Spinner fx:id="fontSizeMmSpinner" prefWidth="80.0" />
+                              </HBox>
+                           </VBox>
                         </content>
                      </ScrollPane>
                   </content>
@@ -136,6 +141,8 @@
                                   <items>
                                       <MenuItem fx:id="menuItemDocumentation" mnemonicParsing="false" onAction="#handleDocumentationClicked" text="%documentation" />
                                       <MenuItem fx:id="menuItemContact" mnemonicParsing="false" onAction="#handleContactClicked" text="%contact" />
+                                      <SeparatorMenuItem />
+                                      <MenuItem fx:id="menuItemCheckForUpdate" mnemonicParsing="false" onAction="#handleCheckForUpdateClicked" text="%checkForUpdate" />
                                   </items>
                               </Menu>
                               <Menu fx:id="menuDebug" mnemonicParsing="false" text="Debug">
