@@ -524,6 +524,16 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
         return textItemData.getBrelix3Level();
     }
 
+    public double brelix3NeuScore() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix3NeuScore();
+    }
+
+    public int brelix3NeuLevel() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelix3NeuLevel();
+    }
+
     public double brelix4Score() {
         ensureBrelixAnalyzed();
         return textItemData.getBrelix4Score();
