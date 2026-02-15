@@ -114,11 +114,12 @@ public class BrelixAnalyzer {
         double brelix0 = calculateBrelix0(lix, proz_wortschw_minus_c);
         double brelix1 = calculateBrelix1(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
         double brelix2 = calculateBrelix2(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
-        double brelix3 = calculateBrelix3(schriftgroesse_diff, brelix2);
+        double brelix3 = calculateBrelix3(schriftgroesse_diff, satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
         double proz_wortschw_additiv = calculateProzWortschwMinusC(wortschw_additiv, wordCount);
         double brelix3Neu = calculateBrelix3Neu(schriftgroesse_diff, satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_additiv);
-        double brelix4 = calculateBrelix4(brelix3, subordinateClauses);
-        double brelix5 = calculateBrelix5(brelix4, data.getTypeTokenRatio());
+        double brelix4 = calculateBrelix4(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
+        double proz_wortversch = data.getTypeTokenRatio() * 100.0;
+        double brelix5 = calculateBrelix5(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c, proz_wortversch);
 
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
             "Final Scores: LIX=%.2f, LIX+=%.2f, BRELIX0=%.2f, BRELIX1=%.2f, BRELIX2=%.2f, BRELIX3=%.2f, BRELIX3_NEU=%.2f, BRELIX4=%.2f, BRELIX5=%.2f",
@@ -262,8 +263,8 @@ public class BrelixAnalyzer {
      * SPSS Code:
      * compute brelix3 = (schriftgröße_diff*20)+ (Wörter/Sätze)*5  +  (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100.
      */
-    double calculateBrelix3(double schriftgroesse_diff, double brelix2) {
-        return (schriftgroesse_diff * 20) + brelix2;
+    double calculateBrelix3(double schriftgroesse_diff, double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c) {
+        return (schriftgroesse_diff * 20) + satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100;
     }
 
     /**
@@ -281,18 +282,18 @@ public class BrelixAnalyzer {
      * SPSS Code:
      * compute brelix4 = (schriftgröße_diff*20)+ (Wörter/Sätze+Nebensätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100.
      * In SPSS, division has higher precedence than addition, so Wörter/Sätze+Nebensätze = (Wörter/Sätze)+Nebensätze.
-     * Therefore: brelix4 = brelix3 + Nebensätze*5
      */
-    double calculateBrelix4(double brelix3, int subordinateClauses) {
-        return brelix3 + subordinateClauses * 5;
+    double calculateBrelix4(double schriftgroesse_diff, double satzlaenge, int subordinateClauses, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c) {
+        return (schriftgroesse_diff * 20) + (satzlaenge + subordinateClauses) * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100;
     }
 
     /**
      * Calculates the BRELIX5 score.
-     * BRELIX5 = BRELIX4 + (type-token ratio * 100)
+     * SPSS Code:
+     * compute brelix5 = (schriftgröße_diff*20)+ (Wörter/Sätze+Nebensätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100 + proz_wortversch.
      */
-    double calculateBrelix5(double brelix4, double typeTokenRatio) {
-        return brelix4 + (typeTokenRatio * 100.0);
+    double calculateBrelix5(double schriftgroesse_diff, double satzlaenge, int subordinateClauses, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c, double proz_wortversch) {
+        return (schriftgroesse_diff * 20) + (satzlaenge + subordinateClauses) * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100 + proz_wortversch;
     }
 
     int calculateLevel(double score, double[] thresholds) {
@@ -379,7 +380,7 @@ public class BrelixAnalyzer {
                 .replace("ng", "§");
 
         // Finde alle Konsonanten-Sequenzen
-        Pattern p = Pattern.compile("[^aeiouäöüéàáy]+");
+        Pattern p = Pattern.compile("[^aeiouäöüéàáy§]+");
         Matcher m = p.matcher(processedWord);
 
         while (m.find()) {
