@@ -57,6 +57,9 @@ public class PrimaryViewModel implements Initializable {
     @FXML private CheckBox brelixCheckbox;
     @FXML private Spinner<Integer> pagesCountSpinner;
     @FXML private Spinner<Double> fontSizeMmSpinner;
+    @FXML private Label labelPagesCount;
+    @FXML private Label labelFontSizeMm;
+    @FXML private Label labelBrelixHint;
     @FXML private Button buttonSelectFile;
     @FXML private Tab fileTab;
     @FXML private Tab textTab;
@@ -106,6 +109,11 @@ public class PrimaryViewModel implements Initializable {
 
         analyzeHeadersCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("analyzeHeaders"));
         analyzeFootersCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("analyzeFooters"));
+        brelixCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("brelixBeta"));
+
+        labelPagesCount.textProperty().bind(Translation.getInstance().createStringBinding("pagesCount"));
+        labelFontSizeMm.textProperty().bind(Translation.getInstance().createStringBinding("fontSizeMm"));
+        labelBrelixHint.textProperty().bind(Translation.getInstance().createStringBinding("brelixHint"));
 
         buttonSaveFile.textProperty().bind(Translation.getInstance().createStringBinding("saveFile"));
         buttonDelete.textProperty().bind(Translation.getInstance().createStringBinding("delete"));
