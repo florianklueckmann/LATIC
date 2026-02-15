@@ -4,6 +4,7 @@ import edu.stanford.nlp.simple.Document;
 import org.junit.jupiter.api.Test;
 import software.latic.item.GermanTextItemData;
 import software.latic.item.TextItemData;
+import software.latic.text_analyzer.SimpleTextAnalyzer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,13 +16,19 @@ public class BrelixAnalyzerTest {
         Document doc = new Document(text);
         TextItemData data = new GermanTextItemData(text);
 
-        // Simuliere einige Daten
-        data.setWordCount(13);
-        data.setSentenceCount(3);
-        data.setAverageSentenceLengthWords(4.33);
+        // Use SimpleTextAnalyzer to prefill textItemData like the main application does
+        SimpleTextAnalyzer analyzer = SimpleTextAnalyzer.getInstance();
+        analyzer.setDoc(doc);
+
+        data.setWordCount(analyzer.wordCount());
+        data.setSentenceCount(analyzer.sentenceCount());
+        data.setAverageSentenceLengthWords(analyzer.averageSentenceLengthWords());
+        data.setTypeTokenRatio(analyzer.typeTokenRatio());
+        data.setLixReadabilityScore(analyzer.lixReadabilityScore());
+
+        // These are document-level properties not computed by SimpleTextAnalyzer
         data.setPagesCount(1);
         data.setFontSizeMm(6.0);
-        data.setTypeTokenRatio(0.8);
 
         BrelixAnalyzer.getInstance().analyze(data, doc);
 
@@ -34,6 +41,7 @@ public class BrelixAnalyzerTest {
         assertTrue(data.getBrelix4Score() > 0, "BRELIX 4 should be > 0");
         assertTrue(data.getBrelix5Score() > 0, "BRELIX 5 should be > 0");
 
+        System.out.println("LIX: " + data.getLixReadabilityScore());
         System.out.println("BRELIX 0: " + data.getBrelix0Score());
         System.out.println("BRELIX 1: " + data.getBrelix1Score());
         System.out.println("BRELIX 2: " + data.getBrelix2Score());
