@@ -141,7 +141,11 @@ public class PrimaryViewModel implements Initializable {
         brelixCheckbox.managedProperty().bind(canAnalyzeBrelixBinding);
 
         brelixTab.textProperty().bind(Translation.getInstance().createStringBinding("BRELIX"));
-        brelixTab.disableProperty().bind(brelixCheckbox.selectedProperty().not());
+        pagesCountSpinner.disableProperty().bind(brelixCheckbox.selectedProperty().not());
+        fontSizeMmSpinner.disableProperty().bind(brelixCheckbox.selectedProperty().not());
+        labelPagesCount.disableProperty().bind(brelixCheckbox.selectedProperty().not());
+        labelFontSizeMm.disableProperty().bind(brelixCheckbox.selectedProperty().not());
+        labelBrelixHint.disableProperty().bind(brelixCheckbox.selectedProperty().not());
 
         if (!canAnalyzeBrelixBinding.get()) {
             tabPane.getTabs().remove(brelixTab);
@@ -166,7 +170,7 @@ public class PrimaryViewModel implements Initializable {
             @Override
             public String toString(Locale locale) {
                 if (locale != null) {
-                    return StringUtils.capitalize(locale.getDisplayLanguage(locale));
+                    return Translation.getInstance().getTranslation("language." + locale.getLanguage());
                 }
                 return "";
             }
