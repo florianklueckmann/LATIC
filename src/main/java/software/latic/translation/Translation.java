@@ -47,12 +47,12 @@ public class Translation {
     }
 
     public boolean canAnalyzeSyllablesForLocale() {
-        return getLocale().equals(SupportedLocales.ENGLISH.getLocale())
-                || getLocale().equals(SupportedLocales.GERMAN.getLocale());
+        return getLocale().getLanguage().equals(SupportedLocales.ENGLISH.getLocale().getLanguage())
+                || getLocale().getLanguage().equals(SupportedLocales.GERMAN.getLocale().getLanguage());
     }
 
     public boolean canAnalyzeBrelixForLocale() {
-        return getLocale().equals(SupportedLocales.GERMAN.getLocale());
+        return getLocale().getLanguage().equals(SupportedLocales.GERMAN.getLocale().getLanguage());
     }
 
     public String getTranslation(final String key){
