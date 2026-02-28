@@ -120,8 +120,8 @@
            <TableView id="resultTable" fx:id="tableViewResults" GridPane.rowIndex="1" />
            <HBox id="bottomMenuBox" alignment="CENTER" fillHeight="false" prefHeight="99.0" prefWidth="600.0" spacing="10.0" GridPane.rowIndex="2">
                <Button fx:id="buttonAnalyze" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#AnalyzeText" styleClass="btn-white" text="%analyze" />
-               <Button fx:id="buttonSaveFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveClicked" styleClass="btn-white" text="%saveFile" />
-               <Button fx:id="buttonDelete" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDeleteClicked" styleClass="btn-white" text="%delete" />
+               <Button fx:id="buttonSaveFile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSaveClicked" styleClass="btn-white" text="%saveResults" />
+               <Button fx:id="buttonDelete" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDeleteClicked" styleClass="btn-white" text="%deleteResults" />
            </HBox>
        </GridPane>
    </center>
