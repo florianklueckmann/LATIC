@@ -115,14 +115,19 @@ public class PrimaryViewModel implements Initializable {
         labelFontSizeMm.textProperty().bind(Translation.getInstance().createStringBinding("fontSizeMm"));
         labelBrelixHint.textProperty().bind(Translation.getInstance().createStringBinding("brelixHint"));
 
-        buttonSaveFile.textProperty().bind(Translation.getInstance().createStringBinding("saveFile"));
-        buttonDelete.textProperty().bind(Translation.getInstance().createStringBinding("delete"));
+        buttonSaveFile.textProperty().bind(Translation.getInstance().createStringBinding("saveResults"));
+        buttonDelete.textProperty().bind(Translation.getInstance().createStringBinding("deleteResults"));
 
         Label resultPlaceholder = new Label();
         resultPlaceholder.textProperty().bind(Translation.getInstance().createStringBinding("resultPlaceholder"));
         tableViewResults.setPlaceholder(resultPlaceholder);
 
-        buttonAnalyze.disableProperty().bind(textAreaInput.textProperty().isEmpty().and(importedFiles.emptyProperty()));
+        var isBrelixTabSelectedBinding = Bindings.createBooleanBinding(
+                () -> tabPane.getSelectionModel().getSelectedItem() == brelixTab,
+                tabPane.getSelectionModel().selectedItemProperty()
+        );
+        buttonAnalyze.disableProperty().bind(textAreaInput.textProperty().isEmpty().and(importedFiles.emptyProperty()).or(isBrelixTabSelectedBinding));
+        buttonSaveFile.disableProperty().bind(isBrelixTabSelectedBinding);
 
         choiceBoxLanguage.disableProperty().bind(Bindings.isNotEmpty(textItemDataResults));
 
@@ -336,7 +341,28 @@ public class PrimaryViewModel implements Initializable {
 
     private void initializeBrelixSpinners() {
         pagesCountSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 9999, 1));
-        fontSizeMmSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(1.0, 50.0, 6.0, 0.5));
+        var fontSizeFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(1.0, 50.0, 6.0, 0.5);
+        fontSizeFactory.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Double value) {
+                return value == null ? "" : value.toString();
+            }
+
+            @Override
+            public Double fromString(String value) {
+                if (value == null) {
+                    return fontSizeFactory.getValue();
+                }
+
+                var sanitizedValue = value.trim().replace(',', '.');
+                if (sanitizedValue.isEmpty()) {
+                    return fontSizeFactory.getValue();
+                }
+
+                return Double.parseDouble(sanitizedValue);
+            }
+        });
+        fontSizeMmSpinner.setValueFactory(fontSizeFactory);
         pagesCountSpinner.setEditable(true);
         fontSizeMmSpinner.setEditable(true);
     }
