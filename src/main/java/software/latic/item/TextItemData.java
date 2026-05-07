@@ -51,6 +51,8 @@ public abstract class TextItemData {
     IntegerProperty brelix4Level;
     IntegerProperty brelix5Level;
 
+    StringProperty brelixDebugInfo;
+
     IntegerProperty connectivesCount;
 
 //    IntegerProperty advers;
@@ -158,6 +160,7 @@ public abstract class TextItemData {
         this.brelix3NeuLevel = new SimpleIntegerProperty();
         this.brelix4Level = new SimpleIntegerProperty();
         this.brelix5Level = new SimpleIntegerProperty();
+        this.brelixDebugInfo = new SimpleStringProperty();
         this.typeTokenRatio = new RoundedDoubleProperty();
         this.rootTypeTokenRatio = new RoundedDoubleProperty();
         this.lixReadabilityScore = new RoundedDoubleProperty();
@@ -204,6 +207,7 @@ public abstract class TextItemData {
         valueMap.put("brelix4Score", String.valueOf(getBrelix4Score()));
         valueMap.put("brelix4Level", String.valueOf(getBrelix4Level()));
         valueMap.put("brelix5Score", String.valueOf(getBrelix5Score()));
+        valueMap.put("brelixDebugInfo", String.valueOf(getBrelixDebugInfo()));
         valueMap.put("brelix5Level", String.valueOf(getBrelix5Level()));
         valueMap.put("connectivesCount",String.valueOf(getConnectivesCount()));
 
@@ -509,4 +513,16 @@ public abstract class TextItemData {
     public int getBrelix5Level() { return brelix5Level.get(); }
     public IntegerProperty brelix5LevelProperty() { return brelix5Level; }
     public void setBrelix5Level(int brelix5Level) { this.brelix5Level.set(brelix5Level); }
+
+    public String getBrelixDebugInfo() {
+        return brelixDebugInfo.get();
+    }
+
+    public StringProperty brelixDebugInfoProperty() {
+        return brelixDebugInfo;
+    }
+
+    public void setBrelixDebugInfo(String brelixDebugInfo) {
+        this.brelixDebugInfo.set(brelixDebugInfo);
+    }
 }
