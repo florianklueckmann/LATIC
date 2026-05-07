@@ -20,7 +20,8 @@ public enum BrelixItemCharacteristics implements ItemCharacteristics {
     BRELIX3_LEVEL("brelix3Level", TaskLevel.BRELIX),
     BRELIX3_NEU_LEVEL("brelix3NeuLevel", TaskLevel.BRELIX),
     BRELIX4_LEVEL("brelix4Level", TaskLevel.BRELIX),
-    BRELIX5_LEVEL("brelix5Level", TaskLevel.BRELIX);
+    BRELIX5_LEVEL("brelix5Level", TaskLevel.BRELIX),
+    BRELIX_DEBUG_INFO("brelixDebugInfo", TaskLevel.BRELIX);
 
     private final TaskLevel level;
     private final String id;

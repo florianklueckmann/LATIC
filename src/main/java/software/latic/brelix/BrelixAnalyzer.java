@@ -100,10 +100,6 @@ public class BrelixAnalyzer {
         double satzlaenge = data.getAverageSentenceLengthWords();
         double woerter_seite = calculateWoerterSeite(wordCount, data.getPagesCount());
         double schriftgroesse_diff = calculateSchriftgroesseDiff(data.getFontSizeMm());
-
-        Logging.getInstance().debug("BrelixAnalyzer", String.format(
-            "Text properties: satzlaenge=%.2f, woerter_seite=%.2f, schriftgroesse_diff=%.2f, longWords=%d, anteil_lange_woerter=%.2f%%, subordinateClauses=%d",
-            satzlaenge, woerter_seite, schriftgroesse_diff, longWords, anteil_lange_woerter, subordinateClauses));
         
         // Indizes berechnen
 //        var liiix = SimpleTextAnalyzer.getInstance().setDoc(doc);
@@ -121,6 +117,15 @@ public class BrelixAnalyzer {
         double proz_wortversch = data.getTypeTokenRatio() * 100.0;
         double brelix5 = calculateBrelix5(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c, proz_wortversch);
 
+        Logging.getInstance().debug("BrelixAnalyzer", String.format(
+                "Text properties: satzlaenge=%.2f, woerter_seite=%.2f, schriftgroesse_diff=%.2f, longWords=%d, " +
+                        "anteil_lange_woerter=%.2f%%, subordinateClauses=%d, proz_wortschw_minus_c=%.2f%%, " +
+                        "proz_wortschw_additiv=%.2f%%, proz_wortversch=%.2f%%, proz_mehrsilber=%.2f%%, wortschw_additiv=%d, " +
+                        "wordCount=%d",
+                satzlaenge, woerter_seite, schriftgroesse_diff, longWords, 
+                anteil_lange_woerter, subordinateClauses, proz_wortschw_minus_c, 
+                proz_wortschw_additiv, proz_wortversch, proz_mehrsilber, wortschw_additiv, wordCount));
+        
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
             "Final Scores: LIX=%.2f, LIX+=%.2f, BRELIX0=%.2f, BRELIX1=%.2f, BRELIX2=%.2f, BRELIX3=%.2f, BRELIX3_NEU=%.2f, BRELIX4=%.2f, BRELIX5=%.2f",
             lix, lixPlus, brelix0, brelix1, brelix2, brelix3, brelix3Neu, brelix4, brelix5));
@@ -143,6 +148,24 @@ public class BrelixAnalyzer {
         data.setBrelix3NeuLevel(calculateLevel(brelix3Neu, BRELIX3_NEU_THRESHOLDS));
         data.setBrelix4Level(calculateLevel(brelix4, BRELIX4_THRESHOLDS));
         data.setBrelix5Level(calculateLevel(brelix5, BRELIX5_THRESHOLDS));
+
+        data.setBrelixDebugInfo(String.format(
+            "wordCount=%d, multiGraphems=%d, rareLetters=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d%n" +
+            "wortschw_minus_c=%d, wortschw_additiv=%d%n" +
+            "proz_mehrsilber=%.2f%%, proz_wortschw_minus_c=%.2f%%, proz_wortschw_additiv=%.2f%%, proz_wortversch=%.2f%%%n" +
+            "longWords=%d, anteil_lange_woerter=%.2f%%, subordinateClauses=%d%n" +
+            "satzlaenge=%.2f, woerter_seite=%.2f, schriftgroesse_diff=%.2f%n" +
+            "LIX=%.2f, LIX+=%.2f%n" +
+            "BRELIX0=%.2f, BRELIX1=%.2f, BRELIX2=%.2f, BRELIX3=%.2f, BRELIX3_NEU=%.2f, BRELIX4=%.2f, BRELIX5=%.2f%n" +
+            "longWordsList=%s",
+            wordCount, multiGraphems, rareLetters, consonantClusters, cInMultiGraphems, syllablesGe3,
+            wortschw_minus_c, wortschw_additiv,
+            proz_mehrsilber, proz_wortschw_minus_c, proz_wortschw_additiv, proz_wortversch,
+            longWords, anteil_lange_woerter, subordinateClauses,
+            satzlaenge, woerter_seite, schriftgroesse_diff,
+            lix, lixPlus,
+            brelix0, brelix1, brelix2, brelix3, brelix3Neu, brelix4, brelix5,
+            listLongWords));
     }
 
     // --- Extracted calculation functions ---
