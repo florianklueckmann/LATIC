@@ -60,6 +60,10 @@ public class PrimaryModel {
         this.fontSizeMm = fontSizeMm;
     }
 
+    public void setCountLineBreaksAsSentences(boolean value) {
+        simpleTextAnalyzer.setCountLineBreaksAsSentences(value);
+    }
+
     public PrimaryModel initializeDocument(software.latic.helper.FileContent fileContent) {
         initializeDocument(fileContent.getContent());
         this.pages = fileContent.getPages();

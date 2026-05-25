@@ -31,13 +31,19 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -54,6 +60,7 @@ public class PrimaryViewModel implements Initializable {
     @FXML private TextField filePathTextField;
     @FXML private CheckBox analyzeHeadersCheckbox;
     @FXML private CheckBox analyzeFootersCheckbox;
+    @FXML private CheckBox lineBreakSentencesCheckbox;
     @FXML private CheckBox brelixCheckbox;
     @FXML private Spinner<Integer> pagesCountSpinner;
     @FXML private Spinner<Double> fontSizeMmSpinner;
@@ -109,6 +116,7 @@ public class PrimaryViewModel implements Initializable {
 
         analyzeHeadersCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("analyzeHeaders"));
         analyzeFootersCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("analyzeFooters"));
+        lineBreakSentencesCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("lineBreakSentences"));
         brelixCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("brelixBeta"));
 
         labelPagesCount.textProperty().bind(Translation.getInstance().createStringBinding("pagesCount"));
@@ -331,8 +339,8 @@ public class PrimaryViewModel implements Initializable {
     }
 
     private void initializeGui() {
-        setLanguages();
         applyPreferences();
+        setLanguages();
         bindGuiElements();
         if (App.loggingLevel.intValue() >= Level.WARNING.intValue()) {
             menuDebug.setVisible(false);
@@ -370,6 +378,7 @@ public class PrimaryViewModel implements Initializable {
     private void applyPreferences() {
         analyzeHeadersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeHeaders", "true")));
         analyzeFootersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeFooters", "true")));
+        lineBreakSentencesCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("lineBreakSentences", "false")));
         brelixCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("brelixEnabled", "false")));
     }
 
@@ -571,6 +580,7 @@ public class PrimaryViewModel implements Initializable {
                     model.setPages(pagesCountSpinner.getValue());
                     model.setFontSizeMm(fontSizeMmSpinner.getValue());
                 }
+                model.setCountLineBreaksAsSentences(lineBreakSentencesCheckbox.isSelected());
                 currentItems.add(model
                         .initializeDocument(importedDocumentContent.getValue())
                         .processTasks(textTasks, generalTasks, wordLevelTasks, importedDocumentContent.getKey()));
@@ -582,6 +592,7 @@ public class PrimaryViewModel implements Initializable {
                 model.setPages(pagesCountSpinner.getValue());
                 model.setFontSizeMm(fontSizeMmSpinner.getValue());
             }
+            model.setCountLineBreaksAsSentences(lineBreakSentencesCheckbox.isSelected());
             currentItems.add(model
                     .initializeDocument(textAreaInput.getParagraphs())
                     .processTasks(textTasks, generalTasks, wordLevelTasks));
@@ -618,6 +629,7 @@ public class PrimaryViewModel implements Initializable {
         column.setId(child.getValue().getId());
         column.setCellValueFactory(new PropertyValueFactory<>(child.getValue().getId()));
         column.setPrefWidth(150.0);
+
         tableViewResults.getColumns().add(column);
     }
 
@@ -729,6 +741,10 @@ public class PrimaryViewModel implements Initializable {
 
     public void handleAnalyzeFootersCheckboxValueChanged(ActionEvent actionEvent) {
         Settings.userPreferences.put("analyzeFooters", String.valueOf(((CheckBox) actionEvent.getTarget()).isSelected()));
+    }
+
+    public void handleLineBreakSentencesCheckboxValueChanged(ActionEvent actionEvent) {
+        Settings.userPreferences.put("lineBreakSentences", String.valueOf(((CheckBox) actionEvent.getTarget()).isSelected()));
     }
 
     public void handleBrelixCheckboxValueChanged(ActionEvent actionEvent) {

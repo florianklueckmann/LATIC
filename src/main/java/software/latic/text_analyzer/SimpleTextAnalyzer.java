@@ -32,6 +32,7 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     Document doc;
     TextFormattingService textFormattingService = TextFormattingService.getInstance();
     int syllableCount = 0;
+    private boolean countLineBreaksAsSentences = false;
 
     private SimpleTextAnalyzer() {
 
@@ -44,6 +45,10 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     public void setDoc(Document doc) {
         this.doc = doc;
         this.syllableCount = 0;
+    }
+
+    public void setCountLineBreaksAsSentences(boolean value) {
+        this.countLineBreaksAsSentences = value;
     }
 
 
@@ -92,8 +97,28 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
         return doc.sentences().stream().mapToInt(this::sentenceWordCount).sum();
     }
 
+    public int lineBreakTerminatedSentenceCount() {
+        String[] lines = doc.text().split("\n");
+        int count = 0;
+        for (String line : lines) {
+            String trimmed = line.trim();
+            if (!trimmed.isEmpty() && !endsWithSentencePunctuation(trimmed)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private boolean endsWithSentencePunctuation(String text) {
+        char last = text.charAt(text.length() - 1);
+        return last == '.' || last == '?' || last == '!' || last == ':';
+    }
+
     public int sentenceCount() {
         int sentenceCount = toIntExact(doc.sentences().stream().filter(sentence -> sentence.length() > 1).count());
+        if (countLineBreaksAsSentences) {
+            sentenceCount += lineBreakTerminatedSentenceCount();
+        }
         return sentenceCount > 0 ? sentenceCount : 1;
     }
 
@@ -552,6 +577,11 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     public int brelix5Level() {
         ensureBrelixAnalyzed();
         return textItemData.getBrelix5Level();
+    }
+
+    public String brelixDebugInfo() {
+        ensureBrelixAnalyzed();
+        return textItemData.getBrelixDebugInfo();
     }
 }
 
