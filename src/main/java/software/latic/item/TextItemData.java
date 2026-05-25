@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public abstract class TextItemData {
     final StringProperty fileName;
@@ -52,6 +53,7 @@ public abstract class TextItemData {
     IntegerProperty brelix5Level;
 
     StringProperty brelixDebugInfo;
+    private final LinkedHashMap<String, String> brelixDebugMap = new LinkedHashMap<>();
 
     IntegerProperty connectivesCount;
 
@@ -524,5 +526,9 @@ public abstract class TextItemData {
 
     public void setBrelixDebugInfo(String brelixDebugInfo) {
         this.brelixDebugInfo.set(brelixDebugInfo);
+    }
+
+    public LinkedHashMap<String, String> getBrelixDebugMap() {
+        return brelixDebugMap;
     }
 }

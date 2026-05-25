@@ -173,6 +173,93 @@ public class PrimaryViewModel implements Initializable {
                 tabPane.getTabs().remove(brelixTab);
             }
         });
+
+        if (App.loggingLevel.intValue() <= Level.FINEST.intValue()) {
+            initializeBrelixDebugTab();
+        }
+    }
+
+    private void initializeBrelixDebugTab() {
+        TextArea debugTextArea = new TextArea();
+        debugTextArea.setEditable(false);
+        debugTextArea.setWrapText(true);
+        debugTextArea.setStyle("-fx-font-family: monospace; -fx-font-size: 12;");
+
+        Button exportButton = new Button("Export CSV");
+        exportButton.setOnAction(e -> exportBrelixDebugToCsv());
+
+        VBox content = new VBox(5, exportButton, debugTextArea);
+        VBox.setVgrow(debugTextArea, Priority.ALWAYS);
+
+        Tab debugTab = new Tab("BRELIX Debug");
+        debugTab.setClosable(false);
+        debugTab.setContent(content);
+        tabPane.getTabs().add(debugTab);
+
+        tableViewResults.getSelectionModel().selectedItemProperty().addListener(
+            (obs, oldItem, newItem) -> {
+                if (newItem != null && newItem.getBrelixDebugInfo() != null) {
+                    debugTextArea.setText(newItem.getBrelixDebugInfo());
+                    tabPane.getSelectionModel().select(debugTab);
+                } else {
+                    debugTextArea.clear();
+                }
+            }
+        );
+
+        textItemDataResults.addListener((javafx.collections.ListChangeListener<TextItemData>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    TextItemData last = change.getAddedSubList().get(change.getAddedSize() - 1);
+                    if (last.getBrelixDebugInfo() != null) {
+                        tableViewResults.getSelectionModel().select(last);
+                    }
+                }
+            }
+        });
+    }
+
+    private void exportBrelixDebugToCsv() {
+        var items = textItemDataResults.stream()
+                .filter(item -> !item.getBrelixDebugMap().isEmpty())
+                .collect(Collectors.toList());
+        if (items.isEmpty()) return;
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export BRELIX Debug CSV");
+        fileChooser.setInitialFileName("brelix_debug.csv");
+        fileChooser.getExtensionFilters().add(csvFilter);
+        File file = fileChooser.showSaveDialog(mainPane.getScene().getWindow());
+        if (file == null) return;
+
+        List<String> columns = new ArrayList<>();
+        columns.add("identifier");
+        columns.addAll(items.get(0).getBrelixDebugMap().keySet());
+
+        try (var writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+            writer.print('﻿'); // UTF-8 BOM for Excel
+            writer.println(String.join(";", columns));
+            for (var item : items) {
+                var values = new ArrayList<String>();
+                String id = item.getFileName() != null ? item.getFileName()
+                        : item.getText().substring(0, Math.min(50, item.getText().length())).replace("\n", " ");
+                values.add(csvEscape(id));
+                for (String col : columns.subList(1, columns.size())) {
+                    values.add(csvEscape(item.getBrelixDebugMap().getOrDefault(col, "")));
+                }
+                writer.println(String.join(";", values));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String csvEscape(String value) {
+        if (value == null) return "";
+        if (value.contains(";") || value.contains("\"") || value.contains("\n") || value.contains("\r")) {
+            return "\"" + value.replace("\"", "\"\"") + "\"";
+        }
+        return value;
     }
 
     public void setLanguages() {

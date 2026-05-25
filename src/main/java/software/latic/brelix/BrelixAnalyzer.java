@@ -8,6 +8,8 @@ import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +40,9 @@ public class BrelixAnalyzer {
         if (wordCount == 0) return;
 
         long multiGraphems = 0;
+        long multiGraphemsBinary = 0;
         long rareLetters = 0;
+        long rareLettersWithoutC = 0;
         long consonantClusters = 0;
         long cInMultiGraphems = 0;
         int syllablesGe3 = 0;
@@ -49,7 +53,9 @@ public class BrelixAnalyzer {
 
                 String lowerWord = word.toLowerCase();
                 multiGraphems += countMultiGraphems(lowerWord);
+                multiGraphemsBinary += containsMultiGrapheme(lowerWord) ? 1 : 0;
                 rareLetters += countRareLetters(lowerWord);
+                rareLettersWithoutC += countRareLettersWithoutC(lowerWord);
                 consonantClusters += countConsonantClusters(lowerWord);
                 cInMultiGraphems += countCInMultiGraphems(lowerWord);
 
@@ -60,15 +66,15 @@ public class BrelixAnalyzer {
         }
 
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
-            "Word counts: multiGraphems=%d, rareLetters=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d",
-            multiGraphems, rareLetters, consonantClusters, cInMultiGraphems, syllablesGe3));
+            "Word counts: multiGraphems=%d, multiGraphemsBinary=%d, rareLetters=%d, rareLettersWithoutC=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d",
+            multiGraphems, multiGraphemsBinary, rareLetters, rareLettersWithoutC, consonantClusters, cInMultiGraphems, syllablesGe3));
 
         long wortschw_minus_c = calculateWortschwMinusC(multiGraphems, cInMultiGraphems, rareLetters, consonantClusters);
         long wortschw_additiv = calculateWortschwAdditiv(multiGraphems, rareLetters, consonantClusters);
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
-            "Base metrics: wordCount=%d, multiGraphems=%d, rareLetters=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d, wortschw_minus_c=%d",
-            wordCount, multiGraphems, rareLetters, consonantClusters, cInMultiGraphems, syllablesGe3, wortschw_minus_c));
+            "Base metrics: wordCount=%d, multiGraphems=%d, multiGraphemsBinary=%d, rareLetters=%d, rareLettersWithoutC=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d, wortschw_minus_c=%d",
+            wordCount, multiGraphems, multiGraphemsBinary, rareLetters, rareLettersWithoutC, consonantClusters, cInMultiGraphems, syllablesGe3, wortschw_minus_c));
 
         // Prozentsätze
         double proz_mehrsilber = calculateProzMehrsilber(syllablesGe3, wordCount);
@@ -150,7 +156,7 @@ public class BrelixAnalyzer {
         data.setBrelix5Level(calculateLevel(brelix5, BRELIX5_THRESHOLDS));
 
         data.setBrelixDebugInfo(String.format(
-            "wordCount=%d, multiGraphems=%d, rareLetters=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d%n" +
+            "wordCount=%d, multiGraphems=%d, multiGraphemsBinary=%d, rareLetters=%d, rareLettersWithoutC=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d%n" +
             "wortschw_minus_c=%d, wortschw_additiv=%d%n" +
             "proz_mehrsilber=%.2f%%, proz_wortschw_minus_c=%.2f%%, proz_wortschw_additiv=%.2f%%, proz_wortversch=%.2f%%%n" +
             "longWords=%d, anteil_lange_woerter=%.2f%%, subordinateClauses=%d%n" +
@@ -158,7 +164,7 @@ public class BrelixAnalyzer {
             "LIX=%.2f, LIX+=%.2f%n" +
             "BRELIX0=%.2f, BRELIX1=%.2f, BRELIX2=%.2f, BRELIX3=%.2f, BRELIX3_NEU=%.2f, BRELIX4=%.2f, BRELIX5=%.2f%n" +
             "longWordsList=%s",
-            wordCount, multiGraphems, rareLetters, consonantClusters, cInMultiGraphems, syllablesGe3,
+            wordCount, multiGraphems, multiGraphemsBinary, rareLetters, rareLettersWithoutC, consonantClusters, cInMultiGraphems, syllablesGe3,
             wortschw_minus_c, wortschw_additiv,
             proz_mehrsilber, proz_wortschw_minus_c, proz_wortschw_additiv, proz_wortversch,
             longWords, anteil_lange_woerter, subordinateClauses,
@@ -166,6 +172,38 @@ public class BrelixAnalyzer {
             lix, lixPlus,
             brelix0, brelix1, brelix2, brelix3, brelix3Neu, brelix4, brelix5,
             listLongWords));
+
+        LinkedHashMap<String, String> map = data.getBrelixDebugMap();
+        map.put("wordCount", String.valueOf(wordCount));
+        map.put("multiGraphems", String.valueOf(multiGraphems));
+        map.put("multiGraphemsBinary", String.valueOf(multiGraphemsBinary));
+        map.put("rareLetters", String.valueOf(rareLetters));
+        map.put("rareLettersWithoutC", String.valueOf(rareLettersWithoutC));
+        map.put("consonantClusters", String.valueOf(consonantClusters));
+        map.put("cInMultiGraphems", String.valueOf(cInMultiGraphems));
+        map.put("syllablesGe3", String.valueOf(syllablesGe3));
+        map.put("wortschw_minus_c", String.valueOf(wortschw_minus_c));
+        map.put("wortschw_additiv", String.valueOf(wortschw_additiv));
+        map.put("proz_mehrsilber", String.format(Locale.ROOT, "%.4f", proz_mehrsilber));
+        map.put("proz_wortschw_minus_c", String.format(Locale.ROOT, "%.4f", proz_wortschw_minus_c));
+        map.put("proz_wortschw_additiv", String.format(Locale.ROOT, "%.4f", proz_wortschw_additiv));
+        map.put("proz_wortversch", String.format(Locale.ROOT, "%.4f", proz_wortversch));
+        map.put("longWords", String.valueOf(longWords));
+        map.put("anteil_lange_woerter", String.format(Locale.ROOT, "%.4f", anteil_lange_woerter));
+        map.put("subordinateClauses", String.valueOf(subordinateClauses));
+        map.put("satzlaenge", String.format(Locale.ROOT, "%.4f", satzlaenge));
+        map.put("woerter_seite", String.format(Locale.ROOT, "%.4f", woerter_seite));
+        map.put("schriftgroesse_diff", String.format(Locale.ROOT, "%.4f", schriftgroesse_diff));
+        map.put("LIX", String.format(Locale.ROOT, "%.4f", lix));
+        map.put("LIX+", String.format(Locale.ROOT, "%.4f", lixPlus));
+        map.put("BRELIX0", String.format(Locale.ROOT, "%.4f", brelix0));
+        map.put("BRELIX1", String.format(Locale.ROOT, "%.4f", brelix1));
+        map.put("BRELIX2", String.format(Locale.ROOT, "%.4f", brelix2));
+        map.put("BRELIX3", String.format(Locale.ROOT, "%.4f", brelix3));
+        map.put("BRELIX3_NEU", String.format(Locale.ROOT, "%.4f", brelix3Neu));
+        map.put("BRELIX4", String.format(Locale.ROOT, "%.4f", brelix4));
+        map.put("BRELIX5", String.format(Locale.ROOT, "%.4f", brelix5));
+        map.put("longWordsList", listLongWords.toString());
     }
 
     // --- Extracted calculation functions ---
@@ -330,11 +368,16 @@ public class BrelixAnalyzer {
 
     final String[] CLUSTERS = {"sch", "ch", "ck", "sp", "st", "ng", "ie", "ei", "eu", "äu"};
 
+    // st/sp only produce their combined sound [ʃt]/[ʃp] at word-initial position
+    private static final java.util.Set<String> WORD_INITIAL_CLUSTERS = java.util.Set.of("st", "sp");
+
     boolean containsMultiGrapheme(String word) {
         // <ch>, <ck>, <sch>, <sp>, <st>, <ng>,  <ei>, <eu>, <äu>, Dehnungs-h
         for (String c : CLUSTERS) {
-            if (word.contains(c)) {
-                return true;
+            if (WORD_INITIAL_CLUSTERS.contains(c)) {
+                if (word.startsWith(c)) return true;
+            } else {
+                if (word.contains(c)) return true;
             }
         }
         return GraphemeUtils.containsDehnungsH(word);
@@ -344,8 +387,10 @@ public class BrelixAnalyzer {
         int count = 0;
         String temp = word.toLowerCase();
         for (String c : CLUSTERS) {
+            boolean wordInitialOnly = WORD_INITIAL_CLUSTERS.contains(c);
             int index = temp.indexOf(c);
             while (index != -1) {
+                if (wordInitialOnly && index != 0) break;
                 Logging.getInstance().debug("BrelixAnalyzer", String.format("Found %s at index %d in word %s", c, index, word));
                 count++;
                 temp = temp.substring(0, index) + " ".repeat(c.length()) + temp.substring(index + c.length());
@@ -384,6 +429,18 @@ public class BrelixAnalyzer {
         int count = 0;
         // <c>, <q>, <ß>, <x>, <y>, <ä>, <ö>, <ü>
         String rare = "cqßxyäöü";
+        for (char c : word.toCharArray()) {
+            if (rare.indexOf(c) != -1) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    int countRareLettersWithoutC(String word) {
+        int count = 0;
+        // <q>, <ß>, <x>, <y>, <ä>, <ö>, <ü> (excluding <c>)
+        String rare = "qßxyäöü";
         for (char c : word.toCharArray()) {
             if (rare.indexOf(c) != -1) {
                 count++;

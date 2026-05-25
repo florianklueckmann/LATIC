@@ -55,10 +55,29 @@ public class BrelixAnalyzerTest {
     void testMultiGraphems() {
         BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
         assertEquals(2, analyzer.countMultiGraphems("schach")); // sch, ch
-        assertEquals(3, analyzer.countMultiGraphems("schaukelstuhl")); //sch, st, uh (Dehnungs-h)
-        assertEquals(4, analyzer.countMultiGraphems("schachspiel")); // sch, ch, sp, ie
+        // st/sp only count at word-initial position ([ʃt]/[ʃp] sound)
+        assertEquals(2, analyzer.countMultiGraphems("schaukelstuhl"), "sch + Dehnungs-h; st at index 7 not counted");
+        assertEquals(3, analyzer.countMultiGraphems("schachspiel"), "sch + ch + ie; sp at index 6 not counted");
+        assertEquals(2, analyzer.countMultiGraphems("spiel"), "sp at index 0 + ie");
+        assertEquals(2, analyzer.countMultiGraphems("steht"), "st at index 0 + Dehnungs-h");
+        assertEquals(0, analyzer.countMultiGraphems("ist"), "st at index 1 not counted (word-medial/final)");
+        assertEquals(0, analyzer.countMultiGraphems("monster"), "st at index 3 not counted");
         assertEquals(1, analyzer.countMultiGraphems("bahn"), "Dehnungs-h should count as 1");
         assertEquals(0, analyzer.countMultiGraphems("halt"), "h at start is not Dehnungs-h");
+    }
+
+    @Test
+    void testMultiGraphemsBinary() {
+        BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
+        assertTrue(analyzer.containsMultiGrapheme("schach"));
+        assertTrue(analyzer.containsMultiGrapheme("schaukelstuhl"));
+        assertTrue(analyzer.containsMultiGrapheme("spiel"), "sp at index 0");
+        assertTrue(analyzer.containsMultiGrapheme("steht"), "st at index 0");
+        assertFalse(analyzer.containsMultiGrapheme("ist"), "st at index 1 doesn't qualify");
+        assertFalse(analyzer.containsMultiGrapheme("monster"), "st at index 3 doesn't qualify");
+        assertFalse(analyzer.containsMultiGrapheme("durstig"), "st at index 3 doesn't qualify");
+        assertTrue(analyzer.containsMultiGrapheme("bahn"), "Dehnungs-h");
+        assertFalse(analyzer.containsMultiGrapheme("test"), "only st at index 1");
     }
 
     @Test
@@ -158,45 +177,45 @@ public class BrelixAnalyzerTest {
 
         BrelixAnalyzer.getInstance().analyze(data, doc);
 
-        // Occurrence-based counts:
-        // multiGraphems=6 (spielt: sp,ie; schaukelstuhl: sch,st,Dehnungs-h; lacht: ch)
+        // Occurrence-based counts (st/sp only count at word-initial position):
+        // multiGraphems=5 (spielt: sp,ie; schaukelstuhl: sch,Dehnungs-h; lacht: ch)
         // cInMultiGraphems=2 (schaukelstuhl: sch; lacht: ch)
         // rareLetters=2 (schaukelstuhl: c; lacht: c)
         // consonantClusters=4 (flora: Fl; spielt: sp; sitzt: tzt; schaukelstuhl: st)
-        // wortschw_minus_c = 6 - 2 + 2 + 4 = 10
-        // proz_wortschw_minus_c = 10/11 * 100 = 90.91%
+        // wortschw_minus_c = 5 - 2 + 2 + 4 = 9
+        // proz_wortschw_minus_c = 9/11 * 100 = 81.82%
         // LIX = 5.5 + 9.09 = 14.59
 
-        // BRELIX 0: 14.59 + 90.91/5 = 32.77
-        assertEquals(32.77, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
+        // BRELIX 0: 14.59 + 81.82/5 = 30.95
+        assertEquals(30.95, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
 
-        // BRELIX 1: 27.5 + 33 + ((9.09+90.91)/100*50) = 110.5
-        assertEquals(110.5, data.getBrelix1Score(), 0.1, "BRELIX 1 mismatch");
+        // BRELIX 1: 27.5 + 33 + ((9.09+81.82)/100*50) = 105.96
+        assertEquals(105.96, data.getBrelix1Score(), 0.1, "BRELIX 1 mismatch");
 
-        // BRELIX 2: 27.5 + 33 + ((9.09+90.91)/100*100) = 160.5
-        assertEquals(160.5, data.getBrelix2Score(), 0.1, "BRELIX 2 mismatch");
+        // BRELIX 2: 27.5 + 33 + ((9.09+81.82)/100*100) = 151.41
+        assertEquals(151.41, data.getBrelix2Score(), 0.1, "BRELIX 2 mismatch");
 
-        // BRELIX 3: (0*20) + 160.5 = 160.5
-        assertEquals(160.5, data.getBrelix3Score(), 0.1, "BRELIX 3 mismatch");
+        // BRELIX 3: (0*20) + 151.41 = 151.41
+        assertEquals(151.41, data.getBrelix3Score(), 0.1, "BRELIX 3 mismatch");
 
-        // BRELIX 3 Neu: (0*20) + 5.5*5 + 11*3 + ((9.09 + 109.09)/100*100) = 0 + 27.5 + 33 + 118.18 = 178.68
-        // wortschw_additiv = multiGraphems(6) + rareLetters(2) + consonantClusters(4) = 12
-        // proz_wortschw_additiv = 12/11*100 = 109.09%
-        assertEquals(178.68, data.getBrelix3NeuScore(), 0.1, "BRELIX 3 Neu mismatch");
+        // BRELIX 3 Neu: (0*20) + 5.5*5 + 11*3 + ((9.09 + 100)/100*100) = 0 + 27.5 + 33 + 109.09 = 169.59
+        // wortschw_additiv = multiGraphems(5) + rareLetters(2) + consonantClusters(4) = 11
+        // proz_wortschw_additiv = 11/11*100 = 100%
+        assertEquals(169.59, data.getBrelix3NeuScore(), 0.1, "BRELIX 3 Neu mismatch");
 
-        // BRELIX 4: 160.5 + 0*5 = 160.5 (SPSS: brelix4 = brelix3 + Nebensätze*5)
-        assertEquals(160.5, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
+        // BRELIX 4: 151.41 + 0*5 = 151.41 (SPSS: brelix4 = brelix3 + Nebensätze*5)
+        assertEquals(151.41, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
 
-        // BRELIX 5: 160.5 + 100 (TTR*100) = 260.5
-        assertEquals(260.5, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
+        // BRELIX 5: 151.41 + 100 (TTR*100) = 251.41
+        assertEquals(251.41, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
 
         // Verifikation der Niveaus (Levels)
         assertEquals("2", data.getLixReadabilityLevel(), "LIX Level mismatch");
         assertEquals(2, data.getBrelix0Level(), "BRELIX 0 Level mismatch");
-        assertEquals(6, data.getBrelix1Level(), "BRELIX 1 Level mismatch");
+        assertEquals(5, data.getBrelix1Level(), "BRELIX 1 Level mismatch");
         assertEquals(6, data.getBrelix2Level(), "BRELIX 2 Level mismatch");
         assertEquals(4, data.getBrelix3Level(), "BRELIX 3 Level mismatch");
-        assertEquals(4, data.getBrelix4Level(), "BRELIX 4 Level mismatch");
+        assertEquals(3, data.getBrelix4Level(), "BRELIX 4 Level mismatch");
         assertEquals(5, data.getBrelix5Level(), "BRELIX 5 Level mismatch");
     }
 }
