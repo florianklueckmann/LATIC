@@ -74,6 +74,7 @@
                                           <children>
                                              <CheckBox fx:id="analyzeHeadersCheckbox" mnemonicParsing="false" onAction="#handleAnalyzeHeadersCheckboxValueChanged" text="%analyzeHeaders" />
                                              <CheckBox fx:id="analyzeFootersCheckbox" mnemonicParsing="false" onAction="#handleAnalyzeFootersCheckboxValueChanged" text="%analyzeFooters" />
+                                             <CheckBox fx:id="lineBreakSentencesCheckbox" mnemonicParsing="false" onAction="#handleLineBreakSentencesCheckboxValueChanged" text="%lineBreakSentences" />
                                           </children>
                                        </HBox>
                                     </children>
