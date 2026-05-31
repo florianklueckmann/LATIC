@@ -9,6 +9,12 @@ public class BrelixSubIndicesTest {
     private final BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
 
     @Test
+    void testCalculateWortschwierig() {
+        assertEquals(12, analyzer.calculateWortschwierig(6, 2, 4));
+        assertEquals(0, analyzer.calculateWortschwierig(0, 0, 0));
+    }
+
+    @Test
     void testCalculateWortschwMinusC() {
         assertEquals(10, analyzer.calculateWortschwMinusC(6, 2, 2, 4));
         assertEquals(0, analyzer.calculateWortschwMinusC(0, 0, 0, 0));
@@ -77,21 +83,21 @@ public class BrelixSubIndicesTest {
 
     @Test
     void testCalculateBrelix1() {
-        // satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 50
+        // satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschwierig) / 100.0 * 50
         // 10 * 5 + 50 * 3 + (10 + 20) / 100 * 50 = 50 + 150 + 0.3 * 50 = 200 + 15 = 215
         assertEquals(215.0, analyzer.calculateBrelix1(10.0, 50.0, 10.0, 20.0), 0.001);
     }
 
     @Test
     void testCalculateBrelix2() {
-        // satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100
+        // satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschwierig) / 100.0 * 100
         // 10 * 5 + 50 * 3 + (10 + 20) / 100 * 100 = 50 + 150 + 30 = 230
         assertEquals(230.0, analyzer.calculateBrelix2(10.0, 50.0, 10.0, 20.0), 0.001);
     }
 
     @Test
     void testCalculateBrelix3() {
-        // (schriftgroesse_diff * 20) + satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100 * 100
+        // (schriftgroesse_diff * 20) + satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschwierig) / 100 * 100
         // (1 * 20) + 10 * 5 + 50 * 3 + (10 + 20) / 100 * 100 = 20 + 50 + 150 + 30 = 250
         assertEquals(250.0, analyzer.calculateBrelix3(1.0, 10.0, 50.0, 10.0, 20.0), 0.001);
     }
@@ -105,14 +111,14 @@ public class BrelixSubIndicesTest {
 
     @Test
     void testCalculateBrelix4() {
-        // (schriftgroesse_diff * 20) + (satzlaenge + subordinateClauses) * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100 * 100
+        // (schriftgroesse_diff * 20) + (satzlaenge + subordinateClauses) * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschwierig) / 100 * 100
         // (1 * 20) + (10 + 2) * 5 + 50 * 3 + (10 + 20) / 100 * 100 = 20 + 60 + 150 + 30 = 260
         assertEquals(260.0, analyzer.calculateBrelix4(1.0, 10.0, 2, 50.0, 10.0, 20.0), 0.001);
     }
 
     @Test
     void testCalculateBrelix5() {
-        // (schriftgroesse_diff * 20) + (satzlaenge + subordinateClauses) * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100 * 100 + proz_wortversch
+        // (schriftgroesse_diff * 20) + (satzlaenge + subordinateClauses) * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschwierig) / 100 * 100 + proz_wortversch
         // (1 * 20) + (10 + 2) * 5 + 50 * 3 + (10 + 20) / 100 * 100 + 80 = 20 + 60 + 150 + 30 + 80 = 340
         assertEquals(340.0, analyzer.calculateBrelix5(1.0, 10.0, 2, 50.0, 10.0, 20.0, 80.0), 0.001);
     }

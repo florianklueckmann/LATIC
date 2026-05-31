@@ -42,6 +42,7 @@ public class BrelixAnalyzer {
         long multiGraphems = 0;
         long multiGraphemsBinary = 0;
         long rareLetters = 0;
+        long rareLettersBinary = 0;
         long rareLettersWithoutC = 0;
         long consonantClusters = 0;
         long cInMultiGraphems = 0;
@@ -55,6 +56,7 @@ public class BrelixAnalyzer {
                 multiGraphems += countMultiGraphems(lowerWord);
                 multiGraphemsBinary += containsMultiGrapheme(lowerWord) ? 1 : 0;
                 rareLetters += countRareLetters(lowerWord);
+                rareLettersBinary += containsRareLetter(lowerWord) ? 1 : 0;
                 rareLettersWithoutC += countRareLettersWithoutC(lowerWord);
                 consonantClusters += countConsonantClusters(lowerWord);
                 cInMultiGraphems += countCInMultiGraphems(lowerWord);
@@ -66,23 +68,31 @@ public class BrelixAnalyzer {
         }
 
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
-            "Word counts: multiGraphems=%d, multiGraphemsBinary=%d, rareLetters=%d, rareLettersWithoutC=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d",
-            multiGraphems, multiGraphemsBinary, rareLetters, rareLettersWithoutC, consonantClusters, cInMultiGraphems, syllablesGe3));
+            "Word counts: multiGraphems=%d, multiGraphemsBinary=%d, rareLetters=%d, rareLettersBinary=%d, rareLettersWithoutC=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d",
+            multiGraphems, multiGraphemsBinary, rareLetters, rareLettersBinary, rareLettersWithoutC, consonantClusters, cInMultiGraphems, syllablesGe3));
 
+        long wortschwierig = calculateWortschwierig(multiGraphems, rareLetters, consonantClusters);
         long wortschw_minus_c = calculateWortschwMinusC(multiGraphems, cInMultiGraphems, rareLetters, consonantClusters);
         long wortschw_additiv = calculateWortschwAdditiv(multiGraphems, rareLetters, consonantClusters);
+        // Diagnostic-only candidate matching the paper's WortSchw column. Per Brügelmann's SPSS
+        // (wortschwierig = mehrgliedrig + Buchst_selten + Konshfg), all three components are
+        // counted per word (binary). On Sonntagshose this reproduces the paper's 59.1% almost
+        // exactly (57/96 = 59.38%). Not yet wired into the BRELIX score formulas.
+        long wortschw_paper_candidate = calculateWortschwPaperCandidate(multiGraphemsBinary, rareLettersBinary, consonantClusters);
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
-            "Base metrics: wordCount=%d, multiGraphems=%d, multiGraphemsBinary=%d, rareLetters=%d, rareLettersWithoutC=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d, wortschw_minus_c=%d",
-            wordCount, multiGraphems, multiGraphemsBinary, rareLetters, rareLettersWithoutC, consonantClusters, cInMultiGraphems, syllablesGe3, wortschw_minus_c));
+            "Base metrics: wordCount=%d, multiGraphems=%d, multiGraphemsBinary=%d, rareLetters=%d, rareLettersWithoutC=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d, wortschwierig=%d, wortschw_minus_c=%d",
+            wordCount, multiGraphems, multiGraphemsBinary, rareLetters, rareLettersWithoutC, consonantClusters, cInMultiGraphems, syllablesGe3, wortschwierig, wortschw_minus_c));
 
         // Prozentsätze
         double proz_mehrsilber = calculateProzMehrsilber(syllablesGe3, wordCount);
+        double proz_wortschwierig = calculateProzWortschwierigkeit(wortschwierig, wordCount);
         double proz_wortschw_minus_c = calculateProzWortschwMinusC(wortschw_minus_c, wordCount);
+        double proz_wortschw_paper_candidate = calculateProzWortschwMinusC(wortschw_paper_candidate, wordCount);
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
-            "Calculated rates: wortschw_minus_c=%d, proz_mehrsilber=%.2f%%, proz_wortschw_minus_c=%.2f%%",
-            wortschw_minus_c, proz_mehrsilber, proz_wortschw_minus_c));
+            "Calculated rates: wortschwierig=%d, wortschw_minus_c=%d, proz_mehrsilber=%.2f%%, proz_wortschwierig=%.2f%%, proz_wortschw_minus_c=%.2f%%",
+            wortschwierig, wortschw_minus_c, proz_mehrsilber, proz_wortschwierig, proz_wortschw_minus_c));
 
         // Nebensätze
         int subordinateClauses = countSubordinateClauses(doc);
@@ -114,22 +124,22 @@ public class BrelixAnalyzer {
         double lixPlus = calculateLixPlus(lix, schriftgroesse_diff, woerter_seite);
         
         double brelix0 = calculateBrelix0(lix, proz_wortschw_minus_c);
-        double brelix1 = calculateBrelix1(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
-        double brelix2 = calculateBrelix2(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
-        double brelix3 = calculateBrelix3(schriftgroesse_diff, satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
+        double brelix1 = calculateBrelix1(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschwierig);
+        double brelix2 = calculateBrelix2(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschwierig);
+        double brelix3 = calculateBrelix3(schriftgroesse_diff, satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschwierig);
         double proz_wortschw_additiv = calculateProzWortschwMinusC(wortschw_additiv, wordCount);
         double brelix3Neu = calculateBrelix3Neu(schriftgroesse_diff, satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_additiv);
-        double brelix4 = calculateBrelix4(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c);
+        double brelix4 = calculateBrelix4(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschwierig);
         double proz_wortversch = data.getTypeTokenRatio() * 100.0;
-        double brelix5 = calculateBrelix5(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschw_minus_c, proz_wortversch);
+        double brelix5 = calculateBrelix5(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschwierig, proz_wortversch);
 
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
                 "Text properties: satzlaenge=%.2f, woerter_seite=%.2f, schriftgroesse_diff=%.2f, longWords=%d, " +
-                        "anteil_lange_woerter=%.2f%%, subordinateClauses=%d, proz_wortschw_minus_c=%.2f%%, " +
+                        "anteil_lange_woerter=%.2f%%, subordinateClauses=%d, proz_wortschwierig=%.2f%%, proz_wortschw_minus_c=%.2f%%, " +
                         "proz_wortschw_additiv=%.2f%%, proz_wortversch=%.2f%%, proz_mehrsilber=%.2f%%, wortschw_additiv=%d, " +
                         "wordCount=%d",
                 satzlaenge, woerter_seite, schriftgroesse_diff, longWords, 
-                anteil_lange_woerter, subordinateClauses, proz_wortschw_minus_c, 
+                anteil_lange_woerter, subordinateClauses, proz_wortschwierig, proz_wortschw_minus_c, 
                 proz_wortschw_additiv, proz_wortversch, proz_mehrsilber, wortschw_additiv, wordCount));
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
@@ -156,17 +166,17 @@ public class BrelixAnalyzer {
         data.setBrelix5Level(calculateLevel(brelix5, BRELIX5_THRESHOLDS));
 
         data.setBrelixDebugInfo(String.format(
-            "wordCount=%d, multiGraphems=%d, multiGraphemsBinary=%d, rareLetters=%d, rareLettersWithoutC=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d%n" +
-            "wortschw_minus_c=%d, wortschw_additiv=%d%n" +
-            "proz_mehrsilber=%.2f%%, proz_wortschw_minus_c=%.2f%%, proz_wortschw_additiv=%.2f%%, proz_wortversch=%.2f%%%n" +
+            "wordCount=%d, multiGraphems=%d, multiGraphemsBinary=%d, rareLetters=%d, rareLettersBinary=%d, rareLettersWithoutC=%d, consonantClusters=%d, cInMultiGraphems=%d, syllablesGe3=%d%n" +
+            "wortschwierig=%d, wortschw_minus_c=%d, wortschw_additiv=%d, wortschw_paper_candidate=%d%n" +
+            "proz_mehrsilber=%.2f%%, proz_wortschwierig=%.2f%%, proz_wortschw_minus_c=%.2f%%, proz_wortschw_additiv=%.2f%%, proz_wortschw_paper_candidate=%.2f%%, proz_wortversch=%.2f%%%n" +
             "longWords=%d, anteil_lange_woerter=%.2f%%, subordinateClauses=%d%n" +
             "satzlaenge=%.2f, woerter_seite=%.2f, schriftgroesse_diff=%.2f%n" +
             "LIX=%.2f, LIX+=%.2f%n" +
             "BRELIX0=%.2f, BRELIX1=%.2f, BRELIX2=%.2f, BRELIX3=%.2f, BRELIX3_NEU=%.2f, BRELIX4=%.2f, BRELIX5=%.2f%n" +
             "longWordsList=%s",
-            wordCount, multiGraphems, multiGraphemsBinary, rareLetters, rareLettersWithoutC, consonantClusters, cInMultiGraphems, syllablesGe3,
-            wortschw_minus_c, wortschw_additiv,
-            proz_mehrsilber, proz_wortschw_minus_c, proz_wortschw_additiv, proz_wortversch,
+            wordCount, multiGraphems, multiGraphemsBinary, rareLetters, rareLettersBinary, rareLettersWithoutC, consonantClusters, cInMultiGraphems, syllablesGe3,
+            wortschwierig, wortschw_minus_c, wortschw_additiv, wortschw_paper_candidate,
+            proz_mehrsilber, proz_wortschwierig, proz_wortschw_minus_c, proz_wortschw_additiv, proz_wortschw_paper_candidate, proz_wortversch,
             longWords, anteil_lange_woerter, subordinateClauses,
             satzlaenge, woerter_seite, schriftgroesse_diff,
             lix, lixPlus,
@@ -178,15 +188,20 @@ public class BrelixAnalyzer {
         map.put("multiGraphems", String.valueOf(multiGraphems));
         map.put("multiGraphemsBinary", String.valueOf(multiGraphemsBinary));
         map.put("rareLetters", String.valueOf(rareLetters));
+        map.put("rareLettersBinary", String.valueOf(rareLettersBinary));
         map.put("rareLettersWithoutC", String.valueOf(rareLettersWithoutC));
         map.put("consonantClusters", String.valueOf(consonantClusters));
         map.put("cInMultiGraphems", String.valueOf(cInMultiGraphems));
         map.put("syllablesGe3", String.valueOf(syllablesGe3));
+        map.put("wortschwierig", String.valueOf(wortschwierig));
         map.put("wortschw_minus_c", String.valueOf(wortschw_minus_c));
         map.put("wortschw_additiv", String.valueOf(wortschw_additiv));
+        map.put("wortschw_paper_candidate", String.valueOf(wortschw_paper_candidate));
         map.put("proz_mehrsilber", String.format(Locale.ROOT, "%.4f", proz_mehrsilber));
+        map.put("proz_wortschwierig", String.format(Locale.ROOT, "%.4f", proz_wortschwierig));
         map.put("proz_wortschw_minus_c", String.format(Locale.ROOT, "%.4f", proz_wortschw_minus_c));
         map.put("proz_wortschw_additiv", String.format(Locale.ROOT, "%.4f", proz_wortschw_additiv));
+        map.put("proz_wortschw_paper_candidate", String.format(Locale.ROOT, "%.4f", proz_wortschw_paper_candidate));
         map.put("proz_wortversch", String.format(Locale.ROOT, "%.4f", proz_wortversch));
         map.put("longWords", String.valueOf(longWords));
         map.put("anteil_lange_woerter", String.format(Locale.ROOT, "%.4f", anteil_lange_woerter));
@@ -209,6 +224,14 @@ public class BrelixAnalyzer {
     // --- Extracted calculation functions ---
 
     /**
+     * Calculates Brügelmann's raw word difficulty score.
+     * wortschwierig = mehrgliedrig + Buchst_selten + Konshfg
+     */
+    long calculateWortschwierig(long multiGraphems, long rareLetters, long consonantClusters) {
+        return multiGraphems + rareLetters + consonantClusters;
+    }
+
+    /**
      * Calculates the word difficulty score excluding C-related multi-graphemes.
      * wortschw_minus_c = mehrgliedrig - c_mehr + Buchst_selten + Konshfg
      */
@@ -225,6 +248,17 @@ public class BrelixAnalyzer {
     }
 
     /**
+     * Diagnostic candidate reproducing the BRELIX paper's "WortSchw" column, matching
+     * Brügelmann's SPSS {@code wortschwierig = mehrgliedrig + Buchst_selten + Konshfg}
+     * with all three components counted per word (binary). On the Sonntagshose reference
+     * this hits the paper's 59.1% almost exactly (57/96 = 59.38%), better than
+     * wortschw_minus_c or wortschw_additiv. Not yet wired into the BRELIX score formulas.
+     */
+    long calculateWortschwPaperCandidate(long multiGraphemsBinary, long rareLettersBinary, long consonantClusters) {
+        return multiGraphemsBinary + rareLettersBinary + consonantClusters;
+    }
+
+    /**
      * Calculates the percentage of polysyllabic words (words with 3+ syllables).
      */
     double calculateProzMehrsilber(int syllablesGe3, int wordCount) {
@@ -236,6 +270,13 @@ public class BrelixAnalyzer {
      */
     double calculateProzWortschwMinusC(long wortschw_minus_c, int wordCount) {
         return (double) wortschw_minus_c / wordCount * 100;
+    }
+
+    /**
+     * Calculates the percentage of Brügelmann's raw word difficulty score.
+     */
+    double calculateProzWortschwierigkeit(long wortschwierig, int wordCount) {
+        return (double) wortschwierig / wordCount * 100;
     }
 
     /**
@@ -304,28 +345,28 @@ public class BrelixAnalyzer {
     /**
      * Calculates the BRELIX1 score.
      * SPSS Code:
-     * compute brelix1 = (Wörter/Sätze)*5  +  (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*50.
+     * compute brelix1 = (Wörter/Sätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschwierig)/Wörter*50.
      */
-    double calculateBrelix1(double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c) {
-        return satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 50;
+    double calculateBrelix1(double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschwierig) {
+        return satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschwierig) / 100.0 * 50;
     }
 
     /**
      * Calculates the BRELIX2 score.
      * SPSS Code:
-     * compute brelix2 = (Wörter/Sätze)*5  +  (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100.
+     * compute brelix2 = (Wörter/Sätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschwierig)/Wörter*100.
      */
-    double calculateBrelix2(double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c) {
-        return satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100;
+    double calculateBrelix2(double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschwierig) {
+        return satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschwierig) / 100.0 * 100;
     }
 
     /**
      * Calculates the BRELIX3 score.
      * SPSS Code:
-     * compute brelix3 = (schriftgröße_diff*20)+ (Wörter/Sätze)*5  +  (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100.
+     * compute brelix3 = (schriftgröße_diff*20)+ (Wörter/Sätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschwierig)/Wörter*100.
      */
-    double calculateBrelix3(double schriftgroesse_diff, double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c) {
-        return (schriftgroesse_diff * 20) + satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100;
+    double calculateBrelix3(double schriftgroesse_diff, double satzlaenge, double woerter_seite, double proz_mehrsilber, double proz_wortschwierig) {
+        return (schriftgroesse_diff * 20) + satzlaenge * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschwierig) / 100.0 * 100;
     }
 
     /**
@@ -341,20 +382,20 @@ public class BrelixAnalyzer {
     /**
      * Calculates the BRELIX4 score.
      * SPSS Code:
-     * compute brelix4 = (schriftgröße_diff*20)+ (Wörter/Sätze+Nebensätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100.
+     * compute brelix4 = (schriftgröße_diff*20)+ (Wörter/Sätze+Nebensätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschwierig)/Wörter*100.
      * In SPSS, division has higher precedence than addition, so Wörter/Sätze+Nebensätze = (Wörter/Sätze)+Nebensätze.
      */
-    double calculateBrelix4(double schriftgroesse_diff, double satzlaenge, int subordinateClauses, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c) {
-        return (schriftgroesse_diff * 20) + (satzlaenge + subordinateClauses) * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100;
+    double calculateBrelix4(double schriftgroesse_diff, double satzlaenge, int subordinateClauses, double woerter_seite, double proz_mehrsilber, double proz_wortschwierig) {
+        return (schriftgroesse_diff * 20) + (satzlaenge + subordinateClauses) * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschwierig) / 100.0 * 100;
     }
 
     /**
      * Calculates the BRELIX5 score.
      * SPSS Code:
-     * compute brelix5 = (schriftgröße_diff*20)+ (Wörter/Sätze+Nebensätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschw_minus_c)/Wörter*100 + proz_wortversch.
+     * compute brelix5 = (schriftgröße_diff*20)+ (Wörter/Sätze+Nebensätze)*5 + (Wörter/Seiten)*3 + (Mehrsilber+wortschwierig)/Wörter*100 + proz_wortversch.
      */
-    double calculateBrelix5(double schriftgroesse_diff, double satzlaenge, int subordinateClauses, double woerter_seite, double proz_mehrsilber, double proz_wortschw_minus_c, double proz_wortversch) {
-        return (schriftgroesse_diff * 20) + (satzlaenge + subordinateClauses) * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschw_minus_c) / 100.0 * 100 + proz_wortversch;
+    double calculateBrelix5(double schriftgroesse_diff, double satzlaenge, int subordinateClauses, double woerter_seite, double proz_mehrsilber, double proz_wortschwierig, double proz_wortversch) {
+        return (schriftgroesse_diff * 20) + (satzlaenge + subordinateClauses) * 5 + woerter_seite * 3 + (proz_mehrsilber + proz_wortschwierig) / 100.0 * 100 + proz_wortversch;
     }
 
     int calculateLevel(double score, double[] thresholds) {
@@ -366,13 +407,13 @@ public class BrelixAnalyzer {
         return 6;
     }
 
-    final String[] CLUSTERS = {"sch", "ch", "ck", "sp", "st", "ng", "ie", "ei", "eu", "äu"};
+    final String[] CLUSTERS = {"sch", "ch", "ck", "ph", "rh", "th", "sp", "st", "ng", "ie", "ei", "eu", "äu"};
 
     // st/sp only produce their combined sound [ʃt]/[ʃp] at word-initial position
     private static final java.util.Set<String> WORD_INITIAL_CLUSTERS = java.util.Set.of("st", "sp");
 
     boolean containsMultiGrapheme(String word) {
-        // <ch>, <ck>, <sch>, <sp>, <st>, <ng>,  <ei>, <eu>, <äu>, Dehnungs-h
+        // <ch>, <ck>, <ph>, <rh>, <th>, <sch>, <sp>, <st>, <ng>, <ie>, <ei>, <eu>, <äu>
         for (String c : CLUSTERS) {
             if (WORD_INITIAL_CLUSTERS.contains(c)) {
                 if (word.startsWith(c)) return true;
@@ -380,7 +421,7 @@ public class BrelixAnalyzer {
                 if (word.contains(c)) return true;
             }
         }
-        return GraphemeUtils.containsDehnungsH(word);
+        return false;
     }
 
     int countMultiGraphems(String word) {
@@ -397,7 +438,7 @@ public class BrelixAnalyzer {
                 index = temp.indexOf(c);
             }
         }
-        return count + GraphemeUtils.countDehnungsH(word.toLowerCase());
+        return count;
     }
 
     int countCInMultiGraphems(String word) {
@@ -450,67 +491,14 @@ public class BrelixAnalyzer {
     }
 
     boolean containsConsonantCluster(String word) {
-        if (word == null || word.length() < 2) return false;
-
-        // Umwandlung von mehrgliedrigen Graphemen (1 Laut) in Platzhalter, um Laute zu zählen
-        String processedWord = word.toLowerCase()
-                .replace("sch", "§")
-                .replace("ch", "§")
-                .replace("ck", "§")
-                .replace("ng", "§");
-
-        // Finde alle Konsonanten-Sequenzen
-        Pattern p = Pattern.compile("[^aeiouäöüéàáy§]+");
-        Matcher m = p.matcher(processedWord);
-
-        while (m.find()) {
-            String cluster = m.group();
-            int start = m.start();
-            int end = m.end();
-
-            if (start == 0) {
-                // Wortanfang = Silbenanfang der 1. Silbe
-                if (cluster.length() >= 2) return true;
-            } else if (end == processedWord.length()) {
-                // Wortende = Silbenende der letzten Silbe
-                if (cluster.length() >= 3) return true;
-            } else {
-                // Wortmitte: Trennung nach einer Heuristik:
-                // Wenn 'st' oder 'sp' enthalten, gehen sie nach rechts (Silbenanfang).
-                // Ansonsten geht der letzte Konsonant nach rechts.
-                int splitPoint;
-                if (cluster.contains("st")) {
-                    splitPoint = cluster.indexOf("st");
-                } else if (cluster.contains("sp")) {
-                    splitPoint = cluster.indexOf("sp");
-                } else {
-                    splitPoint = cluster.length() - 1;
-                }
-
-                String left = cluster.substring(0, splitPoint);
-                String right = cluster.substring(splitPoint);
-
-                if (left.length() >= 3) return true; // Silbenende >= 3
-                if (right.length() >= 2) return true; // Silbenanfang >= 2
-            }
-        }
-
-        return false;
+        return countConsonantClusters(word) > 0;
     }
 
     int countConsonantClusters(String word) {
         if (word == null || word.length() < 2) return 0;
 
-        int totalCount = 0;
-        // Umwandlung von mehrgliedrigen Graphemen (1 Laut) in Platzhalter, um Laute zu zählen
-        String processedWord = word.toLowerCase()
-                .replace("sch", "§")
-                .replace("ch", "§")
-                .replace("ck", "§")
-                .replace("ng", "§");
-
-        // Finde alle Konsonanten-Sequenzen
-        Pattern p = Pattern.compile("[^aeiouäöüéàáy§]+");
+        String processedWord = normalizeConsonantSounds(word);
+        Pattern p = Pattern.compile("[bcdfghjklmnpqrstvwxzß§]+");
         Matcher m = p.matcher(processedWord);
 
         while (m.find()) {
@@ -520,32 +508,42 @@ public class BrelixAnalyzer {
 
             if (start == 0) {
                 // Wortanfang = Silbenanfang der 1. Silbe
-                if (cluster.length() >= 2) totalCount++;
+                if (cluster.length() >= 2) return 1;
             } else if (end == processedWord.length()) {
                 // Wortende = Silbenende der letzten Silbe
-                if (cluster.length() >= 3) totalCount++;
+                if (cluster.length() >= 3) return 1;
             } else {
                 // Wortmitte: Trennung nach einer Heuristik:
-                // Wenn 'st' oder 'sp' enthalten, gehen sie nach rechts (Silbenanfang).
-                // Ansonsten geht der letzte Konsonant nach rechts.
-                int splitPoint;
-                if (cluster.contains("st")) {
-                    splitPoint = cluster.indexOf("st");
-                } else if (cluster.contains("sp")) {
-                    splitPoint = cluster.indexOf("sp");
-                } else {
-                    splitPoint = cluster.length() - 1;
-                }
-
+                // Der letzte Konsonant geht nach rechts zum nächsten Silbenanfang.
+                int splitPoint = cluster.length() - 1;
                 String left = cluster.substring(0, splitPoint);
                 String right = cluster.substring(splitPoint);
 
-                if (left.length() >= 3) totalCount++; // Silbenende >= 3
-                if (right.length() >= 2) totalCount++; // Silbenanfang >= 2
+                if (left.length() >= 3) return 1; // Silbenende >= 3
+                if (right.length() >= 2) return 1; // Silbenanfang >= 2
             }
         }
 
-        return totalCount;
+        return 0;
+    }
+
+    private String normalizeConsonantSounds(String word) {
+        String processedWord = word.toLowerCase();
+
+        processedWord = processedWord
+                .replaceAll("(st|sp)(?=[bcdfghjklmnpqrstvwxzß])", "§")
+                .replaceAll("(st|sp)(?=[aeiouäöüéàáy])", " ");
+
+        return processedWord
+                .replace("sch", "§")
+                .replace("ch", "§")
+                .replace("ck", "§")
+                .replace("ph", "§")
+                .replace("rh", "§")
+                .replace("th", "§")
+                .replace("ng", "§")
+                .replace("tz", "§")
+                .replaceAll("([bcdfghjklmnpqrstvwxzß§])\\1+", "$1");
     }
 
     int countSubordinateClauses(Document doc) {
