@@ -56,13 +56,16 @@ public class BrelixAnalyzerTest {
         BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
         assertEquals(2, analyzer.countMultiGraphems("schach")); // sch, ch
         // st/sp only count at word-initial position ([ʃt]/[ʃp] sound)
-        assertEquals(2, analyzer.countMultiGraphems("schaukelstuhl"), "sch + Dehnungs-h; st at index 7 not counted");
+        assertEquals(1, analyzer.countMultiGraphems("schaukelstuhl"), "sch; st at index 7 not counted");
         assertEquals(3, analyzer.countMultiGraphems("schachspiel"), "sch + ch + ie; sp at index 6 not counted");
         assertEquals(2, analyzer.countMultiGraphems("spiel"), "sp at index 0 + ie");
-        assertEquals(2, analyzer.countMultiGraphems("steht"), "st at index 0 + Dehnungs-h");
+        assertEquals(1, analyzer.countMultiGraphems("steht"), "st at index 0");
+        assertEquals(1, analyzer.countMultiGraphems("phase"), "ph is listed by Brügelmann");
+        assertEquals(1, analyzer.countMultiGraphems("rhesus"), "rh is listed by Brügelmann");
+        assertEquals(1, analyzer.countMultiGraphems("theater"), "th is listed by Brügelmann");
         assertEquals(0, analyzer.countMultiGraphems("ist"), "st at index 1 not counted (word-medial/final)");
         assertEquals(0, analyzer.countMultiGraphems("monster"), "st at index 3 not counted");
-        assertEquals(1, analyzer.countMultiGraphems("bahn"), "Dehnungs-h should count as 1");
+        assertEquals(0, analyzer.countMultiGraphems("bahn"), "Dehnungs-h is not part of BRELIX mehrgliedrig");
         assertEquals(0, analyzer.countMultiGraphems("halt"), "h at start is not Dehnungs-h");
     }
 
@@ -71,12 +74,15 @@ public class BrelixAnalyzerTest {
         BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
         assertTrue(analyzer.containsMultiGrapheme("schach"));
         assertTrue(analyzer.containsMultiGrapheme("schaukelstuhl"));
+        assertTrue(analyzer.containsMultiGrapheme("phase"));
+        assertTrue(analyzer.containsMultiGrapheme("rhesus"));
+        assertTrue(analyzer.containsMultiGrapheme("theater"));
         assertTrue(analyzer.containsMultiGrapheme("spiel"), "sp at index 0");
         assertTrue(analyzer.containsMultiGrapheme("steht"), "st at index 0");
         assertFalse(analyzer.containsMultiGrapheme("ist"), "st at index 1 doesn't qualify");
         assertFalse(analyzer.containsMultiGrapheme("monster"), "st at index 3 doesn't qualify");
         assertFalse(analyzer.containsMultiGrapheme("durstig"), "st at index 3 doesn't qualify");
-        assertTrue(analyzer.containsMultiGrapheme("bahn"), "Dehnungs-h");
+        assertFalse(analyzer.containsMultiGrapheme("bahn"), "Dehnungs-h is not part of BRELIX mehrgliedrig");
         assertFalse(analyzer.containsMultiGrapheme("test"), "only st at index 1");
     }
 
@@ -88,10 +94,10 @@ public class BrelixAnalyzerTest {
         int c_mehr = analyzer.countCInMultiGraphems("schach");
         assertEquals(0, count - c_mehr);
 
-        // bahn: 1 - 0 = 1.
+        // bahn: Dehnungs-h is not part of BRELIX mehrgliedrig.
         count = analyzer.countMultiGraphems("bahn");
         c_mehr = analyzer.countCInMultiGraphems("bahn");
-        assertEquals(1, count - c_mehr);
+        assertEquals(0, count - c_mehr);
 
         // spiel: sp(1), ie(1). c_mehr: 0. 2 - 0 = 2.
         count = analyzer.countMultiGraphems("spiel");
@@ -124,16 +130,19 @@ public class BrelixAnalyzerTest {
         BrelixAnalyzer analyzer = BrelixAnalyzer.getInstance();
         assertEquals(1, analyzer.countConsonantClusters("straße"), "str at start (>=2)");
         assertEquals(1, analyzer.countConsonantClusters("herbst"), "rbst at end (>=3)");
-        // "strandtest": start "str" (3) -> count++, end "st" (2) -> no. Total 1.
+        // "strandtest": start "str" (3 sounds after st+r normalization) -> count++, end "st" (2) -> no. Total 1.
         assertEquals(1, analyzer.countConsonantClusters("strandtest"));
-        // "sprichst": spr at start (3, >=2) -> count++; after ch->§: "§  i§ t" end cluster "t" length 1 < 3 -> no extra. Total 1.
+        // "sprichst": spr at start (3 sounds after sp+r normalization) -> count++; final st has length 2 -> no extra. Total 1.
         assertEquals(1, analyzer.countConsonantClusters("sprichst"));
 
-        // Multiple clusters per word
-        assertEquals(1, analyzer.countConsonantClusters("fenster"), "st at syllable start in middle");
+        // Multi-graphemes and affricates are counted as one sound, not as letter piles.
+        assertEquals(0, analyzer.countConsonantClusters("fenster"), "st before a vowel is tracked as a multi-grapheme");
         assertEquals(0, analyzer.countConsonantClusters("garten"), "no clusters in middle");
         assertEquals(1, analyzer.countConsonantClusters("wurst"), "rst at end (>=3)");
-        assertEquals(1, analyzer.countConsonantClusters("sitzt"), "tzt at end (>=3)");
+        assertEquals(0, analyzer.countConsonantClusters("sitzt"), "tz is one consonant sound");
+        assertEquals(0, analyzer.countConsonantClusters("phase"), "ph is one consonant sound");
+        assertEquals(0, analyzer.countConsonantClusters("rhesus"), "rh is one consonant sound");
+        assertEquals(0, analyzer.countConsonantClusters("theater"), "th is one consonant sound");
     }
 
     @Test
@@ -177,45 +186,45 @@ public class BrelixAnalyzerTest {
 
         BrelixAnalyzer.getInstance().analyze(data, doc);
 
-        // Occurrence-based counts (st/sp only count at word-initial position):
-        // multiGraphems=5 (spielt: sp,ie; schaukelstuhl: sch,Dehnungs-h; lacht: ch)
+        // Sound-based word counts:
+        // multiGraphems=4 (spielt: sp,ie; schaukelstuhl: sch; lacht: ch)
         // cInMultiGraphems=2 (schaukelstuhl: sch; lacht: ch)
         // rareLetters=2 (schaukelstuhl: c; lacht: c)
-        // consonantClusters=4 (flora: Fl; spielt: sp; sitzt: tzt; schaukelstuhl: st)
-        // wortschw_minus_c = 5 - 2 + 2 + 4 = 9
-        // proz_wortschw_minus_c = 9/11 * 100 = 81.82%
+        // consonantClusters=1 (flora: Fl)
+        // wortschwierig = 4 + 2 + 1 = 7
+        // proz_wortschwierig = 7/11 * 100 = 63.64%
         // LIX = 5.5 + 9.09 = 14.59
 
-        // BRELIX 0: 14.59 + 81.82/5 = 30.95
-        assertEquals(30.95, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
+        // BRELIX 0: 14.59 + 45.45/5 = 23.68
+        assertEquals(23.68, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
 
-        // BRELIX 1: 27.5 + 33 + ((9.09+81.82)/100*50) = 105.96
-        assertEquals(105.96, data.getBrelix1Score(), 0.1, "BRELIX 1 mismatch");
+        // BRELIX 1: 27.5 + 33 + ((9.09+63.64)/100*50) = 96.86
+        assertEquals(96.86, data.getBrelix1Score(), 0.1, "BRELIX 1 mismatch");
 
-        // BRELIX 2: 27.5 + 33 + ((9.09+81.82)/100*100) = 151.41
-        assertEquals(151.41, data.getBrelix2Score(), 0.1, "BRELIX 2 mismatch");
+        // BRELIX 2: 27.5 + 33 + ((9.09+63.64)/100*100) = 133.23
+        assertEquals(133.23, data.getBrelix2Score(), 0.1, "BRELIX 2 mismatch");
 
-        // BRELIX 3: (0*20) + 151.41 = 151.41
-        assertEquals(151.41, data.getBrelix3Score(), 0.1, "BRELIX 3 mismatch");
+        // BRELIX 3: (0*20) + 133.23 = 133.23
+        assertEquals(133.23, data.getBrelix3Score(), 0.1, "BRELIX 3 mismatch");
 
-        // BRELIX 3 Neu: (0*20) + 5.5*5 + 11*3 + ((9.09 + 100)/100*100) = 0 + 27.5 + 33 + 109.09 = 169.59
-        // wortschw_additiv = multiGraphems(5) + rareLetters(2) + consonantClusters(4) = 11
-        // proz_wortschw_additiv = 11/11*100 = 100%
-        assertEquals(169.59, data.getBrelix3NeuScore(), 0.1, "BRELIX 3 Neu mismatch");
+        // BRELIX 3 Neu: (0*20) + 5.5*5 + 11*3 + ((9.09 + 63.64)/100*100) = 0 + 27.5 + 33 + 72.73 = 133.23
+        // wortschw_additiv = multiGraphems(4) + rareLetters(2) + consonantClusters(1) = 7
+        // proz_wortschw_additiv = 7/11*100 = 63.64%
+        assertEquals(133.23, data.getBrelix3NeuScore(), 0.1, "BRELIX 3 Neu mismatch");
 
-        // BRELIX 4: 151.41 + 0*5 = 151.41 (SPSS: brelix4 = brelix3 + Nebensätze*5)
-        assertEquals(151.41, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
+        // BRELIX 4: 133.23 + 0*5 = 133.23 (SPSS: brelix4 = brelix3 + Nebensätze*5)
+        assertEquals(133.23, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
 
-        // BRELIX 5: 151.41 + 100 (TTR*100) = 251.41
-        assertEquals(251.41, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
+        // BRELIX 5: 133.23 + 100 (TTR*100) = 233.23
+        assertEquals(233.23, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
 
         // Verifikation der Niveaus (Levels)
         assertEquals("2", data.getLixReadabilityLevel(), "LIX Level mismatch");
-        assertEquals(2, data.getBrelix0Level(), "BRELIX 0 Level mismatch");
+        assertEquals(1, data.getBrelix0Level(), "BRELIX 0 Level mismatch");
         assertEquals(5, data.getBrelix1Level(), "BRELIX 1 Level mismatch");
-        assertEquals(6, data.getBrelix2Level(), "BRELIX 2 Level mismatch");
-        assertEquals(4, data.getBrelix3Level(), "BRELIX 3 Level mismatch");
+        assertEquals(5, data.getBrelix2Level(), "BRELIX 2 Level mismatch");
+        assertEquals(3, data.getBrelix3Level(), "BRELIX 3 Level mismatch");
         assertEquals(3, data.getBrelix4Level(), "BRELIX 4 Level mismatch");
-        assertEquals(5, data.getBrelix5Level(), "BRELIX 5 Level mismatch");
+        assertEquals(4, data.getBrelix5Level(), "BRELIX 5 Level mismatch");
     }
 }

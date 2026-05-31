@@ -51,6 +51,7 @@ public class PrimaryModel {
 
     private int pages = 1;
     private double fontSizeMm = 6.0;
+    private boolean joinHyphenatedLineBreaks = false;
 
     public void setPages(int pages) {
         this.pages = pages;
@@ -64,6 +65,10 @@ public class PrimaryModel {
         simpleTextAnalyzer.setCountLineBreaksAsSentences(value);
     }
 
+    public void setJoinHyphenatedLineBreaks(boolean value) {
+        this.joinHyphenatedLineBreaks = value;
+    }
+
     public PrimaryModel initializeDocument(software.latic.helper.FileContent fileContent) {
         initializeDocument(fileContent.getContent());
         this.pages = fileContent.getPages();
@@ -75,6 +80,10 @@ public class PrimaryModel {
         var text = paragraphs.stream()
                 .map(charSequence -> charSequence.toString().trim())
                 .collect(Collectors.joining("\n"));
+
+        if (joinHyphenatedLineBreaks) {
+            text = text.replaceAll("-\\h*\\R\\h*", "");
+        }
 
         if (Translation.getInstance().getLocale().equals(SupportedLocales.FRENCH.getLocale())) {
             props.setProperty("annotators", "tokenize, ssplit, pos");

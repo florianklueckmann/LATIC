@@ -61,6 +61,7 @@ public class PrimaryViewModel implements Initializable {
     @FXML private CheckBox analyzeHeadersCheckbox;
     @FXML private CheckBox analyzeFootersCheckbox;
     @FXML private CheckBox lineBreakSentencesCheckbox;
+    @FXML private CheckBox joinHyphenatedLineBreaksCheckbox;
     @FXML private CheckBox brelixCheckbox;
     @FXML private Spinner<Integer> pagesCountSpinner;
     @FXML private Spinner<Double> fontSizeMmSpinner;
@@ -117,6 +118,7 @@ public class PrimaryViewModel implements Initializable {
         analyzeHeadersCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("analyzeHeaders"));
         analyzeFootersCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("analyzeFooters"));
         lineBreakSentencesCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("lineBreakSentences"));
+        joinHyphenatedLineBreaksCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("joinHyphenatedLineBreaks"));
         brelixCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("brelixBeta"));
 
         labelPagesCount.textProperty().bind(Translation.getInstance().createStringBinding("pagesCount"));
@@ -466,6 +468,7 @@ public class PrimaryViewModel implements Initializable {
         analyzeHeadersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeHeaders", "true")));
         analyzeFootersCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("analyzeFooters", "true")));
         lineBreakSentencesCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("lineBreakSentences", "false")));
+        joinHyphenatedLineBreaksCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("joinHyphenatedLineBreaks", "false")));
         brelixCheckbox.setSelected(Boolean.parseBoolean(Settings.userPreferences.get("brelixEnabled", "false")));
     }
 
@@ -668,6 +671,7 @@ public class PrimaryViewModel implements Initializable {
                     model.setFontSizeMm(fontSizeMmSpinner.getValue());
                 }
                 model.setCountLineBreaksAsSentences(lineBreakSentencesCheckbox.isSelected());
+                model.setJoinHyphenatedLineBreaks(joinHyphenatedLineBreaksCheckbox.isSelected());
                 currentItems.add(model
                         .initializeDocument(importedDocumentContent.getValue())
                         .processTasks(textTasks, generalTasks, wordLevelTasks, importedDocumentContent.getKey()));
@@ -680,6 +684,7 @@ public class PrimaryViewModel implements Initializable {
                 model.setFontSizeMm(fontSizeMmSpinner.getValue());
             }
             model.setCountLineBreaksAsSentences(lineBreakSentencesCheckbox.isSelected());
+            model.setJoinHyphenatedLineBreaks(joinHyphenatedLineBreaksCheckbox.isSelected());
             currentItems.add(model
                     .initializeDocument(textAreaInput.getParagraphs())
                     .processTasks(textTasks, generalTasks, wordLevelTasks));
@@ -832,6 +837,10 @@ public class PrimaryViewModel implements Initializable {
 
     public void handleLineBreakSentencesCheckboxValueChanged(ActionEvent actionEvent) {
         Settings.userPreferences.put("lineBreakSentences", String.valueOf(((CheckBox) actionEvent.getTarget()).isSelected()));
+    }
+
+    public void handleJoinHyphenatedLineBreaksCheckboxValueChanged(ActionEvent actionEvent) {
+        Settings.userPreferences.put("joinHyphenatedLineBreaks", String.valueOf(((CheckBox) actionEvent.getTarget()).isSelected()));
     }
 
     public void handleBrelixCheckboxValueChanged(ActionEvent actionEvent) {
