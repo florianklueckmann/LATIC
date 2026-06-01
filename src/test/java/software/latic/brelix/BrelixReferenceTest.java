@@ -1,14 +1,41 @@
 package software.latic.brelix;
 
 import edu.stanford.nlp.simple.Document;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import software.latic.item.GermanTextItemData;
 import software.latic.item.TextItemData;
 import software.latic.text_analyzer.SimpleTextAnalyzer;
+import software.latic.translation.Translation;
+
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BrelixReferenceTest {
+
+    private Locale originalLocale;
+
+    /**
+     * Pin a deterministic locale so these tests are independent of execution order.
+     * The corpus texts are tokenized via {@code new Document(text)}, i.e. CoreNLP's
+     * default (English/PTB) pipeline, and {@code SimpleTextAnalyzer.wordCount()}
+     * filters punctuation through the locale-dependent {@code TagMapper}; the two
+     * must agree. A GERMAN locale leaked by another test mismatches the PTB tags and
+     * inflates wordCount (e.g. 96 -> 120), so we force ENGLISH here and restore the
+     * previous locale afterwards to avoid polluting other tests.
+     */
+    @BeforeEach
+    void pinLocale() {
+        originalLocale = Translation.getInstance().getLocale();
+        Translation.getInstance().setLocale(Locale.ENGLISH);
+    }
+
+    @AfterEach
+    void restoreLocale() {
+        Translation.getInstance().setLocale(originalLocale);
+    }
 
     @Test
     void testBrelixReferenceExample() {
