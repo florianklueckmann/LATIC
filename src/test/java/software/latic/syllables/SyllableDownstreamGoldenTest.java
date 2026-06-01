@@ -61,17 +61,19 @@ class SyllableDownstreamGoldenTest {
 
     @Test
     void syllableDrivenMetricsAreFrozen() {
-        // --- Signed off after Phase 2 (CSV-bleed fix) ---
-        // karierte 4 -> 3 (ka-rier-te): -1 syllable. This is the only change vs.
-        // the Phase 1 baseline; it lowers syllableCount 93->92 and lifts Flesch
-        // (fewer syllables = easier). words>2 is unchanged (karierte stays >2),
-        // so SMOG/Wiener/gSMOG are unaffected. Consciously accepted as correct.
-        assertEquals(92, analyzer.syllableCount(), "syllableCount");
-        assertEquals(11, analyzer.wordsWithMoreThanTwoSyllablesCount(), "words>2syllables");
-        assertEquals(1.87755, analyzer.averageWordLengthSyllables(), 1e-5, "avgWordLengthSyllables");
-        assertEquals(60.36327, analyzer.fleschIndexGerman(), 1e-5, "fleschIndexGerman");
-        assertEquals(8.67191, analyzer.SMOG(), 1e-5, "SMOG");
-        assertEquals(7.06988, analyzer.wienerSachtextformel(), 1e-5, "wienerSachtextformel");
-        assertEquals(6.12404, analyzer.gSMOG(), 1e-5, "gSMOG");
+        // --- Signed off after Phase 3 (hiat-collapse fix) ---
+        // Phase 2 (CSV bleed): karierte 4->3.
+        // Phase 3 (hiat): Museum 2->3, Ideen 2->3, Petroleum 3->4, Linoleum 3->4.
+        // Net syllableCount vs. Phase 1 baseline (93): -1 (karierte) +4 (hiat) = 96.
+        // words>2 rises 11->13 (Museum, Ideen cross the 2-syllable threshold), so
+        // SMOG/Wiener/gSMOG move up too; Flesch lands between the two phases.
+        // All deltas trace to documented Duden corrections - consciously accepted.
+        assertEquals(96, analyzer.syllableCount(), "syllableCount");
+        assertEquals(13, analyzer.wordsWithMoreThanTwoSyllablesCount(), "words>2syllables");
+        assertEquals(1.95918, analyzer.averageWordLengthSyllables(), 1e-5, "avgWordLengthSyllables");
+        assertEquals(55.58776, analyzer.fleschIndexGerman(), 1e-5, "fleschIndexGerman");
+        assertEquals(9.39448, analyzer.SMOG(), 1e-5, "SMOG");
+        assertEquals(8.18988, analyzer.wienerSachtextformel(), 1e-5, "wienerSachtextformel");
+        assertEquals(6.83176, analyzer.gSMOG(), 1e-5, "gSMOG");
     }
 }

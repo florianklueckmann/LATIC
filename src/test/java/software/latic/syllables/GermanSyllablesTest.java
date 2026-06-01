@@ -174,7 +174,6 @@ class GermanSyllablesTest {
     }
 
     @Test
-    @Disabled("Known hiat-collapse bug captured in Phase 1; enabled by the Phase 3 fix.")
     void hiat() {
         assertAllCorrect(hiatCases);
     }
