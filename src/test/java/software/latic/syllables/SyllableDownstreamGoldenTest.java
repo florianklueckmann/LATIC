@@ -61,11 +61,15 @@ class SyllableDownstreamGoldenTest {
 
     @Test
     void syllableDrivenMetricsAreFrozen() {
-        // --- Frozen baseline (Phase 1, before syllable fixes) ---
-        assertEquals(93, analyzer.syllableCount(), "syllableCount");
+        // --- Signed off after Phase 2 (CSV-bleed fix) ---
+        // karierte 4 -> 3 (ka-rier-te): -1 syllable. This is the only change vs.
+        // the Phase 1 baseline; it lowers syllableCount 93->92 and lifts Flesch
+        // (fewer syllables = easier). words>2 is unchanged (karierte stays >2),
+        // so SMOG/Wiener/gSMOG are unaffected. Consciously accepted as correct.
+        assertEquals(92, analyzer.syllableCount(), "syllableCount");
         assertEquals(11, analyzer.wordsWithMoreThanTwoSyllablesCount(), "words>2syllables");
-        assertEquals(1.89796, analyzer.averageWordLengthSyllables(), 1e-5, "avgWordLengthSyllables");
-        assertEquals(59.16939, analyzer.fleschIndexGerman(), 1e-5, "fleschIndexGerman");
+        assertEquals(1.87755, analyzer.averageWordLengthSyllables(), 1e-5, "avgWordLengthSyllables");
+        assertEquals(60.36327, analyzer.fleschIndexGerman(), 1e-5, "fleschIndexGerman");
         assertEquals(8.67191, analyzer.SMOG(), 1e-5, "SMOG");
         assertEquals(7.06988, analyzer.wienerSachtextformel(), 1e-5, "wienerSachtextformel");
         assertEquals(6.12404, analyzer.gSMOG(), 1e-5, "gSMOG");

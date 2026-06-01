@@ -180,7 +180,6 @@ class GermanSyllablesTest {
     }
 
     @Test
-    @Disabled("Known CSV-substring-bleed bug captured in Phase 1; enabled by the Phase 2 fix.")
     void csvBleed() {
         assertAllCorrect(csvBleedCases);
     }
