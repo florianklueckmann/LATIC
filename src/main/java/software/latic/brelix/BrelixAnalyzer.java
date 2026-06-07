@@ -549,19 +549,36 @@ public class BrelixAnalyzer {
     int countSubordinateClauses(Document doc) {
         int count = 0;
         for (Sentence sent : doc.sentences()) {
-            Tree tree = sent.parse();
-            count += countSbar(tree);
+            count += countNestedClauses(sent.parse(), false);
         }
         return count;
     }
 
-    int countSbar(Tree tree) {
+    /**
+     * Counts subordinate clauses in a constituency parse.
+     *
+     * <p>The previous implementation only looked for the label {@code SBAR}, which is
+     * the English (PTB) label and never appears in the German parse (UD/NEGRA-style
+     * labels), so every German text scored 0 subordinate clauses — silently zeroing the
+     * Nebensatz term in BRELIX4/5 (see docs/BRELIX-Kalibrierung-Befunde.md §4.7).
+     *
+     * <p>Instead we count clause nodes ({@code S}) that are nested inside another clause
+     * node: the matrix clause is the outermost {@code S}, every embedded {@code S} is a
+     * subordinate clause. This also covers the English case, where {@code SBAR} wraps an
+     * embedded {@code S}.
+     *
+     * <p>Known limitation: still undercounts vs. Brügelmann's manual count (Hanna: 9
+     * vs. ~16). The residual gap is the open Nebensatz definition and sentence
+     * over-segmentation, not this routine. BRELIX4/5 remain "experimental".
+     */
+    int countNestedClauses(Tree tree, boolean insideClause) {
         int count = 0;
-        if (tree.label().value().equals("SBAR")) {
+        boolean isClause = tree.label().value().equals("S");
+        if (isClause && insideClause) {
             count++;
         }
         for (Tree child : tree.children()) {
-            count += countSbar(child);
+            count += countNestedClauses(child, insideClause || isClause);
         }
         return count;
     }
