@@ -151,7 +151,7 @@ public class BrelixReferenceTest {
         // multigraphems(35) + Buchst_selten binary(13) + Konshfg binary(9) = 57 → 59.38%. Near-exact.
         assertEquals("57", map.get("wortschw_paper_candidate"), "wortschw_paper_candidate (≈ paper 59.1%)");
         assertEquals("59.3750", map.get("proz_wortschw_paper_candidate"), "proz_wortschw_paper_candidate");
-        assertEquals("1", map.get("subordinateClauses"), "subordinateClauses");
+        assertEquals("0", map.get("subordinateClauses"), "subordinateClauses (dependency-based; EN pipeline yields 0 here)");
         assertEquals("16", map.get("longWords"), "longWords");
 
         // --- Final scores (current app behavior with pagesCount=10) ---
@@ -162,8 +162,8 @@ public class BrelixReferenceTest {
         assertEquals(148.68, data.getBrelix2Score(), 0.01, "BRELIX2");
         assertEquals(148.68, data.getBrelix3Score(), 0.01, "BRELIX3");
         assertEquals(148.68, data.getBrelix3NeuScore(), 0.01, "BRELIX3 Neu");
-        assertEquals(153.68, data.getBrelix4Score(), 0.01, "BRELIX4");
-        assertEquals(228.68, data.getBrelix5Score(), 0.01, "BRELIX5");
+        assertEquals(148.68, data.getBrelix4Score(), 0.01, "BRELIX4");
+        assertEquals(223.68, data.getBrelix5Score(), 0.01, "BRELIX5");
 
         // Sanity-check that st/sp rule applied: word-medial occurrences must not count.
         BrelixAnalyzer ba = BrelixAnalyzer.getInstance();

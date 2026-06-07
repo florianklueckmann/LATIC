@@ -2,7 +2,6 @@ package software.latic.brelix;
 
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
-import edu.stanford.nlp.trees.Tree;
 import software.latic.Logging;
 import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
@@ -10,6 +9,8 @@ import software.latic.syllables.SyllableProvider;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -97,6 +98,12 @@ public class BrelixAnalyzer {
         // Nebensätze
         int subordinateClauses = countSubordinateClauses(doc);
         data.setSubordinateClausesCount(subordinateClauses);
+        // Share of subordinate clauses (per sentence) — the metric reported in the
+        // BRELIX reference tables ("% Nebensätze"); diagnostic only, the BRELIX4/5
+        // formulas use the absolute count per the verbatim SPSS.
+        int sentenceCountForClauses = doc.sentences().size();
+        double proz_nebensaetze = sentenceCountForClauses == 0 ? 0.0
+                : (double) subordinateClauses / sentenceCountForClauses * 100.0;
 
         // Lange Wörter (> 6 Buchstaben)
         int longWords = countLongWords(doc);
@@ -206,6 +213,7 @@ public class BrelixAnalyzer {
         map.put("longWords", String.valueOf(longWords));
         map.put("anteil_lange_woerter", String.format(Locale.ROOT, "%.4f", anteil_lange_woerter));
         map.put("subordinateClauses", String.valueOf(subordinateClauses));
+        map.put("proz_nebensaetze", String.format(Locale.ROOT, "%.4f", proz_nebensaetze));
         map.put("satzlaenge", String.format(Locale.ROOT, "%.4f", satzlaenge));
         map.put("woerter_seite", String.format(Locale.ROOT, "%.4f", woerter_seite));
         map.put("schriftgroesse_diff", String.format(Locale.ROOT, "%.4f", schriftgroesse_diff));
@@ -546,39 +554,48 @@ public class BrelixAnalyzer {
                 .replaceAll("([bcdfghjklmnpqrstvwxzß§])\\1+", "$1");
     }
 
+    /**
+     * Universal-Dependencies relations whose dependent token heads a subordinate
+     * clause (Nebensatz). This mirrors the linguistic definition (a dependent,
+     * verb-final clause): {@code advcl} = adverbial clause (weil/wenn/als…),
+     * {@code acl}/{@code acl:relcl} = adnominal/relative clause, {@code ccomp} =
+     * clausal complement (dass-clause, indirect question), {@code csubj} = clausal
+     * subject, {@code xcomp} = open clausal complement (zu-infinitive). Coordination
+     * ({@code conj}/{@code cc}) is deliberately excluded — those are Hauptsätze.
+     * Relations are matched on their base label, since the German model subtypes
+     * them (e.g. {@code advcl:wenn}).
+     */
+    private static final Set<String> SUBORDINATE_CLAUSE_RELATIONS =
+            Set.of("advcl", "acl", "ccomp", "csubj", "xcomp");
+
+    /**
+     * Counts subordinate clauses (Nebensätze) via dependency relations, consistent
+     * with the rest of the NLP analysis (e.g. passive detection in NlpTextAnalyzer
+     * uses the same {@code incomingDependencyLabels}).
+     *
+     * <p>Replaces the earlier constituency checks: {@code SBAR} (English-only, scored
+     * 0 for every German text) and nested {@code S} nodes (parser-dependent). The
+     * dependency relations above cover the German Nebensatz types directly and also
+     * work on the English parse (same UD relations).
+     *
+     * <p>Known limitation: still undercounts vs. Brügelmann's manual count (Hanna:
+     * 10 vs. ~16 → 14.5 % vs. 27 %). The dominant residual cause is sentence
+     * over-segmentation around dialogue/quotes (which also lowers Wörter/Satz), plus
+     * occasional parser errors — not the relation set. BRELIX4/5 stay "experimental".
+     * See docs/BRELIX-Kalibrierung-Befunde.md §4.7.
+     */
     int countSubordinateClauses(Document doc) {
         int count = 0;
         for (Sentence sent : doc.sentences()) {
-            count += countNestedClauses(sent.parse(), false);
-        }
-        return count;
-    }
-
-    /**
-     * Counts subordinate clauses in a constituency parse.
-     *
-     * <p>The previous implementation only looked for the label {@code SBAR}, which is
-     * the English (PTB) label and never appears in the German parse (UD/NEGRA-style
-     * labels), so every German text scored 0 subordinate clauses — silently zeroing the
-     * Nebensatz term in BRELIX4/5 (see docs/BRELIX-Kalibrierung-Befunde.md §4.7).
-     *
-     * <p>Instead we count clause nodes ({@code S}) that are nested inside another clause
-     * node: the matrix clause is the outermost {@code S}, every embedded {@code S} is a
-     * subordinate clause. This also covers the English case, where {@code SBAR} wraps an
-     * embedded {@code S}.
-     *
-     * <p>Known limitation: still undercounts vs. Brügelmann's manual count (Hanna: 9
-     * vs. ~16). The residual gap is the open Nebensatz definition and sentence
-     * over-segmentation, not this routine. BRELIX4/5 remain "experimental".
-     */
-    int countNestedClauses(Tree tree, boolean insideClause) {
-        int count = 0;
-        boolean isClause = tree.label().value().equals("S");
-        if (isClause && insideClause) {
-            count++;
-        }
-        for (Tree child : tree.children()) {
-            count += countNestedClauses(child, insideClause || isClause);
+            for (Optional<String> label : sent.incomingDependencyLabels()) {
+                if (label.isEmpty()) {
+                    continue;
+                }
+                String base = label.get().split(":", 2)[0];
+                if (SUBORDINATE_CLAUSE_RELATIONS.contains(base)) {
+                    count++;
+                }
+            }
         }
         return count;
     }
