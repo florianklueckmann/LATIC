@@ -3,6 +3,7 @@ package software.latic.brelix;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
 import software.latic.Logging;
+import software.latic.helper.SentenceSegmentation;
 import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
 
@@ -100,8 +101,12 @@ public class BrelixAnalyzer {
         data.setSubordinateClausesCount(subordinateClauses);
         // Share of subordinate clauses (per sentence) — the metric reported in the
         // BRELIX reference tables ("% Nebensätze"); diagnostic only, the BRELIX4/5
-        // formulas use the absolute count per the verbatim SPSS.
-        int sentenceCountForClauses = doc.sentences().size();
+        // formulas use the absolute count per the verbatim SPSS. The denominator uses
+        // the same continuation-fragment correction as SimpleTextAnalyzer.sentenceCount.
+        int sentenceCountForClauses = (int) doc.sentences().stream()
+                .filter(s -> s.length() > 1)
+                .filter(s -> !SentenceSegmentation.isContinuationFragment(s))
+                .count();
         double proz_nebensaetze = sentenceCountForClauses == 0 ? 0.0
                 : (double) subordinateClauses / sentenceCountForClauses * 100.0;
 

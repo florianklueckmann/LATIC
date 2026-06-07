@@ -3,6 +3,7 @@ package software.latic.text_analyzer;
 import software.latic.brelix.BrelixAnalyzer;
 import software.latic.connectives.BaseConnectives;
 import software.latic.frequency.FrequencyCalculator;
+import software.latic.helper.SentenceSegmentation;
 import software.latic.helper.TagMapper;
 import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
@@ -115,7 +116,10 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     public int sentenceCount() {
-        int sentenceCount = toIntExact(doc.sentences().stream().filter(sentence -> sentence.length() > 1).count());
+        int sentenceCount = toIntExact(doc.sentences().stream()
+                .filter(sentence -> sentence.length() > 1)
+                .filter(sentence -> !SentenceSegmentation.isContinuationFragment(sentence))
+                .count());
         if (countLineBreaksAsSentences) {
             sentenceCount += lineBreakTerminatedSentenceCount();
         }
