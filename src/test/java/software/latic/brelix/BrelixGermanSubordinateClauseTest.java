@@ -13,13 +13,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Regression test for German subordinate-clause detection (BRELIX4/5 Nebensatz term).
  *
- * <p>The detector previously matched only the English PTB label {@code SBAR}, which the
- * German parser never emits, so every German text scored 0 subordinate clauses and the
- * Nebensatz term silently vanished from BRELIX4/5. The fix counts embedded {@code S}
- * clause nodes (UD/NEGRA-style). These tests pin that German clauses are now detected;
- * if the SBAR-only behaviour ever returns, the German counts collapse to 0 and fail.
+ * <p>Detection is dependency-based (UD relations advcl/acl/ccomp/csubj/xcomp), the same
+ * machinery the rest of the NLP analysis uses. It replaced an SBAR-only check that the
+ * German parser never matched, so every German text scored 0 subordinate clauses and the
+ * Nebensatz term silently vanished from BRELIX4/5. These tests pin that German clauses
+ * are detected across the main types (adverbial, indirect question, relative); if the
+ * detector regresses to 0 they fail.
  *
- * <p>Uses the German CoreNLP pipeline explicitly (the constituency labels are
+ * <p>Uses the German CoreNLP pipeline explicitly (dependency relations are
  * language-specific). Does not touch the Translation locale (the count is parse-only).
  */
 public class BrelixGermanSubordinateClauseTest {
@@ -35,12 +36,12 @@ public class BrelixGermanSubordinateClauseTest {
     }
 
     @Test
-    void detectsGermanConjunctionClauses() {
-        // Three subordinate clauses: wenn-, dass-, wie-clause + one clause-free sentence.
+    void detectsGermanSubordinateClauseTypes() {
+        // advcl (wenn), ccomp (indirect question wie), acl (relative der), + a clause-free sentence.
         String text = "Hanna ist traurig, wenn sie an die Scheidung denkt. "
-                + "Marie will nicht, dass Hanna mit Tim spielt. "
                 + "Du weißt nicht, wie man mit einem Baby spielt. "
-                + "Sie geht extra langsam hinter den Mädchen her.";
+                + "Der Mann, der dort steht, ist mein Vater. "
+                + "Sie geht langsam nach Hause.";
         int clauses = BrelixAnalyzer.getInstance().countSubordinateClauses(germanDoc(text));
         assertTrue(clauses >= 3,
                 "German subordinate clauses must be detected (SBAR-only returned 0); was " + clauses);
