@@ -6,6 +6,7 @@ import org.apache.pdfbox.text.TextPosition;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -38,11 +39,13 @@ public class PDFReader implements FileReader {
         String text = "";
         int pages = document.getNumberOfPages();
         double averageFontSizePt = 12.0;
+        double medianFontSizePt = 12.0;
 
         if (!document.isEncrypted()) {
             FontSizeStripper stripper = new FontSizeStripper();
             text = stripper.getText(document);
             averageFontSizePt = stripper.getAverageFontSize();
+            medianFontSizePt = stripper.getMedianFontSize();
         }
         document.close();
 
@@ -51,9 +54,11 @@ public class PDFReader implements FileReader {
         }
 
         // Convert pt to mm (1 pt = 0.352778 mm)
-        double fontSizeMm = averageFontSizePt * 0.352778;
+        double ptToMm = 0.352778;
+        double fontSizeMm = averageFontSizePt * ptToMm;
+        double fontSizeMmMedian = medianFontSizePt * ptToMm;
 
-        return new FileContent(List.of(text), pages, fontSizeMm);
+        return new FileContent(List.of(text), pages, fontSizeMm, fontSizeMmMedian);
     }
 
     // --- Front-matter filtering -------------------------------------------------
@@ -120,5 +125,23 @@ public class PDFReader implements FileReader {
             }
             return sum / fontSizes.size();
         }
+
+        public double getMedianFontSize() {
+            return median(fontSizes);
+        }
+    }
+
+    /** Median of the values, or 12.0 if empty. Package-private for testing. */
+    static double median(List<Float> values) {
+        if (values.isEmpty()) {
+            return 12.0;
+        }
+        List<Float> sorted = new ArrayList<>(values);
+        Collections.sort(sorted);
+        int n = sorted.size();
+        if (n % 2 == 1) {
+            return sorted.get(n / 2);
+        }
+        return (sorted.get(n / 2 - 1) + sorted.get(n / 2)) / 2.0;
     }
 }

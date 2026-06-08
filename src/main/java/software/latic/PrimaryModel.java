@@ -51,6 +51,7 @@ public class PrimaryModel {
 
     private int pages = 1;
     private double fontSizeMm = 6.0;
+    private double fontSizeMmMedian = 6.0;
     private boolean joinHyphenatedLineBreaks = false;
 
     public void setPages(int pages) {
@@ -73,6 +74,7 @@ public class PrimaryModel {
         initializeDocument(fileContent.getContent());
         this.pages = fileContent.getPages();
         this.fontSizeMm = fileContent.getFontSizeMm();
+        this.fontSizeMmMedian = fileContent.getFontSizeMmMedian();
         return this;
     }
 
@@ -203,6 +205,7 @@ public class PrimaryModel {
 
         textItemData.setPagesCount(this.pages);
         textItemData.setFontSizeMm(this.fontSizeMm);
+        textItemData.setFontSizeMmMedian(this.fontSizeMmMedian);
 
         nlp.processTasks(textItemData, textTasks);
         simpleTextAnalyzer.processTasks(textItemData, generalTasks);
