@@ -33,6 +33,7 @@ public abstract class TextItemData {
 
     IntegerProperty pagesCount;
     DoubleProperty fontSizeMm;
+    DoubleProperty fontSizeMmMedian;
     IntegerProperty subordinateClausesCount;
     DoubleProperty lixPlusScore;
     DoubleProperty brelix0Score;
@@ -145,6 +146,7 @@ public abstract class TextItemData {
         this.averageSentenceLengthSyllables = new RoundedDoubleProperty();
         this.pagesCount = new SimpleIntegerProperty(1);
         this.fontSizeMm = new RoundedDoubleProperty(6.0);
+        this.fontSizeMmMedian = new RoundedDoubleProperty(6.0);
         this.subordinateClausesCount = new SimpleIntegerProperty();
         this.lixPlusScore = new RoundedDoubleProperty();
         this.brelix0Score = new RoundedDoubleProperty();
@@ -193,6 +195,7 @@ public abstract class TextItemData {
         valueMap.put("lixReadabilityLevel",String.valueOf(getLixReadabilityLevel()));
         valueMap.put("pagesCount", String.valueOf(getPagesCount()));
         valueMap.put("fontSizeMm", String.valueOf(getFontSizeMm()));
+        valueMap.put("fontSizeMmMedian", String.valueOf(getFontSizeMmMedian()));
         valueMap.put("subordinateClausesCount", String.valueOf(getSubordinateClausesCount()));
         valueMap.put("lixPlusScore", String.valueOf(getLixPlusScore()));
         valueMap.put("lixPlusLevel", String.valueOf(getLixPlusLevel()));
@@ -447,6 +450,10 @@ public abstract class TextItemData {
     public double getFontSizeMm() { return fontSizeMm.get(); }
     public DoubleProperty fontSizeMmProperty() { return fontSizeMm; }
     public void setFontSizeMm(double fontSizeMm) { this.fontSizeMm.set(fontSizeMm); }
+
+    public double getFontSizeMmMedian() { return fontSizeMmMedian.get(); }
+    public DoubleProperty fontSizeMmMedianProperty() { return fontSizeMmMedian; }
+    public void setFontSizeMmMedian(double fontSizeMmMedian) { this.fontSizeMmMedian.set(fontSizeMmMedian); }
 
     public int getSubordinateClausesCount() { return subordinateClausesCount.get(); }
     public IntegerProperty subordinateClausesCountProperty() { return subordinateClausesCount; }

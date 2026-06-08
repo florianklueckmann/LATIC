@@ -2,11 +2,23 @@ package software.latic.helper;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PDFReaderTest {
+
+    @Test
+    void medianHandlesOddEvenAndEmpty() {
+        assertEquals(12.0, PDFReader.median(List.of()), 1e-9, "empty -> fallback 12.0");
+        assertEquals(3.0, PDFReader.median(List.of(3.0f)), 1e-9);
+        assertEquals(4.0, PDFReader.median(List.of(2.0f, 4.0f, 6.0f)), 1e-9, "odd -> middle");
+        assertEquals(5.0, PDFReader.median(List.of(2.0f, 4.0f, 6.0f, 8.0f)), 1e-9, "even -> mean of middle two");
+        // robust to outliers (small print) vs the mean
+        assertEquals(12.0, PDFReader.median(List.of(1.0f, 12.0f, 12.0f, 12.0f)), 1e-9, "median ignores the low outlier");
+    }
 
     @Test
     void detectsArtifactLines() {
