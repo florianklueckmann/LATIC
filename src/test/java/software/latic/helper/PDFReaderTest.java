@@ -1,37 +1,60 @@
-//package software.latic.helper;
-//
-//import org.junit.jupiter.api.Test;
-//import java.io.IOException;
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//public class PDFReaderTest {
-//
-//    @Test
-//    void testFontSizeExtraction() throws IOException {
-//        String pdfPath = ".testfiles/EuleLiliShortNoImg.pdf";
-//        FileContent content = PDFReader.getInstance().getContent(pdfPath);
-//
-//        assertNotNull(content);
-//        double fontSizeMm = content.getFontSizeMm();
-//
-//        // EuleLiliShortNoImg.pdf is expected to have standard font size (~12pt)
-//        // 12pt * 0.352778 = 4.233336 mm
-//        assertEquals(4.23, fontSizeMm, 0.1, "Font size should be around 4.23mm (12pt)");
-//
-//        System.out.println("[DEBUG_LOG] File: " + pdfPath + " Font size: " + fontSizeMm + " mm");
-//    }
-//
-//    @Test
-//    void testLargeFontSizeExtraction() throws IOException {
-//        String pdfPath = ".testfiles/Die kleine Eule Lili.pdf";
-//        FileContent content = PDFReader.getInstance().getContent(pdfPath);
-//
-//        assertNotNull(content);
-//        double fontSizeMm = content.getFontSizeMm();
-//
-//        // This file was found to have ~8.98mm in our previous run
-//        assertTrue(fontSizeMm > 6.0, "Font size should be larger than 6mm for this file");
-//
-//        System.out.println("[DEBUG_LOG] File: " + pdfPath + " Font size: " + fontSizeMm + " mm");
-//    }
-//}
+package software.latic.helper;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class PDFReaderTest {
+
+    @Test
+    void detectsArtifactLines() {
+        assertTrue(PDFReader.isFrontMatterLine("10132_hanna_berlin_inhalt.indd   2-3 15.09.2009   9:32:48 Uhr"));
+        assertTrue(PDFReader.isFrontMatterLine("2 3"));
+        assertTrue(PDFReader.isFrontMatterLine("1"));
+        assertTrue(PDFReader.isFrontMatterLine("ISBN: 978-3-403-10132-1"));
+        assertTrue(PDFReader.isFrontMatterLine("© 2009 verlag für pädagogische medien"));
+        assertTrue(PDFReader.isFrontMatterLine("www.vpm-verlag.de"));
+        assertTrue(PDFReader.isFrontMatterLine("Lesestufe 6"));
+        assertTrue(PDFReader.isFrontMatterLine("REGENBOGEN-LESEKISTE II"));
+        assertTrue(PDFReader.isFrontMatterLine("in der Auer Verlag GmbH"));
+    }
+
+    @Test
+    void keepsBodyLines() {
+        assertFalse(PDFReader.isFrontMatterLine("Hanna fährt zu Papa nach Berlin."));
+        assertFalse(PDFReader.isFrontMatterLine("Hanna ist traurig, wenn sie"));
+        assertFalse(PDFReader.isFrontMatterLine("„Reist du ganz allein?“,"));
+        assertFalse(PDFReader.isFrontMatterLine("")); // blank line preserved
+    }
+
+    @Test
+    void removeFrontMatterStripsArtifactsKeepsBody() {
+        String raw = String.join("\n",
+                "REGENBOGEN-LESEKISTE II",
+                "ISBN: 978-3-403-10132-1",
+                "www.vpm-verlag.de",
+                "Lesestufe 6",
+                "10132_hanna_berlin_inhalt.indd   2-3 15.09.2009   9:32:48 Uhr",
+                "Hanna fährt zu Papa nach Berlin.",
+                "Mama fährt nicht mit.",
+                "2 3",
+                "Hanna ist traurig, wenn sie an die Scheidung denkt.");
+
+        String cleaned = PDFReader.removeFrontMatter(raw);
+
+        assertTrue(cleaned.contains("Hanna fährt zu Papa nach Berlin."));
+        assertTrue(cleaned.contains("Mama fährt nicht mit."));
+        assertTrue(cleaned.contains("Hanna ist traurig, wenn sie an die Scheidung denkt."));
+        assertFalse(cleaned.contains(".indd"));
+        assertFalse(cleaned.contains("ISBN"));
+        assertFalse(cleaned.contains("vpm-verlag"));
+        assertFalse(cleaned.contains("Lesestufe 6"));
+        assertFalse(cleaned.contains("REGENBOGEN"));
+
+        // exactly the three body lines survive
+        long bodyLines = cleaned.lines().filter(l -> !l.isBlank()).count();
+        assertEquals(3, bodyLines, "only the three body sentences should remain");
+    }
+}
