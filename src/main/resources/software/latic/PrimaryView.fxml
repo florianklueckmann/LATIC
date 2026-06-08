@@ -76,6 +76,7 @@
                                              <CheckBox fx:id="analyzeFootersCheckbox" mnemonicParsing="false" onAction="#handleAnalyzeFootersCheckboxValueChanged" text="%analyzeFooters" />
                                              <CheckBox fx:id="lineBreakSentencesCheckbox" mnemonicParsing="false" onAction="#handleLineBreakSentencesCheckboxValueChanged" text="%lineBreakSentences" />
                                              <CheckBox fx:id="joinHyphenatedLineBreaksCheckbox" mnemonicParsing="false" onAction="#handleJoinHyphenatedLineBreaksCheckboxValueChanged" text="%joinHyphenatedLineBreaks" />
+                                             <CheckBox fx:id="stripFrontMatterCheckbox" mnemonicParsing="false" onAction="#handleStripFrontMatterCheckboxValueChanged" text="%stripFrontMatter" />
                                           </children>
                                        </HBox>
                                     </children>
