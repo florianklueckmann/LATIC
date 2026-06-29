@@ -111,8 +111,12 @@ public class SimpleTextAnalyzer implements TextAnalyzer {
     }
 
     private boolean endsWithSentencePunctuation(String text) {
+        // A line ending in ':' (e.g. a speech intro like "Sie ruft:") is its own reading unit
+        // in line-set children's books and is NOT counted as a sentence by CoreNLP, so it must
+        // count here. Only true sentence terminators (. ? !) mark a line as already complete.
+        // Used only by lineBreakTerminatedSentenceCount (opt-in path); normal analysis unaffected.
         char last = text.charAt(text.length() - 1);
-        return last == '.' || last == '?' || last == '!' || last == ':';
+        return last == '.' || last == '?' || last == '!';
     }
 
     public int sentenceCount() {
