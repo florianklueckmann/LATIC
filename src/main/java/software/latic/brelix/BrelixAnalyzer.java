@@ -8,6 +8,7 @@ import software.latic.item.TextItemData;
 import software.latic.syllables.SyllableProvider;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Optional;
@@ -33,7 +34,19 @@ public class BrelixAnalyzer {
         return instance;
     }
 
+    private boolean countReportedSpeechAsSubordinate = false;
+
     private BrelixAnalyzer() {}
+
+    /**
+     * Enables an experimental approximation of Brügelmann's reference counts, which
+     * appear to include some direct-speech clauses as subordinate clauses. The default
+     * remains {@code false}; when enabled, reporting verbs are detected by lemma and
+     * dependency links rather than surface word forms.
+     */
+    public void setCountReportedSpeechAsSubordinate(boolean countReportedSpeechAsSubordinate) {
+        this.countReportedSpeechAsSubordinate = countReportedSpeechAsSubordinate;
+    }
 
     public void analyze(TextItemData data, Document doc) {
         if (data == null || doc == null) return;
@@ -579,6 +592,18 @@ public class BrelixAnalyzer {
      */
     private static final Set<String> SUBORDINATE_CLAUSE_RELATIONS =
             Set.of("advcl", "acl", "ccomp", "csubj", "xcomp");
+    private static final Set<String> SUBORDINATING_MARKERS =
+            Set.of("als", "bevor", "bis", "da", "damit", "dass", "daß", "falls",
+                    "indem", "nachdem", "ob", "obwohl", "seit", "sobald", "solange",
+                    "während", "weil", "wenn", "wie");
+    private static final Set<String> REPORTED_SPEECH_VERB_LEMMAS =
+            Set.of("antworten", "brüllen", "denken", "entgegnen", "erklären",
+                    "erwidern", "flüstern", "fragen", "krächzen", "knurren",
+                    "lügen", "meinen", "rufen", "sagen", "schreien");
+    private static final Set<String> REPORTED_SPEECH_VERB_LEMMA_STEMS =
+            Set.of("antwort", "brüll", "denk", "entgegn", "erklär", "erwider",
+                    "flüster", "frag", "krächz", "knurr", "lüg", "mein", "ruf",
+                    "sag", "schrei");
 
     /**
      * Counts subordinate clauses (Nebensätze) via dependency relations, consistent
@@ -590,25 +615,110 @@ public class BrelixAnalyzer {
      * dependency relations above cover the German Nebensatz types directly and also
      * work on the English parse (same UD relations).
      *
-     * <p>Known limitation: still undercounts vs. Brügelmann's manual count (Hanna:
-     * 10 vs. ~16 → 14.5 % vs. 27 %). The dominant residual cause is sentence
-     * over-segmentation around dialogue/quotes (which also lowers Wörter/Satz), plus
-     * occasional parser errors — not the relation set. BRELIX4/5 stay "experimental".
-     * See docs/BRELIX-Kalibrierung-Befunde.md §4.7.
+     * <p>Some German parser misses are recovered from explicit subordination markers.
+     * If {@link #setCountReportedSpeechAsSubordinate(boolean)} is enabled, this also
+     * adds a lemma/dependency-based approximation for direct speech that Brügelmann's
+     * reference counts appear to include, though the exact definition is open.
+     *
+     * <p>Each counted clause is emitted at debug level (silent in production) so the
+     * detected Nebensätze can be inspected when calibrating.
      */
     int countSubordinateClauses(Document doc) {
         int count = 0;
         for (Sentence sent : doc.sentences()) {
-            for (Optional<String> label : sent.incomingDependencyLabels()) {
+            var words = sent.words();
+            var labels = sent.incomingDependencyLabels();
+            var governors = sent.governors();
+            Set<Integer> countedClauseHeads = new HashSet<>();
+
+            for (int i = 0; i < labels.size(); i++) {
+                Optional<String> label = labels.get(i);
                 if (label.isEmpty()) {
                     continue;
                 }
                 String base = label.get().split(":", 2)[0];
                 if (SUBORDINATE_CLAUSE_RELATIONS.contains(base)) {
                     count++;
+                    countedClauseHeads.add(i);
+                    Logging.getInstance().debug("BrelixAnalyzer", String.format(
+                            "Nebensatz [rel %s] Kopf='%s' | Satz: %s", base, words.get(i), sent.text().trim()));
                 }
+            }
+
+            for (int i = 0; i < labels.size(); i++) {
+                Optional<String> label = labels.get(i);
+                if (label.isEmpty()) {
+                    continue;
+                }
+
+                String base = label.get().split(":", 2)[0];
+                if ("mark".equals(base)
+                        && SUBORDINATING_MARKERS.contains(words.get(i).toLowerCase(Locale.ROOT))) {
+                    Optional<Integer> governor = governors.get(i);
+                    if (governor.isPresent() && governor.get() >= 0 && countedClauseHeads.add(governor.get())) {
+                        count++;
+                        Logging.getInstance().debug("BrelixAnalyzer", String.format(
+                                "Nebensatz [mark '%s'] Kopf='%s' | Satz: %s",
+                                words.get(i), words.get(governor.get()), sent.text().trim()));
+                    }
+                }
+            }
+
+            if (countReportedSpeechAsSubordinate) {
+                count += countReportedSpeechClauseHeads(sent, labels, governors, countedClauseHeads);
             }
         }
         return count;
+    }
+
+    private int countReportedSpeechClauseHeads(Sentence sent, java.util.List<Optional<String>> labels,
+                                               java.util.List<Optional<Integer>> governors,
+                                               Set<Integer> countedClauseHeads) {
+        int count = 0;
+        var lemmas = sent.lemmas();
+
+        for (int i = 0; i < labels.size(); i++) {
+            Optional<String> label = labels.get(i);
+            if (label.isEmpty()) {
+                continue;
+            }
+
+            String base = label.get().split(":", 2)[0];
+            if (!"parataxis".equals(base) && !"ccomp".equals(base)) {
+                continue;
+            }
+
+            Optional<Integer> governor = governors.get(i);
+            if (governor.isEmpty() || !isValidTokenIndex(governor.get(), lemmas)) {
+                continue;
+            }
+
+            int governorIndex = governor.get();
+            int reportedSpeechHead = -1;
+            if (isReportedSpeechVerbLemma(lemmas.get(governorIndex))) {
+                reportedSpeechHead = governorIndex;
+            } else if (isReportedSpeechVerbLemma(lemmas.get(i))) {
+                reportedSpeechHead = i;
+            }
+
+            if (reportedSpeechHead >= 0 && countedClauseHeads.add(reportedSpeechHead)) {
+                count++;
+                Logging.getInstance().debug("BrelixAnalyzer", String.format(
+                        "Nebensatz [Rede %s] Kopf='%s' (lemma '%s') | Satz: %s",
+                        base, sent.words().get(reportedSpeechHead), lemmas.get(reportedSpeechHead), sent.text().trim()));
+            }
+        }
+        return count;
+    }
+
+    private boolean isReportedSpeechVerbLemma(String lemma) {
+        String normalizedLemma = lemma.toLowerCase(Locale.ROOT);
+        return REPORTED_SPEECH_VERB_LEMMAS.contains(normalizedLemma)
+                || REPORTED_SPEECH_VERB_LEMMA_STEMS.stream()
+                .anyMatch(normalizedLemma::startsWith);
+    }
+
+    private boolean isValidTokenIndex(int index, java.util.List<String> tokens) {
+        return index >= 0 && index < tokens.size();
     }
 }

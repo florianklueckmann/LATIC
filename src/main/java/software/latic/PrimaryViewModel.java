@@ -14,6 +14,7 @@ import javafx.scene.control.TitledPane;
 import javafx.util.Duration;
 import org.apache.commons.lang3.StringUtils;
 
+import software.latic.brelix.BrelixAnalyzer;
 import software.latic.connectives.BaseConnectives;
 import software.latic.frequency.FrequencyCalculator;
 import software.latic.frequency.FrequencyListCleaner;
@@ -64,6 +65,7 @@ public class PrimaryViewModel implements Initializable {
     @FXML private CheckBox joinHyphenatedLineBreaksCheckbox;
     @FXML private CheckBox stripFrontMatterCheckbox;
     @FXML private CheckBox brelixCheckbox;
+    @FXML private CheckBox countReportedSpeechCheckbox;
     @FXML private Spinner<Integer> pagesCountSpinner;
     @FXML private Spinner<Double> fontSizeMmSpinner;
     @FXML private Label labelPagesCount;
@@ -122,6 +124,7 @@ public class PrimaryViewModel implements Initializable {
         joinHyphenatedLineBreaksCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("joinHyphenatedLineBreaks"));
         stripFrontMatterCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("stripFrontMatter"));
         brelixCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("brelixBeta"));
+        countReportedSpeechCheckbox.textProperty().bind(Translation.getInstance().createStringBinding("countReportedSpeech"));
 
         labelPagesCount.textProperty().bind(Translation.getInstance().createStringBinding("pagesCount"));
         labelFontSizeMm.textProperty().bind(Translation.getInstance().createStringBinding("fontSizeMm"));
@@ -163,6 +166,7 @@ public class PrimaryViewModel implements Initializable {
         labelPagesCount.disableProperty().bind(brelixCheckbox.selectedProperty().not());
         labelFontSizeMm.disableProperty().bind(brelixCheckbox.selectedProperty().not());
         labelBrelixHint.disableProperty().bind(brelixCheckbox.selectedProperty().not());
+        countReportedSpeechCheckbox.disableProperty().bind(brelixCheckbox.selectedProperty().not());
 
         if (!canAnalyzeBrelixBinding.get()) {
             tabPane.getTabs().remove(brelixTab);
@@ -854,6 +858,10 @@ public class PrimaryViewModel implements Initializable {
     public void handleBrelixCheckboxValueChanged(ActionEvent actionEvent) {
         Settings.userPreferences.put("brelixEnabled", String.valueOf(brelixCheckbox.isSelected()));
         createCheckboxes();
+    }
+
+    public void handleCountReportedSpeechCheckboxValueChanged(ActionEvent actionEvent) {
+        BrelixAnalyzer.getInstance().setCountReportedSpeechAsSubordinate(countReportedSpeechCheckbox.isSelected());
     }
 
     public void cleanCsv(ActionEvent actionEvent) {

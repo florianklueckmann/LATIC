@@ -105,6 +105,9 @@
                                  <CheckBox fx:id="brelixCheckbox" mnemonicParsing="false" onAction="#handleBrelixCheckboxValueChanged" text="BRELIX (Beta)" />
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <CheckBox fx:id="countReportedSpeechCheckbox" mnemonicParsing="false" onAction="#handleCountReportedSpeechCheckboxValueChanged" text="%countReportedSpeech" />
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <Label fx:id="labelPagesCount" text="%pagesCount" />
                                  <Spinner fx:id="pagesCountSpinner" prefWidth="80.0" />
                               </HBox>
