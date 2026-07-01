@@ -76,10 +76,11 @@ public class BrelixAnalyzer {
         long wortschwierig = calculateWortschwierig(multiGraphems, rareLetters, consonantClusters);
         long wortschw_minus_c = calculateWortschwMinusC(multiGraphems, cInMultiGraphems, rareLetters, consonantClusters);
         long wortschw_additiv = calculateWortschwAdditiv(multiGraphems, rareLetters, consonantClusters);
-        // Diagnostic-only candidate matching the paper's WortSchw column. Per Brügelmann's SPSS
-        // (wortschwierig = mehrgliedrig + Buchst_selten + Konshfg), all three components are
-        // counted per word (binary). On Sonntagshose this reproduces the paper's 59.1% almost
-        // exactly (57/96 = 59.38%). Not yet wired into the BRELIX score formulas.
+        // Per-word (binary) word-difficulty count, all three components per word, rare letters
+        // WITH c (wortschwierig = mehrgliedrig + Buchst_selten + Konshfg). This is the count that
+        // feeds BRELIX1–5 (see the brelix1..5 assignments below and §3.3 of the calibration doc).
+        // On Sonntagshose it reproduces the paper's 59.1% (55/93 = 59.1%); over the corpus it
+        // beats the additive count on both the WortSchw column and BRELIX1.
         long wortschw_paper_candidate = calculateWortschwPaperCandidate(multiGraphemsBinary, rareLettersBinary, consonantClusters);
         
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
@@ -135,15 +136,21 @@ public class BrelixAnalyzer {
         var lix = data.getLixReadabilityScore();
         double lixPlus = calculateLixPlus(lix, schriftgroesse_diff, woerter_seite);
         
+        // BRELIX1–5 use the per-word (binary) word-difficulty count (multiGraphemsBinary +
+        // rareLettersBinary + consonantClusters), matching Brügelmann's prose "Anzahl der
+        // Wörter mit ...". Calibrated over the 6-text reference corpus: this reproduces the
+        // published WortSchw column and BRELIX1 better than the additive count, especially on
+        // the cleanest texts (see docs/BRELIX-Kalibrierung-Befunde.md §3.3). The additive
+        // `proz_wortschwierig` stays a diagnostic field; BRELIX0 keeps wortschw_minus_c (SPSS).
         double brelix0 = calculateBrelix0(lix, proz_wortschw_minus_c);
-        double brelix1 = calculateBrelix1(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschwierig);
-        double brelix2 = calculateBrelix2(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschwierig);
-        double brelix3 = calculateBrelix3(schriftgroesse_diff, satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschwierig);
+        double brelix1 = calculateBrelix1(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_paper_candidate);
+        double brelix2 = calculateBrelix2(satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_paper_candidate);
+        double brelix3 = calculateBrelix3(schriftgroesse_diff, satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_paper_candidate);
         double proz_wortschw_additiv = calculateProzWortschwMinusC(wortschw_additiv, wordCount);
         double brelix3Neu = calculateBrelix3Neu(schriftgroesse_diff, satzlaenge, woerter_seite, proz_mehrsilber, proz_wortschw_additiv);
-        double brelix4 = calculateBrelix4(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschwierig);
+        double brelix4 = calculateBrelix4(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschw_paper_candidate);
         double proz_wortversch = data.getTypeTokenRatio() * 100.0;
-        double brelix5 = calculateBrelix5(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschwierig, proz_wortversch);
+        double brelix5 = calculateBrelix5(schriftgroesse_diff, satzlaenge, subordinateClauses, woerter_seite, proz_mehrsilber, proz_wortschw_paper_candidate, proz_wortversch);
 
         Logging.getInstance().debug("BrelixAnalyzer", String.format(
                 "Text properties: satzlaenge=%.2f, woerter_seite=%.2f, schriftgroesse_diff=%.2f, longWords=%d, " +

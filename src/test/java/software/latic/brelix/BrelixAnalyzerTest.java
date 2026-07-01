@@ -186,45 +186,43 @@ public class BrelixAnalyzerTest {
 
         BrelixAnalyzer.getInstance().analyze(data, doc);
 
-        // Sound-based word counts:
-        // multiGraphems=4 (spielt: sp,ie; schaukelstuhl: sch; lacht: ch)
-        // cInMultiGraphems=2 (schaukelstuhl: sch; lacht: ch)
-        // rareLetters=2 (schaukelstuhl: c; lacht: c)
-        // consonantClusters=1 (flora: Fl)
-        // wortschwierig = 4 + 2 + 1 = 7
-        // proz_wortschwierig = 7/11 * 100 = 63.64%
+        // Word difficulty per word (binary), the count feeding BRELIX1–5:
+        // multiGraphemsBinary=3 (spielt, schaukelstuhl, lacht), rareLettersBinary=2
+        // (schaukelstuhl: c; lacht: c), consonantClusters=1 (flora: Fl)
+        // wortschw (binär) = 3 + 2 + 1 = 6  → 6/11 = 54.55%
+        // (additive count 7 → 63.64% is used only by BRELIX3_NEU.)
         // LIX = 5.5 + 9.09 = 14.59
 
-        // BRELIX 0: 14.59 + 45.45/5 = 23.68
+        // BRELIX 0: 14.59 + 45.45/5 = 23.68 (uses wortschw_minus_c, unchanged)
         assertEquals(23.68, data.getBrelix0Score(), 0.1, "BRELIX 0 mismatch");
 
-        // BRELIX 1: 27.5 + 33 + ((9.09+63.64)/100*50) = 96.86
-        assertEquals(96.86, data.getBrelix1Score(), 0.1, "BRELIX 1 mismatch");
+        // BRELIX 1: 27.5 + 33 + ((9.09+54.55)/100*50) = 92.32
+        assertEquals(92.32, data.getBrelix1Score(), 0.1, "BRELIX 1 mismatch");
 
-        // BRELIX 2: 27.5 + 33 + ((9.09+63.64)/100*100) = 133.23
-        assertEquals(133.23, data.getBrelix2Score(), 0.1, "BRELIX 2 mismatch");
+        // BRELIX 2: 27.5 + 33 + ((9.09+54.55)/100*100) = 124.14
+        assertEquals(124.14, data.getBrelix2Score(), 0.1, "BRELIX 2 mismatch");
 
-        // BRELIX 3: (0*20) + 133.23 = 133.23
-        assertEquals(133.23, data.getBrelix3Score(), 0.1, "BRELIX 3 mismatch");
+        // BRELIX 3: (0*20) + 124.14 = 124.14
+        assertEquals(124.14, data.getBrelix3Score(), 0.1, "BRELIX 3 mismatch");
 
         // BRELIX 3 Neu: (0*20) + 5.5*5 + 11*3 + ((9.09 + 63.64)/100*100) = 0 + 27.5 + 33 + 72.73 = 133.23
         // wortschw_additiv = multiGraphems(4) + rareLetters(2) + consonantClusters(1) = 7
         // proz_wortschw_additiv = 7/11*100 = 63.64%
         assertEquals(133.23, data.getBrelix3NeuScore(), 0.1, "BRELIX 3 Neu mismatch");
 
-        // BRELIX 4: 133.23 + 0*5 = 133.23 (SPSS: brelix4 = brelix3 + Nebensätze*5)
-        assertEquals(133.23, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
+        // BRELIX 4: 124.14 + 0*5 = 124.14 (SPSS: brelix4 = brelix3 + Nebensätze*5)
+        assertEquals(124.14, data.getBrelix4Score(), 0.1, "BRELIX 4 mismatch");
 
-        // BRELIX 5: 133.23 + 100 (TTR*100) = 233.23
-        assertEquals(233.23, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
+        // BRELIX 5: 124.14 + 100 (TTR*100) = 224.14
+        assertEquals(224.14, data.getBrelix5Score(), 0.1, "BRELIX 5 mismatch");
 
         // Verifikation der Niveaus (Levels)
         assertEquals("2", data.getLixReadabilityLevel(), "LIX Level mismatch");
         assertEquals(1, data.getBrelix0Level(), "BRELIX 0 Level mismatch");
-        assertEquals(5, data.getBrelix1Level(), "BRELIX 1 Level mismatch");
-        assertEquals(5, data.getBrelix2Level(), "BRELIX 2 Level mismatch");
+        assertEquals(4, data.getBrelix1Level(), "BRELIX 1 Level mismatch");
+        assertEquals(4, data.getBrelix2Level(), "BRELIX 2 Level mismatch");
         assertEquals(3, data.getBrelix3Level(), "BRELIX 3 Level mismatch");
-        assertEquals(3, data.getBrelix4Level(), "BRELIX 4 Level mismatch");
+        assertEquals(2, data.getBrelix4Level(), "BRELIX 4 Level mismatch");
         assertEquals(4, data.getBrelix5Level(), "BRELIX 5 Level mismatch");
     }
 }
