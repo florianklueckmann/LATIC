@@ -563,6 +563,11 @@ public class BrelixAnalyzer {
     private String normalizeConsonantSounds(String word) {
         String processedWord = word.toLowerCase();
 
+        // Dehnungs-h: a silent lengthening <h> between a vowel and l/m/n/r (fährt, wohnt,
+        // Zahl, mehr, Uhr) is not a spoken consonant. Drop it before clustering, otherwise
+        // e.g. "fährt" (ä-h-r-t) and "wohnt" (o-h-n-t) count a spurious 3-consonant cluster.
+        processedWord = processedWord.replaceAll("(?<=[aeiouäöüéàáy])h(?=[lmnr])", "");
+
         processedWord = processedWord
                 .replaceAll("(st|sp)(?=[bcdfghjklmnpqrstvwxzß])", "§")
                 .replaceAll("(st|sp)(?=[aeiouäöüéàáy])", " ");

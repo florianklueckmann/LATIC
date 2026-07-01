@@ -143,6 +143,14 @@ public class BrelixAnalyzerTest {
         assertEquals(0, analyzer.countConsonantClusters("phase"), "ph is one consonant sound");
         assertEquals(0, analyzer.countConsonantClusters("rhesus"), "rh is one consonant sound");
         assertEquals(0, analyzer.countConsonantClusters("theater"), "th is one consonant sound");
+
+        // Dehnungs-h (silent) must not inflate a cluster: fährt (ä-h-r-t) and wohnt (o-h-n-t)
+        // are "rt"/"nt" at the end (2 sounds) once the silent h is dropped -> no cluster.
+        assertEquals(0, analyzer.countConsonantClusters("fährt"), "Dehnungs-h: fährt = rt (2) at end");
+        assertEquals(0, analyzer.countConsonantClusters("wohnt"), "Dehnungs-h: wohnt = nt (2) at end");
+        assertEquals(0, analyzer.countConsonantClusters("uhr"), "Dehnungs-h: uhr = r after silent h");
+        // A pronounced word-initial <h> is untouched; real clusters still count.
+        assertEquals(1, analyzer.countConsonantClusters("herbst"), "initial h kept, rbst still counts");
     }
 
     @Test
