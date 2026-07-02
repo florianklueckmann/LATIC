@@ -139,3 +139,10 @@ buildNumber.properties
 # End of https://www.toptal.com/developers/gitignore/api/intellij,maven,java
 
 shade/
+
+# Local-only BRELIX diagnostic: embeds copyrighted reading texts → not committed
+src/test/java/software/latic/brelix/BrelixGraphemeCorpusDiagnostic.java
+
+# Local-only: copyrighted reading texts (Regenbogen-Lesekiste / Hanna / Wanda) — never push
+src/test/java/software/latic/brelix/BrelixReferenceTest.java
+src/test/resources/software/latic/brelix/nebensaetze_*.txt

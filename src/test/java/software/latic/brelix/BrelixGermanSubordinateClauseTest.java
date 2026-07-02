@@ -12,6 +12,7 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Regression test for German subordinate-clause detection (BRELIX4/5 Nebensatz term).
@@ -41,10 +42,11 @@ public class BrelixGermanSubordinateClauseTest {
     @Test
     void detectsGermanSubordinateClauseTypes() {
         // advcl (wenn), ccomp (indirect question wie), acl (relative der), + a clause-free sentence.
-        String text = "Hanna ist traurig, wenn sie an die Scheidung denkt. "
-                + "Du weißt nicht, wie man mit einem Baby spielt. "
-                + "Der Mann, der dort steht, ist mein Vater. "
-                + "Sie geht langsam nach Hause.";
+        // Synthetic sentences (no copyrighted source text) that exercise the same UD relations.
+        String text = "Der Junge ist froh, wenn die Sonne scheint. "
+                + "Ich weiß nicht, wie das Gerät funktioniert. "
+                + "Der Hund, der im Garten liegt, schläft tief. "
+                + "Die Katze läuft schnell nach Hause.";
         int clauses = BrelixAnalyzer.getInstance().countSubordinateClauses(germanDoc(text));
         assertTrue(clauses >= 3,
                 "German subordinate clauses must be detected (SBAR-only returned 0); was " + clauses);
@@ -53,12 +55,16 @@ public class BrelixGermanSubordinateClauseTest {
     @Test
     void mainClauseOnlyHasNoSubordinate() {
         int clauses = BrelixAnalyzer.getInstance()
-                .countSubordinateClauses(germanDoc("Hanna fährt nach Berlin."));
+                .countSubordinateClauses(germanDoc("Der Ball rollt über die Wiese."));
         assertEquals(0, clauses, "A single main clause has no subordinate clause");
     }
 
     @Test
     void countsReferenceCorpusSubordinateClausesWithGermanPipeline() {
+        // The reference texts are copyrighted and kept LOCAL only (git-ignored, not in the repo).
+        // On a fresh checkout / CI they are absent → skip; locally they verify the 16/3 targets.
+        assumeTrue(getClass().getResourceAsStream("nebensaetze_hanna.txt") != null,
+                "reference fixtures kept local (copyright) — skipping");
         assertAll(
                 () -> assertReferenceCorpusCounts("Hanna fährt nach Berlin", "nebensaetze_hanna.txt", 11, 14),
                 () -> assertReferenceCorpusCounts("Wanda will weg", "nebensaetze_wanda.txt", 2, 3)

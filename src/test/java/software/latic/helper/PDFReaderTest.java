@@ -35,9 +35,9 @@ class PDFReaderTest {
 
     @Test
     void keepsBodyLines() {
-        assertFalse(PDFReader.isFrontMatterLine("Hanna fährt zu Papa nach Berlin."));
-        assertFalse(PDFReader.isFrontMatterLine("Hanna ist traurig, wenn sie"));
-        assertFalse(PDFReader.isFrontMatterLine("„Reist du ganz allein?“,"));
+        assertFalse(PDFReader.isFrontMatterLine("Der Hund läuft durch den Park."));
+        assertFalse(PDFReader.isFrontMatterLine("Die Kinder spielen gerne"));
+        assertFalse(PDFReader.isFrontMatterLine("„Wohin gehst du denn?“,"));
         assertFalse(PDFReader.isFrontMatterLine("")); // blank line preserved
     }
 
@@ -49,16 +49,16 @@ class PDFReaderTest {
                 "www.vpm-verlag.de",
                 "Lesestufe 6",
                 "10132_hanna_berlin_inhalt.indd   2-3 15.09.2009   9:32:48 Uhr",
-                "Hanna fährt zu Papa nach Berlin.",
-                "Mama fährt nicht mit.",
+                "Der Hund läuft durch den Park.",
+                "Der Vogel singt am Morgen.",
                 "2 3",
-                "Hanna ist traurig, wenn sie an die Scheidung denkt.");
+                "Die Kinder spielen gerne im Garten.");
 
         String cleaned = PDFReader.removeFrontMatter(raw);
 
-        assertTrue(cleaned.contains("Hanna fährt zu Papa nach Berlin."));
-        assertTrue(cleaned.contains("Mama fährt nicht mit."));
-        assertTrue(cleaned.contains("Hanna ist traurig, wenn sie an die Scheidung denkt."));
+        assertTrue(cleaned.contains("Der Hund läuft durch den Park."));
+        assertTrue(cleaned.contains("Der Vogel singt am Morgen."));
+        assertTrue(cleaned.contains("Die Kinder spielen gerne im Garten."));
         assertFalse(cleaned.contains(".indd"));
         assertFalse(cleaned.contains("ISBN"));
         assertFalse(cleaned.contains("vpm-verlag"));
